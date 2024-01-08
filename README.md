@@ -4,6 +4,12 @@ This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight 
 
 ## Usage
 
+### Configuration
+
+A file for the motor has to be provided in `.eng` format. On at least one website offering compatible files, this format has been referred to as "RASP" format. It is documented here: <https://www.thrustcurve.org/info/raspformat.html>
+
+### Simulation
+
 TODO
 
 ## Setup development environment
@@ -28,6 +34,8 @@ Additionally, on **Linux** systems, it is recommended that you install typical b
 
 - On **Arch**-based systems, run `sudo pacman -S --needed base-devel`.
 - On **Ubuntu**-based systems, run `sudo apt install build-essential`.
+
+If you are on a **Linux or MacOS** system, ensure Tk (for `tkinter`) is installed before you continue or you won't be able to see any graphical output. For example, on Arch-based systems, run `sudo pacman -S tk`.
 
 Now, install Python 3.8.0 using pyenv, like this:
 

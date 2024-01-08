@@ -127,3 +127,6 @@ dmypy.json
 
 # Any zips created
 *.zip
+
+# Ignore output folder
+output

@@ -16,5 +16,5 @@ def main() -> None:
 
 
 # Run main if launched directly
-if __name__ == "__main__":
+if __name__ == "__main__":  # type: ignore
     main()
