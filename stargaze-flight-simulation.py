@@ -10,9 +10,15 @@ def main() -> None:
 
     # TODO Load flight parameters
 
-    # TODO Run simulation
+    # Show infos about configured flight
+    sim.show_input_info()
 
-    # TODO Save results
+    # Run simulation
+    sim.simulate()
+
+    # Show and save results
+    sim.show_results()
+    sim.export_results()
 
 
 # Run main if launched directly

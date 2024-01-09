@@ -4,26 +4,26 @@ from pathlib import Path
 
 
 class FlightSimulation:
+    rocket: Rocket
+    simulation: Flight
+    environment: Environment
+    motor: SolidMotor
+
     def __init__(self) -> None:
         # NOTE This is temporary test code based on RocketPy docs, see https://docs.rocketpy.org/en/latest/user/first_simulation.html
 
         # Setup environment
-        env = Environment(
+        self.environment = Environment(
             latitude=int(32.990254), longitude=int(-106.974998), elevation=1400
         )
         tomorrow = datetime.date.today() + datetime.timedelta(days=1)
-        env.set_date(
+        self.environment.set_date(
             (tomorrow.year, tomorrow.month, tomorrow.day, 12), timezone="America/Denver"
         )
-        env.set_atmospheric_model(type="Forecast", file="GFS")
-
-        # Print environment info
-        print("ENVIRONMENT INFO START")
-        env.info()
-        print("ENVIRONMENT INFO END")
+        self.environment.set_atmospheric_model(type="Forecast", file="GFS")
 
         # Setup motor
-        Pro75M1670 = SolidMotor(
+        self.motor = SolidMotor(
             thrust_source="data/motors/Cesaroni_M1670.eng",
             dry_mass=1.815,
             dry_inertia=(0.125, 0.125, 0.002),
@@ -42,13 +42,8 @@ class FlightSimulation:
             coordinate_system_orientation="nozzle_to_combustion_chamber",
         )
 
-        # Print motor info
-        print("MOTOR INFO START")
-        Pro75M1670.info()
-        print("MOTOR INFO END")
-
         # Create rocket
-        calisto = Rocket(
+        self.rocket = Rocket(
             radius=127 / 2000,
             mass=14.426,
             inertia=(6.321, 6.321, 0.034),
@@ -59,18 +54,18 @@ class FlightSimulation:
         )
 
         # Add motor to rocket
-        calisto.add_motor(Pro75M1670, position=-1.255)
+        self.rocket.add_motor(self.motor, position=-1.255)
 
         # Add rail guides
-        rail_buttons = calisto.set_rail_buttons(
+        self.rocket.set_rail_buttons(
             upper_button_position=0.0818,
             lower_button_position=-0.6182,
             angular_position=45,
         )
 
         # Add aerodynamic components
-        nose_cone = calisto.add_nose(length=0.55829, kind="von karman", position=1.278)
-        fin_set = calisto.add_trapezoidal_fins(
+        self.rocket.add_nose(length=0.55829, kind="von karman", position=1.278)
+        self.rocket.add_trapezoidal_fins(
             n=4,
             root_chord=0.120,
             tip_chord=0.060,
@@ -79,12 +74,12 @@ class FlightSimulation:
             cant_angle=int(0.5),
             airfoil=("data/calisto/NACA0012-radians.csv", "radians"),
         )
-        tail = calisto.add_tail(
+        self.rocket.add_tail(
             top_radius=0.0635, bottom_radius=0.0435, length=0.060, position=-1.194656
         )
 
         # Add parachutes
-        main = calisto.add_parachute(
+        self.rocket.add_parachute(
             name="main",
             cd_s=10.0,
             trigger=800,  # ejection altitude in meters
@@ -92,7 +87,7 @@ class FlightSimulation:
             lag=int(1.5),
             noise=(0, 8.3, 0.5),
         )
-        drogue = calisto.add_parachute(
+        self.rocket.add_parachute(
             name="drogue",
             cd_s=1.0,
             trigger="apogee",  # ejection at apogee
@@ -101,35 +96,61 @@ class FlightSimulation:
             noise=(0, 8.3, 0.5),
         )
 
+    def simulate(self) -> None:
+        # Run the simulation
+        self.simulation = Flight(
+            rocket=self.rocket,
+            environment=self.environment,
+            rail_length=5.2,
+            inclination=85,
+            heading=0,
+        )
+
+    def show_input_info(self) -> None:
+        assert self.environment != None
+        assert self.motor != None
+        assert self.rocket != None
+
+        # Print environment info
+        print("ENVIRONMENT INFO START")
+        self.environment.info()
+        print("ENVIRONMENT INFO END")
+
+        # Print motor info
+        print("MOTOR INFO START")
+        self.motor.info()
+        print("MOTOR INFO END")
+
         # Show graphics about the rocket
         print("ROCKET GRAPHICS START")
-        calisto.plots.static_margin()
-        calisto.draw()
+        self.rocket.plots.static_margin()
+        self.rocket.draw()
         print("ROCKET GRAPHICS END")
 
-        # Run the simulation
-        test_flight = Flight(
-            rocket=calisto, environment=env, rail_length=5.2, inclination=85, heading=0
-        )
+    def show_results(self) -> None:
+        assert self.simulation != None
 
         # Print simulation results
         print("RESULTS INFO START")
-        test_flight.info()
+        self.simulation.info()
         print("RESULTS INFO END")
 
         # Show simulation results graphics
         print("RESULTS GRAPHICS START")
-        test_flight.all_info()
+        self.simulation.all_info()
         print("RESULTS GRAPHICS END")
+
+    def export_results(self) -> None:
+        assert self.simulation != None
 
         # Before export, ensure output folder exists
         Path("output").mkdir(parents=True, exist_ok=True)
 
-        # Export flight data
-        test_flight.export_data("output/calisto_flight_data.csv")
+        # Export raw flight data
+        self.simulation.export_data("output/calisto_flight_data.csv")
 
         # Export trajectory for Google Earth visulization
-        test_flight.export_kml(
+        self.simulation.export_kml(
             file_name="output/trajectory.kml",
             extrude=True,
             altitude_mode="relative_to_ground",
