@@ -1,5 +1,6 @@
 from rocketpy import Environment, Rocket, SolidMotor, Flight
 import datetime
+from pathlib import Path
 
 
 class FlightSimulation:
@@ -120,6 +121,9 @@ class FlightSimulation:
         print("RESULTS GRAPHICS START")
         test_flight.all_info()
         print("RESULTS GRAPHICS END")
+
+        # Before export, ensure output folder exists
+        Path("output").mkdir(parents=True, exist_ok=True)
 
         # Export flight data
         test_flight.export_data("output/calisto_flight_data.csv")
