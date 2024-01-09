@@ -1,1 +1,1 @@
-rocketpy
+rocketpy==1.1.4
