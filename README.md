@@ -23,12 +23,12 @@ Install pyenv on your system. This step varies based on your OS:
 - **Linux**:
   - On **Arch**-based systems, run `sudo pacman -S pyenv`.
   - On **Ubuntu**-based systems, there is no package available. Install `pyenv` manually using `curl https://pyenv.run | bash`, as per [the instructions on their GitHub page](https://github.com/pyenv/pyenv#automatic-installer).
-- **Windows**: Install `pyenv-win`. Follow the installation instructions on [pyenv-win's website](https://pyenv-win.github.io/pyenv-win/).
+- **Windows**: Install `pyenv-win` using PowerShell by following the installation instructions on [pyenv-win's website](https://pyenv-win.github.io/pyenv-win/docs/installation.html#powershell). You do not need to follow their instructions for installing python versions, as this will be covered by the rest of this README.
 - **MacOS**: Install `pyenv` via [Homebrew](https://brew.sh/) using `brew install pyenv`.
 
 If you are on **Linux** or **MacOS**, continue by setting up your shell environment for pyenv by following [their instructions on GitHub](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv).
 
-Restart your computer after this.
+**Restart your computer after this.**
 
 Additionally, on **Linux** systems, it is recommended that you install typical build dependencies:
 
@@ -40,7 +40,7 @@ If you are on a **Linux or MacOS** system, ensure Tk (for `tkinter`) is installe
 Now, install Python 3.8.0 using pyenv, like this:
 
 ```sh
-pyenv install -v 3.8.0
+pyenv install 3.8.0
 ```
 
 Confirm Python 3.8.0 has been installed by checking the output of this command:
@@ -65,27 +65,29 @@ Setup a python virtual environment by doing the following (from the root folder 
 
 ```sh
 # Create the virtual environment
-python3 -m venv venv
+python -m venv venv
 
 # Enter the virtual environment (VSCode can do this automatically if you activate it via the corresponding popup)
-# This may vary slightly on Windows
+# for UNIX:
 source venv/bin/activate
+# for WINDOWS:
+venv\Scripts\Activate.ps1
 ```
 
 Ensure you are in the venv, for example by checking that the output of the following command points into this repository:
 
 ```sh
-pip -V
+python -m pip -V
 ```
 
 Before we install the required packages, update the local pip installation:
 
 ```sh
-pip install --upgrade pip
+python -m pip install --upgrade pip --user
 ```
 
 Install the required packages using pip:
 
 ```sh
-pip install --requirement requirements.txt
+python -m pip install --requirement requirements.txt
 ```
