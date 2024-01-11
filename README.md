@@ -91,3 +91,27 @@ Install the required packages using pip:
 ```sh
 python -m pip install --requirement requirements.txt
 ```
+
+### Setup pre-commit
+
+To ensure a consistent style in the repository, we use pre-commit hooks.
+
+If you followed the venv installation steps from the previous section, `pre-commit` should have been installed automatically. Ensure this is the case by checking the output of this command:
+
+```sh
+pre-commit --version
+```
+
+If this **didn't** work, try installing the requirements again:
+
+```sh
+python -m pip install --requirement requirements.txt
+```
+
+In any case, finish by installing the pre-commit hooks to the local repository:
+
+```sh
+pre-commit install
+```
+
+The hooks are based on the configuration located in `.pre-commit-config.yaml` and will be run automatically before every git commit.
