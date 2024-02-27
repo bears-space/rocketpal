@@ -1,2 +1,2 @@
 pre-commit==3.5.0
-rocketpy==1.1.4
+rocketpy==1.2.0
