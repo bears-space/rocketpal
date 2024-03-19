@@ -1,11 +1,38 @@
 #!/usr/bin/env python3
 
+import argparse
+import logging
+import typing as t
 
 from core.flight_simulation import FlightSimulation
+from parsers.parts_list_parser import PartsListParser
 
 
 def main() -> None:
+    # Set default logging level
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.INFO)
+
+    # Setup argparse
+    argument_parser = argparse.ArgumentParser(prog="stargaze-flight-simulation")
+
+    # Add arguments
+    argument_parser.add_argument("parts_list_csv_file", type=argparse.FileType("r"))
+
+    # Parse arguments
+    args = argument_parser.parse_args()
+
+    # Get variables from args
+    parts_list_csv_file: t.TextIO = args.parts_list_csv_file
+
+    # Parse files
+    parts_list: PartsListParser = PartsListParser(parts_list_csv_file)
+
+    # Close files used by parsers
+    parts_list_csv_file.close()
+
     # Initialize flight simulation
+    # TODO Pass and use data parsed from files
     sim: FlightSimulation = FlightSimulation()
 
     # TODO Load flight parameters
