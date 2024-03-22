@@ -5,6 +5,7 @@ import logging
 import typing as t
 
 from core.flight_simulation import FlightSimulation
+from parsers.motor_config_parser import MotorConfigParser
 from parsers.parts_list_parser import PartsListParser
 
 
@@ -17,6 +18,7 @@ def main() -> None:
     argument_parser = argparse.ArgumentParser(prog="stargaze-flight-simulation")
 
     # Add arguments
+    # TODO add help text
     argument_parser.add_argument("parts_list_csv_file", type=argparse.FileType("r"))
 
     # Parse arguments
@@ -26,6 +28,7 @@ def main() -> None:
     parts_list_csv_file: t.TextIO = args.parts_list_csv_file
 
     # Parse files
+    motor_config: MotorConfigParser = MotorConfigParser(None)  # TODO
     parts_list: PartsListParser = PartsListParser(parts_list_csv_file)
 
     # Close files used by parsers
