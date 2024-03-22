@@ -2,6 +2,8 @@ from rocketpy import Environment, Rocket, SolidMotor, Flight
 import datetime
 from pathlib import Path
 
+from parsers.motor_config_parser import MotorConfig
+
 
 class FlightSimulation:
     rocket: Rocket
@@ -9,7 +11,7 @@ class FlightSimulation:
     environment: Environment
     motor: SolidMotor
 
-    def __init__(self) -> None:
+    def __init__(self, motor_file_path: str, motor_config: MotorConfig) -> None:
         # NOTE This is temporary test code based on RocketPy docs, see https://docs.rocketpy.org/en/latest/user/first_simulation.html
 
         # Setup environment
@@ -24,21 +26,23 @@ class FlightSimulation:
 
         # Setup motor
         self.motor = SolidMotor(
-            thrust_source="data/motors/Cesaroni_M1670.eng",
-            dry_mass=1.815,
-            dry_inertia=(0.125, 0.125, 0.002),
-            nozzle_radius=33 / 1000,
-            grain_number=5,
-            grain_density=1815,
-            grain_outer_radius=33 / 1000,
-            grain_initial_inner_radius=15 / 1000,
-            grain_initial_height=120 / 1000,
-            grain_separation=5 / 1000,
-            grains_center_of_mass_position=0.397,
-            center_of_dry_mass_position=0.317,
-            nozzle_position=0,
-            burn_time=3.9,
-            throat_radius=11 / 1000,
+            thrust_source=motor_file_path,
+            dry_mass=motor_config.dry_mass,
+            dry_inertia=motor_config.dry_inertia,
+            nozzle_radius=motor_config.nozzle_radius,
+            grain_number=motor_config.grain_number,
+            grain_density=motor_config.grain_density,
+            grain_outer_radius=motor_config.grain_outer_radius,
+            grain_initial_inner_radius=motor_config.grain_initial_inner_radius,
+            grain_initial_height=motor_config.grain_initial_height,
+            grain_separation=motor_config.grain_separation,
+            grains_center_of_mass_position=motor_config.grains_center_of_mass_position,
+            center_of_dry_mass_position=motor_config.center_of_dry_mass_position,
+            nozzle_position=int(
+                motor_config.nozzle_position
+            ),  # TODO This really should be float, fix this typing issue on RocketPy's side
+            burn_time=motor_config.burn_time,
+            throat_radius=motor_config.throat_radius,
             coordinate_system_orientation="nozzle_to_combustion_chamber",
         )
 

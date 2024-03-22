@@ -30,8 +30,8 @@ def main() -> None:
     parts_list_csv_file: t.TextIO = args.parts_list_csv_file
 
     # Parse files
-    motor_config: MotorConfigParser = MotorConfigParser(motor_config_yaml_file)
-    parts_list: PartsListParser = PartsListParser(parts_list_csv_file)
+    motor_config_parser: MotorConfigParser = MotorConfigParser(motor_config_yaml_file)
+    parts_list_parser: PartsListParser = PartsListParser(parts_list_csv_file)
 
     # Close files used by parsers
     motor_config_yaml_file.close()
@@ -39,7 +39,11 @@ def main() -> None:
 
     # Initialize flight simulation
     # TODO Pass and use data parsed from files
-    sim: FlightSimulation = FlightSimulation()
+    # TODO Remove hardcoded motor file path
+    sim: FlightSimulation = FlightSimulation(
+        motor_file_path="data/motors/Cesaroni_M1670.eng",
+        motor_config=motor_config_parser.motor_config,
+    )
 
     # TODO Load flight parameters
 
