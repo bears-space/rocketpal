@@ -1,0 +1,17 @@
+# Physical Parameters
+dry mass: 1.815 # in kg; burnout weight from cessaroni website (RocketPy example)
+dry inertia: [0.125, 0.125, 0.002] # in kg/m2
+nozzle radius: 33 # in mm PS: should be same for every Pro75; Pro54 must be measured?
+throat radius: 11 # in mm PS: should be same for every Pro75; Pro54 must be measured?
+# Propellant Parameters
+grain number: 5 # amount of grains
+grain density: 1815 # in kg/m3 # calculate via propellant weight, grain number, grain volume --> instead of density maybe propellant weight as input?
+grain outer radius: 33 # in mm PS: should be same for every Pro75; Pro54 must be measured?
+grain initial inner radius: 15 # in mm PS: should be same for every Pro75; Pro54 must be measured?
+grain initial height: 120 # in mm PS: should be the same for every Pro75 "full" grain; Pro54 must be measured?
+grain separation: 5 # in mm PS: should be same for every Pro75; Pro54 must be measured? (length of grain spacer ring)
+burn time: 3.9 # in s from cesaroni website for corresponding motor; not necessary if thrust curve is given in .eng, .csv, or as function with list as instance
+# Position Parameters
+grains center of mass position: 0.397 # in m from nozzle to combustion chamber; calculated by grain weight and grain number and offset of 0.087 m (Nozzle to first grain)
+center of dry mass position: 0.317 # in m from nozzle to combustion chamber; same as grains center of mass position? (RocketPy example)
+nozzle position: 0 # in m from nozzle to combustion chamber
