@@ -85,19 +85,19 @@ class FlightSimulation:
         # Add parachutes
         self.rocket.add_parachute(
             name="main",
-            cd_s=10.0,
-            trigger=800,  # ejection altitude in meters
-            sampling_rate=105,
-            lag=int(1.5),
-            noise=(0, 8.3, 0.5),
+            cd_s=4.0131,  # drag coefficient times reference area of parachute from matlab code
+            trigger=300.0,  # ejection altitude in meters
+            sampling_rate=100,  # sampling rate for check of parachute trigger in hertz
+            lag=2,  # lag until parachute is fully opened after ejection system is triggered in s
+            # noise=(0, 8.3, 0.5), # (mean,standard deviation,time-correlation) for noise of pressure signal (trigger function) in pascal
         )
         self.rocket.add_parachute(
             name="drogue",
-            cd_s=1.0,
+            cd_s=0.1094,  # drag coefficient times reference area of parachute from matlab code
             trigger="apogee",  # ejection at apogee
-            sampling_rate=105,
-            lag=int(1.5),
-            noise=(0, 8.3, 0.5),
+            sampling_rate=100,  # sampling rate for check of parachute trigger in hertz
+            lag=2,  # lag until parachute is fully opened after ejection system is triggered in s
+            # noise=(0, 8.3, 0.5), # (mean,standard deviation,time-correlation) for noise of pressure signal (trigger function) in pascal
         )
 
     def simulate(self) -> None:
@@ -105,9 +105,9 @@ class FlightSimulation:
         self.simulation = Flight(
             rocket=self.rocket,
             environment=self.environment,
-            rail_length=5.2,
-            inclination=85,
-            heading=0,
+            rail_length=4,  # rail length in meters
+            inclination=85,  # inclination to ground in degrees
+            heading=0,  # launch heading relative to north in degrees
         )
 
     def show_input_info(self) -> None:
