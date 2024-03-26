@@ -78,9 +78,6 @@ class FlightSimulation:
             cant_angle=int(0.5),
             airfoil=("data/calisto/NACA0012-radians.csv", "radians"),
         )
-        self.rocket.add_tail(
-            top_radius=0.0635, bottom_radius=0.0435, length=0.060, position=-1.194656
-        )
 
         # Add parachutes
         self.rocket.add_parachute(
