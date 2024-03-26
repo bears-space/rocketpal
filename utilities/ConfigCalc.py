@@ -1,7 +1,9 @@
 import numpy as np
 
 
-def _grainDensity(propWeight, grain_num, grain_h, grain_or, grain_ir):
+def grainDensity(
+    propWeight: float, grain_num: int, grain_h: float, grain_or: float, grain_ir: float
+) -> float:
     """
     propWeight: propellant weight in kg
     grain_num: amount of grains in motor
@@ -20,7 +22,7 @@ def _grainDensity(propWeight, grain_num, grain_h, grain_or, grain_ir):
     return grainDens
 
 
-def _COMs(grain_num, grain_h, grain_sep):
+def COMs(grain_num: int, grain_h: float, grain_sep: float) -> float:
     """
     grain_num: amount of grains in motor
     grain_h: height of grain(longitudinal) in m
@@ -34,5 +36,5 @@ def _COMs(grain_num, grain_h, grain_sep):
         grain * (grain_h + grain_sep) + (grain_h / 2) for grain in range(grain_num)
     ]
     # calculating center of mass position for all grains with offset of 0.087m (aft end nozzle to first grain)
-    grainCOM = np.mean(np.array(grainCOMs)) + 0.087
+    grainCOM = float(np.mean(np.array(grainCOMs)) + 0.087)
     return grainCOM

@@ -2,7 +2,7 @@ from rocketpy import Environment, Rocket, SolidMotor, Flight
 import datetime
 from pathlib import Path
 
-from parsers.motor_config_parser import MotorConfig
+from parsers.motor_config import MotorConfig
 
 
 class FlightSimulation:

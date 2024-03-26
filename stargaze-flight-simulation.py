@@ -5,7 +5,7 @@ import logging
 import typing as t
 
 from core.flight_simulation import FlightSimulation
-from parsers.motor_config_parser import MotorConfigParser
+from parsers.motor_config import MotorConfig
 from parsers.parts_list_parser import PartsListParser
 
 
@@ -30,7 +30,7 @@ def main() -> None:
     parts_list_csv_file: t.TextIO = args.parts_list_csv_file
 
     # Parse files
-    motor_config_parser: MotorConfigParser = MotorConfigParser(motor_config_yaml_file)
+    motor_config: MotorConfig = MotorConfig(motor_config_yaml_file)
     parts_list_parser: PartsListParser = PartsListParser(parts_list_csv_file)
 
     # Close files used by parsers
@@ -42,7 +42,7 @@ def main() -> None:
     # TODO Remove hardcoded motor file path
     sim: FlightSimulation = FlightSimulation(
         motor_file_path="data/motors/Cesaroni_M1670.eng",
-        motor_config=motor_config_parser.motor_config,
+        motor_config=motor_config,
     )
 
     # TODO Load flight parameters
