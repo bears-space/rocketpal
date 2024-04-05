@@ -2,11 +2,19 @@
 
 import argparse
 import logging
+import os
 import typing as t
 
 from core.flight_simulation import FlightSimulation
 from parsers.motor_config import MotorConfig
 from parsers.parts_list_parser import PartsListParser
+
+
+def dir_path(path_to_dir: str) -> str:
+    if os.path.isdir(path_to_dir):
+        return path_to_dir
+    else:
+        raise NotADirectoryError(path_to_dir)
 
 
 def main() -> None:
@@ -19,26 +27,28 @@ def main() -> None:
 
     # Add arguments
     # TODO add help text
-    argument_parser.add_argument("motor_config_yaml_file", type=argparse.FileType("r"))
-    argument_parser.add_argument("parts_list_csv_file", type=argparse.FileType("r"))
+    argument_parser.add_argument("config_folder", type=dir_path, default="./input")
 
     # Parse arguments
     args = argument_parser.parse_args()
 
     # Get variables from args
-    motor_config_yaml_file: t.TextIO = args.motor_config_yaml_file
-    parts_list_csv_file: t.TextIO = args.parts_list_csv_file
+    config_folder: str = args.config_folder
+
+    # Check that all expected files are present in the config folder
+    # TODO
+
+    # Declare config variables
+    motor_config: MotorConfig
+    parts_list_parser: PartsListParser
 
     # Parse files
-    motor_config: MotorConfig = MotorConfig(motor_config_yaml_file)
-    parts_list_parser: PartsListParser = PartsListParser(parts_list_csv_file)
-
-    # Close files used by parsers
-    motor_config_yaml_file.close()
-    parts_list_csv_file.close()
+    with open(config_folder + "/motor_config.yaml", "r") as file:
+        motor_config = MotorConfig(file)
+    with open(config_folder + "/parts_list.csv", "r") as file:
+        parts_list_parser = PartsListParser(file)
 
     # Initialize flight simulation
-    # TODO Pass and use data parsed from files
     # TODO Remove hardcoded motor file path
     sim: FlightSimulation = FlightSimulation(
         motor_file_path="data/motors/Cesaroni_M1670.eng",
