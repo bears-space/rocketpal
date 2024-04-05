@@ -11,7 +11,14 @@ class FlightSimulation:
     environment: Environment
     motor: SolidMotor
 
-    def __init__(self, motor_file_path: str, motor_config: MotorConfig) -> None:
+    def __init__(
+        self,
+        motor_file_path: str,
+        motor_config: MotorConfig,
+        power_off_drag_curve_file_path: str,
+        power_on_drag_curve_file_path: str,
+        fins_radians_file_path: str,
+    ) -> None:
         # NOTE This is temporary test code based on RocketPy docs, see https://docs.rocketpy.org/en/latest/user/first_simulation.html
 
         # Setup environment
@@ -51,8 +58,8 @@ class FlightSimulation:
             radius=127 / 2000,
             mass=14.426,
             inertia=(6.321, 6.321, 0.034),
-            power_off_drag="data/calisto/powerOffDragCurve.csv",
-            power_on_drag="data/calisto/powerOnDragCurve.csv",
+            power_off_drag=power_off_drag_curve_file_path,
+            power_on_drag=power_on_drag_curve_file_path,
             center_of_mass_without_motor=0,
             coordinate_system_orientation="tail_to_nose",
         )
@@ -76,7 +83,7 @@ class FlightSimulation:
             span=0.110,
             position=-1.04956,
             cant_angle=int(0.5),
-            airfoil=("data/calisto/NACA0012-radians.csv", "radians"),
+            airfoil=(fins_radians_file_path, "radians"),
         )
 
         # Add parachutes

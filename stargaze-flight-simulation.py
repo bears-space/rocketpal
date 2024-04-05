@@ -51,8 +51,11 @@ def main() -> None:
     # Initialize flight simulation
     # TODO Remove hardcoded motor file path
     sim: FlightSimulation = FlightSimulation(
-        motor_file_path="data/motors/Cesaroni_M1670.eng",
+        motor_file_path=config_folder + "/motor.eng",
         motor_config=motor_config,
+        power_off_drag_curve_file_path=config_folder + "/power_off_drag_curve.csv",
+        power_on_drag_curve_file_path=config_folder + "/power_on_drag_curve.csv",
+        fins_radians_file_path=config_folder + "/fins_radians.csv",
     )
 
     # TODO Load flight parameters
