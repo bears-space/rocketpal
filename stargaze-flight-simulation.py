@@ -49,7 +49,6 @@ def main() -> None:
         parts_list_parser = PartsListParser(file)
 
     # Initialize flight simulation
-    # TODO Remove hardcoded motor file path
     sim: FlightSimulation = FlightSimulation(
         motor_file_path=config_folder + "/motor.eng",
         motor_config=motor_config,
