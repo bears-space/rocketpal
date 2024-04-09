@@ -9,6 +9,11 @@ from core.flight_simulation import FlightSimulation
 from parsers.motor_config import MotorConfig
 from parsers.parts_list_parser import PartsListParser
 
+MOTOR_FILENAME = "/motor.eng"
+POWER_OFF_DRAG_CURVE_FILENAME = "/power_off_drag_curve.csv"
+POWER_ON_DRAG_CURVE_FILENAME = "/power_on_drag_curve.csv"
+FINS_RADIANS_FILENAME = "/fins_radians.csv"
+
 
 def dir_path(path_to_dir: str) -> str:
     if os.path.isdir(path_to_dir):
@@ -36,7 +41,20 @@ def main() -> None:
     config_folder: str = args.config_folder
 
     # Check that all expected files are present in the config folder
-    # TODO
+    for filename in [
+        MOTOR_FILENAME,
+        POWER_OFF_DRAG_CURVE_FILENAME,
+        POWER_ON_DRAG_CURVE_FILENAME,
+        FINS_RADIANS_FILENAME,
+    ]:
+        file_path = config_folder + filename
+        if not os.path.isfile(file_path):
+            logging.error(
+                "StargazeFlightSimulation: Missing file '"
+                + str(filename)
+                + "' in specified config folder! Aborting ..."
+            )
+            exit(2)  # 2 means "No such file or directory"
 
     # Declare config variables
     motor_config: MotorConfig
@@ -50,11 +68,11 @@ def main() -> None:
 
     # Initialize flight simulation
     sim: FlightSimulation = FlightSimulation(
-        motor_file_path=config_folder + "/motor.eng",
+        motor_file_path=config_folder + MOTOR_FILENAME,
         motor_config=motor_config,
-        power_off_drag_curve_file_path=config_folder + "/power_off_drag_curve.csv",
-        power_on_drag_curve_file_path=config_folder + "/power_on_drag_curve.csv",
-        fins_radians_file_path=config_folder + "/fins_radians.csv",
+        power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,
+        power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
+        fins_radians_file_path=config_folder + FINS_RADIANS_FILENAME,
     )
 
     # TODO Load flight parameters
