@@ -6,13 +6,17 @@ import os
 import typing as t
 
 from core.flight_simulation import FlightSimulation
+from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.parts_list_parser import PartsListParser
 
 MOTOR_FILENAME = "/motor.eng"
+MOTOR_CONFIG_FILENAME = "/motor_config.yaml"
 POWER_OFF_DRAG_CURVE_FILENAME = "/power_off_drag_curve.csv"
 POWER_ON_DRAG_CURVE_FILENAME = "/power_on_drag_curve.csv"
 FINS_RADIANS_FILENAME = "/fins_radians.csv"
+PARTS_LIST_FILENAME = "/parts_list.csv"
+LOCATION_FILENAME = "/location.yaml"
 
 
 def dir_path(path_to_dir: str) -> str:
@@ -43,9 +47,12 @@ def main() -> None:
     # Check that all expected files are present in the config folder
     for filename in [
         MOTOR_FILENAME,
+        MOTOR_CONFIG_FILENAME,
         POWER_OFF_DRAG_CURVE_FILENAME,
         POWER_ON_DRAG_CURVE_FILENAME,
         FINS_RADIANS_FILENAME,
+        PARTS_LIST_FILENAME,
+        LOCATION_FILENAME,
     ]:
         file_path = config_folder + filename
         if not os.path.isfile(file_path):
@@ -59,12 +66,15 @@ def main() -> None:
     # Declare config variables
     motor_config: MotorConfig
     parts_list_parser: PartsListParser
+    launch_location: Location
 
     # Parse files
-    with open(config_folder + "/motor_config.yaml", "r") as file:
+    with open(config_folder + MOTOR_CONFIG_FILENAME, "r") as file:
         motor_config = MotorConfig(file)
-    with open(config_folder + "/parts_list.csv", "r") as file:
+    with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
         parts_list_parser = PartsListParser(file)
+    with open(config_folder + LOCATION_FILENAME, "r") as file:
+        launch_location = Location(file)
 
     # Initialize flight simulation
     sim: FlightSimulation = FlightSimulation(
@@ -73,6 +83,7 @@ def main() -> None:
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,
         power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
         fins_radians_file_path=config_folder + FINS_RADIANS_FILENAME,
+        launch_location=launch_location,
     )
 
     # TODO Load flight parameters

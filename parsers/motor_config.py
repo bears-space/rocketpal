@@ -25,7 +25,7 @@ class MotorConfig:
     center_of_dry_mass_position: float  # in m
     nozzle_position: float  # in m
 
-    def __init__(self, motor_config_yaml_file) -> None:
+    def __init__(self, motor_config_yaml_file: t.TextIO) -> None:
         # Load yaml file
         data = yaml.safe_load(motor_config_yaml_file)
 

@@ -2,6 +2,7 @@ from rocketpy import Environment, Rocket, SolidMotor, Flight
 import datetime
 from pathlib import Path
 
+from parsers.location import Location
 from parsers.motor_config import MotorConfig
 
 
@@ -18,12 +19,15 @@ class FlightSimulation:
         power_off_drag_curve_file_path: str,
         power_on_drag_curve_file_path: str,
         fins_radians_file_path: str,
+        launch_location: Location,
     ) -> None:
         # NOTE This is temporary test code based on RocketPy docs, see https://docs.rocketpy.org/en/latest/user/first_simulation.html
 
         # Setup environment
         self.environment = Environment(
-            latitude=int(32.990254), longitude=int(-106.974998), elevation=1400
+            latitude=int(launch_location.latitude),
+            longitude=int(launch_location.longitude),
+            elevation=int(launch_location.elevation),
         )
         tomorrow = datetime.date.today() + datetime.timedelta(days=1)
         self.environment.set_date(
