@@ -2,11 +2,16 @@ from rocketpy import Environment, Rocket, SolidMotor, Flight
 import datetime
 from pathlib import Path
 
+from parsers.config import Config
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
 
 
 class FlightSimulation:
+    # Configs
+    config: Config
+
+    # Simulation stuff
     rocket: Rocket
     simulation: Flight
     environment: Environment
@@ -14,6 +19,7 @@ class FlightSimulation:
 
     def __init__(
         self,
+        config: Config,
         motor_file_path: str,
         motor_config: MotorConfig,
         power_off_drag_curve_file_path: str,
@@ -21,7 +27,8 @@ class FlightSimulation:
         fins_radians_file_path: str,
         launch_location: Location,
     ) -> None:
-        # NOTE This is temporary test code based on RocketPy docs, see https://docs.rocketpy.org/en/latest/user/first_simulation.html
+        # Store configs
+        self.config = config
 
         # Setup environment
         self.environment = Environment(
@@ -29,7 +36,9 @@ class FlightSimulation:
             longitude=int(launch_location.longitude),
             elevation=int(launch_location.elevation),
         )
-        tomorrow = datetime.date.today() + datetime.timedelta(days=1)
+        tomorrow = datetime.date.today() + datetime.timedelta(
+            days=self.config.date_difference_days
+        )
         self.environment.set_date(
             (tomorrow.year, tomorrow.month, tomorrow.day, 12), timezone="America/Denver"
         )
@@ -113,9 +122,13 @@ class FlightSimulation:
         self.simulation = Flight(
             rocket=self.rocket,
             environment=self.environment,
-            rail_length=4,  # rail length in meters
-            inclination=85,  # inclination to ground in degrees
-            heading=0,  # launch heading relative to north in degrees
+            rail_length=self.config.launch_rail_length,  # rail length in meters
+            inclination=int(
+                self.config.inclination
+            ),  # inclination to ground in degrees
+            heading=int(
+                self.config.heading
+            ),  # launch heading relative to north in degrees
         )
 
     def show_input_info(self) -> None:

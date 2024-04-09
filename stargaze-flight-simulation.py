@@ -6,10 +6,12 @@ import os
 import typing as t
 
 from core.flight_simulation import FlightSimulation
+from parsers.config import Config
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.parts_list_parser import PartsListParser
 
+CONFIG_FILENAME = "/configuration.yaml"
 MOTOR_FILENAME = "/motor.eng"
 MOTOR_CONFIG_FILENAME = "/motor_config.yaml"
 POWER_OFF_DRAG_CURVE_FILENAME = "/power_off_drag_curve.csv"
@@ -46,6 +48,7 @@ def main() -> None:
 
     # Check that all expected files are present in the config folder
     for filename in [
+        CONFIG_FILENAME,
         MOTOR_FILENAME,
         MOTOR_CONFIG_FILENAME,
         POWER_OFF_DRAG_CURVE_FILENAME,
@@ -64,20 +67,37 @@ def main() -> None:
             exit(2)  # 2 means "No such file or directory"
 
     # Declare config variables
+    config: Config
     motor_config: MotorConfig
     parts_list_parser: PartsListParser
     launch_location: Location
 
     # Parse files
+    with open(config_folder + CONFIG_FILENAME, "r") as file:
+        config = Config(file)
+        logging.info(
+            "StargazeFlightSimulation: Using Config with id '" + str(config.id) + "'"
+        )
     with open(config_folder + MOTOR_CONFIG_FILENAME, "r") as file:
         motor_config = MotorConfig(file)
+        logging.info(
+            "StargazeFlightSimulation: Using MotorConfig with id '"
+            + str(motor_config.id)
+            + "'"
+        )
     with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
         parts_list_parser = PartsListParser(file)
     with open(config_folder + LOCATION_FILENAME, "r") as file:
         launch_location = Location(file)
+        logging.info(
+            "StargazeFlightSimulation: Using Location with id '"
+            + str(launch_location.id)
+            + "'"
+        )
 
     # Initialize flight simulation
     sim: FlightSimulation = FlightSimulation(
+        config=config,
         motor_file_path=config_folder + MOTOR_FILENAME,
         motor_config=motor_config,
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,

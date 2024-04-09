@@ -5,6 +5,9 @@ from utilities.ConfigCalc import grainDensity, COMs
 
 
 class MotorConfig:
+    # Identifier
+    id: str
+
     # Physical parameters
     dry_mass: float  # in kg
     dry_inertia: t.List[float]  # in kg/m²
@@ -28,6 +31,9 @@ class MotorConfig:
     def __init__(self, motor_config_yaml_file: t.TextIO) -> None:
         # Load yaml file
         data = yaml.safe_load(motor_config_yaml_file)
+
+        # Parse identifier
+        self.id = str(data["ID"])
 
         # Parse data
         self.dry_mass = float(data["dryMass"])
