@@ -17,9 +17,13 @@ class FlightSimulation:
     environment: Environment
     motor: SolidMotor
 
+    # Folders
+    output_folder: str
+
     def __init__(
         self,
         config: Config,
+        output_folder: str,
         motor_file_path: str,
         motor_config: MotorConfig,
         power_off_drag_curve_file_path: str,
@@ -27,8 +31,9 @@ class FlightSimulation:
         fins_radians_file_path: str,
         launch_location: Location,
     ) -> None:
-        # Store configs
+        # Store configs / folders
         self.config = config
+        self.output_folder = output_folder
 
         # Setup environment
         self.environment = Environment(
@@ -169,14 +174,14 @@ class FlightSimulation:
         assert self.simulation != None
 
         # Before export, ensure output folder exists
-        Path("output").mkdir(parents=True, exist_ok=True)
+        Path(self.output_folder).mkdir(parents=True, exist_ok=True)
 
         # Export raw flight data
-        self.simulation.export_data("output/calisto_flight_data.csv")
+        self.simulation.export_data(self.output_folder + "/calisto_flight_data.csv")
 
         # Export trajectory for Google Earth visulization
         self.simulation.export_kml(
-            file_name="output/trajectory.kml",
+            file_name=self.output_folder + "/trajectory.kml",
             extrude=True,
             altitude_mode="relative_to_ground",
         )

@@ -37,14 +37,22 @@ def main() -> None:
     argument_parser = argparse.ArgumentParser(prog="stargaze-flight-simulation")
 
     # Add arguments
-    # TODO add help text
-    argument_parser.add_argument("config_folder", type=dir_path, default="./input")
+    argument_parser.add_argument(
+        "config_folder", type=dir_path, help="The input folder containing config files"
+    )
+    argument_parser.add_argument(
+        "--output",
+        type=str,
+        help="The output folder, by default './output'",
+        default="./output",
+    )
 
     # Parse arguments
     args = argument_parser.parse_args()
 
     # Get variables from args
     config_folder: str = args.config_folder
+    output_folder: str = args.output
 
     # Check that all expected files are present in the config folder
     for filename in [
@@ -98,6 +106,7 @@ def main() -> None:
     # Initialize flight simulation
     sim: FlightSimulation = FlightSimulation(
         config=config,
+        output_folder=output_folder,
         motor_file_path=config_folder + MOTOR_FILENAME,
         motor_config=motor_config,
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,
@@ -105,8 +114,6 @@ def main() -> None:
         fins_radians_file_path=config_folder + FINS_RADIANS_FILENAME,
         launch_location=launch_location,
     )
-
-    # TODO Load flight parameters
 
     # Show infos about configured flight
     sim.show_input_info()
