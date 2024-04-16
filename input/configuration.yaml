@@ -3,7 +3,7 @@ ID: Ver001 # ID used for simulation run and export
 # Input Options
 location: exambleID # ID for location file at which simulation shall be executed
 motors: [M1670-P] # IDs of used motors (multiple for comparison) for simulation
-dateDiff: 100 # day difference relative to today for which simulation shall be executed
+dateDiff: 7 # day difference relative to today for which simulation shall be executed
 railL: 4 # launch rail length in meter
 inclination: 85 # launch inclination from ground in degree
 heading: 0 # launch heading relative to north in degree
