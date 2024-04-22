@@ -10,4 +10,10 @@ heading: 0 # launch heading relative to north in degree
 dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
 # Export Options
-placeholder: 0 # options depend on what export we desire/is possible
+exportEnvironmentInfo: True
+exportMotorInfo: True
+exportRocketInfo: True
+exportSimulationInfoText: True
+exportSimulationInfoGraphics: True
+exportRawFlightData: True
+exportTrajectoryForGoogleEarth: True

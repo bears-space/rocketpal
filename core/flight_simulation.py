@@ -142,33 +142,38 @@ class FlightSimulation:
         assert self.rocket != None
 
         # Print environment info
-        print("ENVIRONMENT INFO START")
-        self.environment.info()
-        print("ENVIRONMENT INFO END")
+        if self.config.export_environment_info:
+            print("ENVIRONMENT INFO START")
+            self.environment.info()
+            print("ENVIRONMENT INFO END")
 
         # Print motor info
-        print("MOTOR INFO START")
-        self.motor.info()
-        print("MOTOR INFO END")
+        if self.config.export_motor_info:
+            print("MOTOR INFO START")
+            self.motor.info()
+            print("MOTOR INFO END")
 
         # Show graphics about the rocket
-        print("ROCKET GRAPHICS START")
-        self.rocket.plots.static_margin()
-        self.rocket.draw()
-        print("ROCKET GRAPHICS END")
+        if self.config.export_rocket_info:
+            print("ROCKET GRAPHICS START")
+            self.rocket.plots.static_margin()
+            self.rocket.draw()
+            print("ROCKET GRAPHICS END")
 
     def show_results(self) -> None:
         assert self.simulation != None
 
         # Print simulation results
-        print("RESULTS INFO START")
-        self.simulation.info()
-        print("RESULTS INFO END")
+        if self.config.export_simulation_info_text:
+            print("RESULTS INFO START")
+            self.simulation.info()
+            print("RESULTS INFO END")
 
         # Show simulation results graphics
-        print("RESULTS GRAPHICS START")
-        self.simulation.all_info()
-        print("RESULTS GRAPHICS END")
+        if self.config.export_simulation_info_graphics:
+            print("RESULTS GRAPHICS START")
+            self.simulation.all_info()
+            print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:
         assert self.simulation != None
@@ -177,11 +182,13 @@ class FlightSimulation:
         Path(self.output_folder).mkdir(parents=True, exist_ok=True)
 
         # Export raw flight data
-        self.simulation.export_data(self.output_folder + "/calisto_flight_data.csv")
+        if self.config.export_raw_flight_data:
+            self.simulation.export_data(self.output_folder + "/calisto_flight_data.csv")
 
         # Export trajectory for Google Earth visulization
-        self.simulation.export_kml(
-            file_name=self.output_folder + "/trajectory.kml",
-            extrude=True,
-            altitude_mode="relative_to_ground",
-        )
+        if self.config.export_trajectory_for_google_earth:
+            self.simulation.export_kml(
+                file_name=self.output_folder + "/trajectory.kml",
+                extrude=True,
+                altitude_mode="relative_to_ground",
+            )

@@ -19,7 +19,13 @@ class Config:
     heading: float
 
     # Export options
-    # TODO
+    export_environment_info: bool
+    export_motor_info: bool
+    export_rocket_info: bool
+    export_simulation_info_text: bool
+    export_simulation_info_graphics: bool
+    export_raw_flight_data: bool
+    export_trajectory_for_google_earth: bool
 
     def __init__(self, config_file: t.TextIO) -> None:
         # Load yaml file
@@ -41,4 +47,14 @@ class Config:
         self.heading = float(data["heading"])
 
         # Parse export options
-        # TODO
+        self.export_environment_info = bool(data["exportEnvironmentInfo"])
+        self.export_motor_info = bool(data["exportMotorInfo"])
+        self.export_rocket_info = bool(data["exportRocketInfo"])
+        self.export_simulation_info_text = bool(data["exportSimulationInfoText"])
+        self.export_simulation_info_graphics = bool(
+            data["exportSimulationInfoGraphics"]
+        )
+        self.export_raw_flight_data = bool(data["exportRawFlightData"])
+        self.export_trajectory_for_google_earth = bool(
+            data["exportTrajectoryForGoogleEarth"]
+        )
