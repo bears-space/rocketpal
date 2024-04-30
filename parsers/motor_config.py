@@ -8,6 +8,9 @@ class MotorConfig:
     # Identifier
     id: str
 
+    # Engine file name
+    engine_filename: str
+
     # Physical parameters
     dry_mass: float  # in kg
     dry_inertia: t.List[float]  # in kg/m²
@@ -34,6 +37,9 @@ class MotorConfig:
 
         # Parse identifier
         self.id = str(data["ID"])
+
+        # Parse filename of engine
+        self.engine_filename = str(data["engFileName"])
 
         # Parse data
         self.dry_mass = float(data["dryMass"])

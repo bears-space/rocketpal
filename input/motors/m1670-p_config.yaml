@@ -1,5 +1,6 @@
 # Indentificator
 ID: M1670-P # ID used for configuration file etc.
+engFileName: m1670-p.eng # Filename of the motor file in .eng format
 # Physical Parameters
 dryMass: 2.13 # dry mass in kg; burnout weight from cessaroni website
 # dry inertia: [0.125, 0.125, 0.002] # dry inertia in kg*m2; height dry weight and inner, outer radius cylinder required --> from CAD?

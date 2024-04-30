@@ -6,19 +6,21 @@ import os
 import typing as t
 
 from core.flight_simulation import FlightSimulation
+
+from core.location_library import LocationLibrary
+from core.motor_library import MotorLibrary
 from parsers.config import Config
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.parts_list_parser import PartsListParser
 
 CONFIG_FILENAME = "/configuration.yaml"
-MOTOR_FILENAME = "/motor.eng"
-MOTOR_CONFIG_FILENAME = "/motor_config.yaml"
+MOTOR_FOLDERNAME = "/motors"
 POWER_OFF_DRAG_CURVE_FILENAME = "/power_off_drag_curve.csv"
 POWER_ON_DRAG_CURVE_FILENAME = "/power_on_drag_curve.csv"
 FINS_RADIANS_FILENAME = "/fins_radians.csv"
 PARTS_LIST_FILENAME = "/parts_list.csv"
-LOCATION_FILENAME = "/location.yaml"
+LOCATION_FOLDERNAME = "/locations"
 
 
 def dir_path(path_to_dir: str) -> str:
@@ -57,13 +59,10 @@ def main() -> None:
     # Check that all expected files are present in the config folder
     for filename in [
         CONFIG_FILENAME,
-        MOTOR_FILENAME,
-        MOTOR_CONFIG_FILENAME,
         POWER_OFF_DRAG_CURVE_FILENAME,
         POWER_ON_DRAG_CURVE_FILENAME,
         FINS_RADIANS_FILENAME,
         PARTS_LIST_FILENAME,
-        LOCATION_FILENAME,
     ]:
         file_path = config_folder + filename
         if not os.path.isfile(file_path):
@@ -74,40 +73,96 @@ def main() -> None:
             )
             exit(2)  # 2 means "No such file or directory"
 
-    # Declare config variables
-    config: Config
-    motor_config: MotorConfig
-    parts_list_parser: PartsListParser
-    launch_location: Location
+    # Check that all expected folders are present in the config folder
+    for foldername in [
+        MOTOR_FOLDERNAME,
+        LOCATION_FOLDERNAME,
+    ]:
+        file_path = config_folder + foldername
+        if not os.path.isdir(file_path):
+            logging.error(
+                "StargazeFlightSimulation: Missing folder '"
+                + str(foldername)
+                + "' in specified config folder! Aborting ..."
+            )
+            exit(2)  # 2 means "No such file or directory"
 
-    # Parse files
+    # Load config
+    config: Config
     with open(config_folder + CONFIG_FILENAME, "r") as file:
         config = Config(file)
         logging.info(
             "StargazeFlightSimulation: Using Config with id '" + str(config.id) + "'"
         )
-    with open(config_folder + MOTOR_CONFIG_FILENAME, "r") as file:
-        motor_config = MotorConfig(file)
-        logging.info(
-            "StargazeFlightSimulation: Using MotorConfig with id '"
-            + str(motor_config.id)
-            + "'"
+
+    # Load requested location from location library
+    location_library: LocationLibrary = LocationLibrary(
+        config_folder + LOCATION_FOLDERNAME
+    )
+    launch_location: t.Union[Location, None] = location_library.get(config.location_id)
+    if launch_location == None:
+        logging.error(
+            "StargazeFlightSimulation: The location with the id '"
+            + config.location_id
+            + "' does not exist in the location library. Aborting ..."
         )
-    with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
-        parts_list_parser = PartsListParser(file)
-    with open(config_folder + LOCATION_FILENAME, "r") as file:
-        launch_location = Location(file)
+        exit(2)  # 2 means "No such file or directory"
+    else:
         logging.info(
             "StargazeFlightSimulation: Using Location with id '"
             + str(launch_location.id)
             + "'"
         )
 
+    # Load requested motors from motor library
+    motor_library: MotorLibrary = MotorLibrary(config_folder + MOTOR_FOLDERNAME)
+    motors: t.List[MotorConfig] = []
+    for id in config.motor_ids:
+        motor: t.Union[MotorConfig, None] = motor_library.get(id)
+        if motor == None:
+            logging.warning(
+                "StargazeFlightSimulation: The motor with the id '"
+                + id
+                + "' does not exist in the motor library. Skipping ..."
+            )
+        else:
+            motors.append(motor)
+            logging.info(
+                "StargazeFlightSimulation: Loaded MotorConfig with id '"
+                + str(motor.id)
+                + "'"
+            )
+
+    # Ensure at least one motor is loaded
+    if len(motors) == 0:
+        logging.error(
+            "StargazeFlightSimulation: No motors have been loaded. Aborting ..."
+        )
+        exit(2)  # 2 means "No such file or directory"
+
+    # Use first motor from list
+    # TODO Iterate over motors instead, allowing for comparison between different motors in one run
+    motor_config = motors[0]
+    logging.info(
+        "StargazeFlightSimulation: Choosing MotorConfig with id '"
+        + str(motor_config.id)
+        + "'"
+    )
+
+    # Parse parts list
+    parts_list_parser: PartsListParser
+    with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
+        parts_list_parser = PartsListParser(file)
+    # TODO do something with the parts list
+
     # Initialize flight simulation
     sim: FlightSimulation = FlightSimulation(
         config=config,
         output_folder=output_folder,
-        motor_file_path=config_folder + MOTOR_FILENAME,
+        motor_file_path=config_folder
+        + MOTOR_FOLDERNAME
+        + "/"
+        + motor_config.engine_filename,
         motor_config=motor_config,
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,
         power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
