@@ -138,13 +138,15 @@ class FlightSimulation:
         # Print environment info
         if self.config.export_environment_info:
             print("ENVIRONMENT INFO START")
-            self.environment.info()
+            self.environment.prints.all()
+            self.environment.plots.info()
             print("ENVIRONMENT INFO END")
 
         # Print motor info
         if self.config.export_motor_info:
             print("MOTOR INFO START")
-            self.motor.info()
+            self.motor.prints.all()
+            self.motor.plots.thrust()
             print("MOTOR INFO END")
 
         # Show graphics about the rocket
@@ -160,13 +162,24 @@ class FlightSimulation:
         # Print simulation results
         if self.config.export_simulation_info_text:
             print("RESULTS INFO START")
-            self.simulation.info()
+            self.simulation.prints.all()
             print("RESULTS INFO END")
 
         # Show simulation results graphics
         if self.config.export_simulation_info_graphics:
             print("RESULTS GRAPHICS START")
-            self.simulation.all_info()
+            self.simulation.plots.trajectory_3d()
+            self.simulation.plots.linear_kinematics_data()
+            self.simulation.plots.flight_path_angle_data()
+            self.simulation.plots.attitude_data()
+            self.simulation.plots.angular_kinematics_data()
+            self.simulation.plots.aerodynamic_forces()
+            self.simulation.plots.rail_buttons_forces()
+            self.simulation.plots.energy_data()
+            self.simulation.plots.fluid_mechanics_data()
+            self.simulation.plots.stability_and_control_data()
+            self.simulation.plots.pressure_rocket_altitude()
+            self.simulation.plots.pressure_signals()
             print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:
