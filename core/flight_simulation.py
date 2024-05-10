@@ -136,51 +136,65 @@ class FlightSimulation:
         assert self.rocket != None
 
         # Print environment info
-        if self.config.export_environment_info:
-            print("ENVIRONMENT INFO START")
+        print("ENVIRONMENT INFO START")
+        if self.config.export_text_environment:
             self.environment.prints.all()
+        if self.config.export_plot_environment:
             self.environment.plots.info()
-            print("ENVIRONMENT INFO END")
+        print("ENVIRONMENT INFO END")
 
         # Print motor info
-        if self.config.export_motor_info:
-            print("MOTOR INFO START")
+        print("MOTOR INFO START")
+        if self.config.export_text_motor:
             self.motor.prints.all()
+        if self.config.export_plot_thrust:
             self.motor.plots.thrust()
-            print("MOTOR INFO END")
+        print("MOTOR INFO END")
 
         # Show graphics about the rocket
-        if self.config.export_rocket_info:
-            print("ROCKET GRAPHICS START")
+        print("ROCKET GRAPHICS START")
+        if self.config.export_plot_static_margin:
             self.rocket.plots.static_margin()
+        if self.config.export_plot_rocket:
             self.rocket.draw()
-            print("ROCKET GRAPHICS END")
+        print("ROCKET GRAPHICS END")
 
     def show_results(self) -> None:
         assert self.simulation != None
 
         # Print simulation results
-        if self.config.export_simulation_info_text:
-            print("RESULTS INFO START")
+        print("RESULTS INFO START")
+        if self.config.export_text_simulation:
             self.simulation.prints.all()
-            print("RESULTS INFO END")
+        print("RESULTS INFO END")
 
         # Show simulation results graphics
-        if self.config.export_simulation_info_graphics:
-            print("RESULTS GRAPHICS START")
+        print("RESULTS GRAPHICS START")
+        if self.config.export_plot_trajectory_3d:
             self.simulation.plots.trajectory_3d()
+        if self.config.export_plot_linear_kinematic_data:
             self.simulation.plots.linear_kinematics_data()
+        if self.config.export_plot_flight_path_angle_data:
             self.simulation.plots.flight_path_angle_data()
+        if self.config.export_plot_attitude_data:
             self.simulation.plots.attitude_data()
+        if self.config.export_plot_angular_kinematics_data:
             self.simulation.plots.angular_kinematics_data()
+        if self.config.export_plot_aerodynamic_forces:
             self.simulation.plots.aerodynamic_forces()
+        if self.config.export_plot_rail_buttons_forces:
             self.simulation.plots.rail_buttons_forces()
+        if self.config.export_plot_energy_data:
             self.simulation.plots.energy_data()
+        if self.config.export_plot_fluid_mechanics_data:
             self.simulation.plots.fluid_mechanics_data()
+        if self.config.export_plot_stability_and_control_data:
             self.simulation.plots.stability_and_control_data()
+        if self.config.export_plot_pressure_rocket_altitude:
             self.simulation.plots.pressure_rocket_altitude()
+        if self.config.export_plot_pressure_signals:
             self.simulation.plots.pressure_signals()
-            print("RESULTS GRAPHICS END")
+        print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:
         assert self.simulation != None

@@ -9,11 +9,30 @@ inclination: 85 # launch inclination from ground in degree
 heading: 0 # launch heading relative to north in degree
 dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
-# Export Options
-exportEnvironmentInfo: True
-exportMotorInfo: True
-exportRocketInfo: True
-exportSimulationInfoText: True
-exportSimulationInfoGraphics: True
+
+# Export Options: Environment
+exportTextEnvironment: True
+exportPlotEnvironment: True
+# Export Options: Motor
+exportTextMotor: True
+exportPlotThrust: True
+# Export Options: Rocket
+exportPlotStaticMargin: True
+exportPlotRocket: True
+# Export Options: Simulation
+exportTextSimulation: True
+exportPlotTrajectory3D: True
+exportPlotLinearKinematicData: True
+exportPlotFlightPathAngleData: True
+exportPlotAttitudeData: True
+exportPlotAngularKinematicsData: True
+exportPlotAerodynamicForces: True
+exportPlotRailButtonsForces: True
+exportPlotEnergyData: True
+exportPlotFluidMechanicsData: True
+exportPlotStabilityAndControlData: True
+exportPlotPressureRocketAltitude: True
+exportPlotPressureSignals: True
+# Export Options: Analysis
 exportRawFlightData: True
 exportTrajectoryForGoogleEarth: True
