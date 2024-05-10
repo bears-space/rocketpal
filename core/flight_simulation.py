@@ -37,9 +37,9 @@ class FlightSimulation:
 
         # Setup environment
         self.environment = Environment(
-            latitude=int(launch_location.latitude),
-            longitude=int(launch_location.longitude),
-            elevation=int(launch_location.elevation),
+            latitude=launch_location.latitude,
+            longitude=launch_location.longitude,
+            elevation=launch_location.elevation,
         )
         tomorrow = datetime.date.today() + datetime.timedelta(
             days=self.config.date_difference_days
@@ -63,9 +63,7 @@ class FlightSimulation:
             grain_separation=motor_config.grain_separation,
             grains_center_of_mass_position=motor_config.grains_center_of_mass_position,
             center_of_dry_mass_position=motor_config.center_of_dry_mass_position,
-            nozzle_position=int(
-                motor_config.nozzle_position
-            ),  # TODO This really should be float, fix this typing issue on RocketPy's side
+            nozzle_position=motor_config.nozzle_position,
             burn_time=motor_config.burn_time,
             throat_radius=motor_config.throat_radius,
             coordinate_system_orientation="nozzle_to_combustion_chamber",
@@ -100,7 +98,7 @@ class FlightSimulation:
             tip_chord=0.060,
             span=0.110,
             position=-1.04956,
-            cant_angle=int(0.5),
+            cant_angle=0.5,
             airfoil=(fins_radians_file_path, "radians"),
         )
 
@@ -128,12 +126,8 @@ class FlightSimulation:
             rocket=self.rocket,
             environment=self.environment,
             rail_length=self.config.launch_rail_length,  # rail length in meters
-            inclination=int(
-                self.config.inclination
-            ),  # inclination to ground in degrees
-            heading=int(
-                self.config.heading
-            ),  # launch heading relative to north in degrees
+            inclination=self.config.inclination,  # inclination to ground in degrees
+            heading=self.config.heading,  # launch heading relative to north in degrees
         )
 
     def show_input_info(self) -> None:
