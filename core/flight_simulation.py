@@ -140,7 +140,9 @@ class FlightSimulation:
         if self.config.export_text_environment:
             self.environment.prints.all()
         if self.config.export_plot_environment:
-            self.environment.plots.info()
+            self.environment.plots.info(
+                filename=self.output_folder + "/plots/environment.png"
+            )
         print("ENVIRONMENT INFO END")
 
         # Print motor info
@@ -148,15 +150,19 @@ class FlightSimulation:
         if self.config.export_text_motor:
             self.motor.prints.all()
         if self.config.export_plot_thrust:
-            self.motor.plots.thrust()
+            self.motor.plots.thrust(
+                filename=self.output_folder + "/plots/rocket/motor_thrust.png"
+            )
         print("MOTOR INFO END")
 
         # Show graphics about the rocket
         print("ROCKET GRAPHICS START")
         if self.config.export_plot_static_margin:
-            self.rocket.plots.static_margin()
+            self.rocket.plots.static_margin(
+                filename=self.output_folder + "/plots/rocket/static_margin.png"
+            )
         if self.config.export_plot_rocket:
-            self.rocket.draw()
+            self.rocket.draw(filename=self.output_folder + "/plots/rocket/rocket.png")
         print("ROCKET GRAPHICS END")
 
     def show_results(self) -> None:
@@ -171,29 +177,71 @@ class FlightSimulation:
         # Show simulation results graphics
         print("RESULTS GRAPHICS START")
         if self.config.export_plot_trajectory_3d:
-            self.simulation.plots.trajectory_3d()
+            self.simulation.plots.trajectory_3d(
+                filename=self.output_folder + "/plots/results/trajectory_3d.png"
+            )
         if self.config.export_plot_linear_kinematic_data:
-            self.simulation.plots.linear_kinematics_data()
+            self.simulation.plots.linear_kinematics_data(
+                filename=self.output_folder + "/plots/results/linear_kinematics.png"
+            )
         if self.config.export_plot_flight_path_angle_data:
-            self.simulation.plots.flight_path_angle_data()
+            self.simulation.plots.flight_path_angle_data(
+                filename=self.output_folder
+                + "/plots/results/flight_path_angle_data.png"
+            )
         if self.config.export_plot_attitude_data:
-            self.simulation.plots.attitude_data()
+            self.simulation.plots.attitude_data(
+                filename=self.output_folder + "/plots/results/attitude_data.png"
+            )
         if self.config.export_plot_angular_kinematics_data:
-            self.simulation.plots.angular_kinematics_data()
+            self.simulation.plots.angular_kinematics_data(
+                filename=self.output_folder
+                + "/plots/results/angular_kinematics_data.png"
+            )
         if self.config.export_plot_aerodynamic_forces:
-            self.simulation.plots.aerodynamic_forces()
+            self.simulation.plots.aerodynamic_forces(
+                filename=self.output_folder + "/plots/results/aerodynamic_forces.png"
+            )
         if self.config.export_plot_rail_buttons_forces:
-            self.simulation.plots.rail_buttons_forces()
+            self.simulation.plots.rail_buttons_forces(
+                filename=self.output_folder + "/plots/results/rail_button_forces.png"
+            )
         if self.config.export_plot_energy_data:
-            self.simulation.plots.energy_data()
+            self.simulation.plots.energy_data(
+                filename=self.output_folder + "/plots/results/energy_data.png"
+            )
         if self.config.export_plot_fluid_mechanics_data:
-            self.simulation.plots.fluid_mechanics_data()
+            self.simulation.plots.fluid_mechanics_data(
+                filename=self.output_folder + "/plots/results/fluid_mechanics_data.png"
+            )
         if self.config.export_plot_stability_and_control_data:
-            self.simulation.plots.stability_and_control_data()
+            self.simulation.plots.stability_and_control_data(
+                filename=self.output_folder
+                + "/plots/results/stability_and_control_data.png"
+            )
         if self.config.export_plot_pressure_rocket_altitude:
-            self.simulation.plots.pressure_rocket_altitude()
+            self.simulation.plots.pressure_rocket_altitude(
+                filename=self.output_folder
+                + "/plots/results/pressure_rocket_altitude.png"
+            )
         if self.config.export_plot_pressure_signals:
-            self.simulation.plots.pressure_signals()
+            for parachute in self.simulation.rocket.parachutes:
+                assert parachute.name != None and parachute.name != ""
+                foldername = (
+                    self.output_folder
+                    + "/plots/results/parachutes/"
+                    + parachute.name
+                    + "/"
+                )
+                parachute.noise_signal_function(
+                    filename=foldername + "noise_signal_function.png"
+                )
+                parachute.noisy_pressure_signal_function(
+                    filename=foldername + "noisy_pressure_signal_function.png"
+                )
+                parachute.clean_pressure_signal_function(
+                    filename=foldername + "clean_pressure_signal_function.png"
+                )
         print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:
