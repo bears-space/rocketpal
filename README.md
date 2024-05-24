@@ -4,13 +4,45 @@ This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight 
 
 ## Usage
 
+### Setup / Installation
+
+Before you can run the simulation, you need to install the correct version of Python (3.8.0) and the required packages from Pip. For this, please follow the instructions in the section [Setup development environment](#setup-development-environment).
+
+### Basic usage
+
+If you just want to run the simulation with default parameters, you can use one of the two provided scripts (assuming you installed Python and all required pip packages).
+
+**On Windows**, run the following in a command prompt:
+
+```bat
+.\run-simulation.bat
+```
+
+**On Linux**, run the following in a terminal:
+
+```sh
+./run-simulation.sh
+```
+
+In both cases, the simulation uses the `./input` folder to read its configuration and the `./output` folder for output.
+
+### Advanced usage
+
+The simulation is provided in the shape of a Python program. You can run the simulation from a terminal as follows:
+
+```sh
+python stargaze-flight-simulation.py ./input --output ./output
+```
+
+To see the available command line parameters, run:
+
+```sh
+python stargaze-flight-simulation.py -h
+```
+
 ### Configuration
 
 A file for the motor has to be provided in `.eng` format. On at least one website offering compatible files, this format has been referred to as "RASP" format. It is documented here: <https://www.thrustcurve.org/info/raspformat.html>
-
-### Simulation
-
-TODO
 
 ## Setup development environment
 
