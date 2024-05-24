@@ -41,11 +41,12 @@ class FlightSimulation:
             longitude=launch_location.longitude,
             elevation=launch_location.elevation,
         )
-        tomorrow = datetime.date.today() + datetime.timedelta(
+        launch_date = datetime.date.today() + datetime.timedelta(
             days=self.config.date_difference_days
         )
         self.environment.set_date(
-            (tomorrow.year, tomorrow.month, tomorrow.day, 12), timezone="America/Denver"
+            (launch_date.year, launch_date.month, launch_date.day, 12),
+            timezone="America/Denver",
         )
         self.environment.set_atmospheric_model(type="Forecast", file="GFS")
 
