@@ -1,7 +1,7 @@
 import typing as t
 import yaml
 
-from utilities.ConfigCalc import grainDensity, COMs
+from utilities.ConfigCalc import grainDensity, grainCom
 
 
 class MotorConfig:
@@ -65,7 +65,7 @@ class MotorConfig:
         )
 
         # Calculate center of mass positions
-        self.grains_center_of_mass_position = COMs(
+        self.grains_center_of_mass_position = grainCom(
             self.grain_number, self.grain_initial_height, self.grain_separation
         )
         self.center_of_dry_mass_position = self.grains_center_of_mass_position
