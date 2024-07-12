@@ -5,6 +5,7 @@ from pathlib import Path
 from parsers.config import Config
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
+from parsers.nose_cone_config import NoseConeConfig
 from parsers.rail_button_config import RailButtonConfig
 
 
@@ -28,6 +29,7 @@ class FlightSimulation:
         motor_file_path: str,
         motor_config: MotorConfig,
         rail_button_config: RailButtonConfig,
+        nose_cone_config: NoseConeConfig,
         power_off_drag_curve_file_path: str,
         power_on_drag_curve_file_path: str,
         fins_radians_file_path: str,
@@ -94,7 +96,14 @@ class FlightSimulation:
         )
 
         # Add aerodynamic components
-        self.rocket.add_nose(length=0.55829, kind="von karman", position=1.278)
+        self.rocket.add_nose(
+            length=nose_cone_config.length,
+            kind=nose_cone_config.kind,
+            position=nose_cone_config.position,
+            bluffness=nose_cone_config.bluffness,
+            power=nose_cone_config.power_if_using_powerseries_kind,
+            base_radius=nose_cone_config.base_radius,
+        )
         self.rocket.add_trapezoidal_fins(
             n=4,
             root_chord=0.120,

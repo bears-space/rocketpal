@@ -12,12 +12,14 @@ from core.motor_library import MotorLibrary
 from parsers.config import Config
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
+from parsers.nose_cone_config import NoseConeConfig
 from parsers.parts_list_parser import PartsListParser
 from parsers.rail_button_config import RailButtonConfig
 
 CONFIG_FILENAME = "/configuration.yaml"
 MOTOR_FOLDERNAME = "/motors"
 RAIL_BUTTONS_FILENAME = "/rail_buttons.yaml"
+NOSE_CONE_FILENAME = "/nose_cone.yaml"
 POWER_OFF_DRAG_CURVE_FILENAME = "/power_off_drag_curve.csv"
 POWER_ON_DRAG_CURVE_FILENAME = "/power_on_drag_curve.csv"
 FINS_RADIANS_FILENAME = "/fins_radians.csv"
@@ -157,6 +159,11 @@ def main() -> None:
     with open(config_folder + RAIL_BUTTONS_FILENAME, "r") as file:
         rail_button_config = RailButtonConfig(file)
 
+    # Load rail button config
+    nose_cone_config: NoseConeConfig
+    with open(config_folder + NOSE_CONE_FILENAME, "r") as file:
+        nose_cone_config = NoseConeConfig(file)
+
     # Parse parts list
     parts_list_parser: PartsListParser
     with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
@@ -173,6 +180,7 @@ def main() -> None:
         + motor_config.engine_filename,
         motor_config=motor_config,
         rail_button_config=rail_button_config,
+        nose_cone_config=nose_cone_config,
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,
         power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
         fins_radians_file_path=config_folder + FINS_RADIANS_FILENAME,
