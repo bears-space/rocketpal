@@ -5,6 +5,7 @@ from pathlib import Path
 from parsers.config import Config
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
+from parsers.rail_button_config import RailButtonConfig
 
 
 class FlightSimulation:
@@ -26,6 +27,7 @@ class FlightSimulation:
         output_folder: str,
         motor_file_path: str,
         motor_config: MotorConfig,
+        rail_button_config: RailButtonConfig,
         power_off_drag_curve_file_path: str,
         power_on_drag_curve_file_path: str,
         fins_radians_file_path: str,
@@ -86,9 +88,9 @@ class FlightSimulation:
 
         # Add rail guides
         self.rocket.set_rail_buttons(
-            upper_button_position=0.0818,
-            lower_button_position=-0.6182,
-            angular_position=45,
+            upper_button_position=rail_button_config.upper_button_position,
+            lower_button_position=rail_button_config.lower_button_position,
+            angular_position=rail_button_config.angular_position,
         )
 
         # Add aerodynamic components
