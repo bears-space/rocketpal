@@ -9,11 +9,13 @@ from core.flight_simulation import FlightSimulation
 
 from core.location_library import LocationLibrary
 from core.motor_library import MotorLibrary
+from core.parachute_library import ParachuteLibrary
 from parsers.config import Config
 from parsers.fins_config import FinsConfig
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.nose_cone_config import NoseConeConfig
+from parsers.parachute_config import ParachuteConfig
 from parsers.parts_list_parser import PartsListParser
 from parsers.rail_button_config import RailButtonConfig
 
@@ -27,6 +29,7 @@ FINS_CONFIG_FILENAME = "/fins.yaml"
 FINS_RADIANS_FILENAME = "/fins_radians.csv"
 PARTS_LIST_FILENAME = "/parts_list.csv"
 LOCATION_FOLDERNAME = "/locations"
+PARACHUTE_FOLDERNAME = "/parachutes"
 
 
 def dir_path(path_to_dir: str) -> str:
@@ -86,6 +89,7 @@ def main() -> None:
     for foldername in [
         MOTOR_FOLDERNAME,
         LOCATION_FOLDERNAME,
+        PARACHUTE_FOLDERNAME,
     ]:
         file_path = config_folder + foldername
         if not os.path.isdir(file_path):
@@ -158,6 +162,27 @@ def main() -> None:
         + "'"
     )
 
+    # Load requested parachutes from parachute library
+    parachute_library: ParachuteLibrary = ParachuteLibrary(
+        config_folder + PARACHUTE_FOLDERNAME
+    )
+    parachutes: t.List[ParachuteConfig] = []
+    for id in config.parachute_ids:
+        parachute: t.Union[ParachuteConfig, None] = parachute_library.get(id)
+        if parachute == None:
+            logging.warning(
+                "StargazeFlightSimulation: The parachute with the id '"
+                + id
+                + "' does not exist in the parachute library. Skipping ..."
+            )
+        else:
+            parachutes.append(parachute)
+            logging.info(
+                "StargazeFlightSimulation: Loaded ParachuteConfig with id '"
+                + str(parachute.id)
+                + "'"
+            )
+
     # Load rail button config
     rail_button_config: RailButtonConfig
     with open(config_folder + RAIL_BUTTONS_FILENAME, "r") as file:
@@ -188,6 +213,7 @@ def main() -> None:
         + "/"
         + motor_config.engine_filename,
         motor_config=motor_config,
+        parachutes=parachutes,
         rail_button_config=rail_button_config,
         nose_cone_config=nose_cone_config,
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,

@@ -1,12 +1,14 @@
 from rocketpy import Environment, Rocket, SolidMotor, Flight
 import datetime
 from pathlib import Path
+import typing as t
 
 from parsers.config import Config
 from parsers.fins_config import FinsConfig
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.nose_cone_config import NoseConeConfig
+from parsers.parachute_config import ParachuteConfig
 from parsers.rail_button_config import RailButtonConfig
 
 
@@ -29,6 +31,7 @@ class FlightSimulation:
         output_folder: str,
         motor_file_path: str,
         motor_config: MotorConfig,
+        parachutes: t.List[ParachuteConfig],
         rail_button_config: RailButtonConfig,
         nose_cone_config: NoseConeConfig,
         power_off_drag_curve_file_path: str,
@@ -120,22 +123,19 @@ class FlightSimulation:
         )
 
         # Add parachutes
-        self.rocket.add_parachute(
-            name="main",
-            cd_s=4.0131,  # drag coefficient times reference area of parachute from matlab code
-            trigger=300.0,  # ejection altitude in meters
-            sampling_rate=100,  # sampling rate for check of parachute trigger in hertz
-            lag=2,  # lag until parachute is fully opened after ejection system is triggered in s
-            # noise=(0, 8.3, 0.5), # (mean,standard deviation,time-correlation) for noise of pressure signal (trigger function) in pascal
-        )
-        self.rocket.add_parachute(
-            name="drogue",
-            cd_s=0.1094,  # drag coefficient times reference area of parachute from matlab code
-            trigger="apogee",  # ejection at apogee
-            sampling_rate=100,  # sampling rate for check of parachute trigger in hertz
-            lag=2,  # lag until parachute is fully opened after ejection system is triggered in s
-            # noise=(0, 8.3, 0.5), # (mean,standard deviation,time-correlation) for noise of pressure signal (trigger function) in pascal
-        )
+        for parachute in parachutes:
+            self.rocket.add_parachute(
+                name=parachute.id,
+                cd_s=parachute.drag_coefficient_times_reference_area,
+                trigger=parachute.ejection_altitude,
+                sampling_rate=parachute.ejection_sampling_rate_hertz,
+                lag=parachute.opening_lag_seconds,
+                noise=(
+                    parachute.noise_mean_pascal,
+                    parachute.noise_standard_deviation_pascal,
+                    parachute.noise_time_correlation_pascal,
+                ),
+            )
 
     def simulate(self) -> None:
         # Run the simulation

@@ -17,7 +17,7 @@ class FinsConfig:
         # Load yaml file
         data = yaml.safe_load(fins_config_file)
 
-        # Load rail button data
+        # Load fins data
         self.n = int(data["n"])
         self.root_chord = float(data["root_chord"])
         self.tip_chord = float(data["tip_chord"])

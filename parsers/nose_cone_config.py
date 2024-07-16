@@ -14,7 +14,7 @@ class NoseConeConfig:
         # Load yaml file
         data = yaml.safe_load(nose_cone_file)
 
-        # Load rail button data
+        # Load nose cone data
         self.length = float(data["length"])
         self.kind = str(data["kind"])
         self.position = float(data["position"])
