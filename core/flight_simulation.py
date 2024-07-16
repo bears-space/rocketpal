@@ -3,6 +3,7 @@ import datetime
 from pathlib import Path
 
 from parsers.config import Config
+from parsers.fins_config import FinsConfig
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.nose_cone_config import NoseConeConfig
@@ -32,6 +33,7 @@ class FlightSimulation:
         nose_cone_config: NoseConeConfig,
         power_off_drag_curve_file_path: str,
         power_on_drag_curve_file_path: str,
+        fins_config: FinsConfig,
         fins_radians_file_path: str,
         launch_location: Location,
     ) -> None:
@@ -105,12 +107,15 @@ class FlightSimulation:
             base_radius=nose_cone_config.base_radius,
         )
         self.rocket.add_trapezoidal_fins(
-            n=4,
-            root_chord=0.120,
-            tip_chord=0.060,
-            span=0.110,
-            position=-1.04956,
-            cant_angle=0.5,
+            n=fins_config.n,
+            root_chord=fins_config.root_chord,
+            tip_chord=fins_config.tip_chord,
+            span=fins_config.span,
+            position=fins_config.position,
+            cant_angle=fins_config.cant_angle,
+            sweep_length=fins_config.sweep_length,
+            sweep_angle=fins_config.sweep_angle,
+            radius=fins_config.radius,
             airfoil=(fins_radians_file_path, "radians"),
         )
 

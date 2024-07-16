@@ -10,6 +10,7 @@ from core.flight_simulation import FlightSimulation
 from core.location_library import LocationLibrary
 from core.motor_library import MotorLibrary
 from parsers.config import Config
+from parsers.fins_config import FinsConfig
 from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.nose_cone_config import NoseConeConfig
@@ -22,6 +23,7 @@ RAIL_BUTTONS_FILENAME = "/rail_buttons.yaml"
 NOSE_CONE_FILENAME = "/nose_cone.yaml"
 POWER_OFF_DRAG_CURVE_FILENAME = "/power_off_drag_curve.csv"
 POWER_ON_DRAG_CURVE_FILENAME = "/power_on_drag_curve.csv"
+FINS_CONFIG_FILENAME = "/fins.yaml"
 FINS_RADIANS_FILENAME = "/fins_radians.csv"
 PARTS_LIST_FILENAME = "/parts_list.csv"
 LOCATION_FOLDERNAME = "/locations"
@@ -64,8 +66,10 @@ def main() -> None:
     for filename in [
         CONFIG_FILENAME,
         RAIL_BUTTONS_FILENAME,
+        NOSE_CONE_FILENAME,
         POWER_OFF_DRAG_CURVE_FILENAME,
         POWER_ON_DRAG_CURVE_FILENAME,
+        FINS_CONFIG_FILENAME,
         FINS_RADIANS_FILENAME,
         PARTS_LIST_FILENAME,
     ]:
@@ -159,10 +163,15 @@ def main() -> None:
     with open(config_folder + RAIL_BUTTONS_FILENAME, "r") as file:
         rail_button_config = RailButtonConfig(file)
 
-    # Load rail button config
+    # Load nose cone config
     nose_cone_config: NoseConeConfig
     with open(config_folder + NOSE_CONE_FILENAME, "r") as file:
         nose_cone_config = NoseConeConfig(file)
+
+    # Load fins config
+    fins_config: FinsConfig
+    with open(config_folder + FINS_CONFIG_FILENAME, "r") as file:
+        fins_config = FinsConfig(file)
 
     # Parse parts list
     parts_list_parser: PartsListParser
@@ -183,6 +192,7 @@ def main() -> None:
         nose_cone_config=nose_cone_config,
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,
         power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
+        fins_config=fins_config,
         fins_radians_file_path=config_folder + FINS_RADIANS_FILENAME,
         launch_location=launch_location,
     )
