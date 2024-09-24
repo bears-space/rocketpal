@@ -1,7 +1,6 @@
-from rocketpy import Environment, Rocket, SolidMotor, Flight
 import datetime
-from pathlib import Path
 import typing as t
+from pathlib import Path
 
 from parsers.config import Config
 from parsers.fins_config import FinsConfig
@@ -9,7 +8,13 @@ from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.nose_cone_config import NoseConeConfig
 from parsers.parachute_config import ParachuteConfig
+from parsers.parts_list_parser import Part
 from parsers.rail_button_config import RailButtonConfig
+from rocketpy import Environment, Flight, Rocket, SolidMotor
+from utilities.RocketCalcuations import (
+    calculate_rocket_mass_in_kg,
+    get_maximum_diameter_in_m,
+)
 
 
 class FlightSimulation:
@@ -39,6 +44,7 @@ class FlightSimulation:
         fins_config: FinsConfig,
         fins_radians_file_path: str,
         launch_location: Location,
+        parts: t.List[Part],
     ) -> None:
         # Store configs / folders
         self.config = config
@@ -81,8 +87,8 @@ class FlightSimulation:
 
         # Create rocket
         self.rocket = Rocket(
-            radius=127 / 2000,
-            mass=14.426,
+            radius=127 / 2000,  # get_maximum_diameter_in_m(parts)
+            mass=14.426,  # calculate_rocket_mass_in_kg(parts)
             inertia=(6.321, 6.321, 0.034),
             power_off_drag=power_off_drag_curve_file_path,
             power_on_drag=power_on_drag_curve_file_path,

@@ -16,6 +16,13 @@ repos:
   hooks:
   - id: remove-crlf
 
+- repo: https://github.com/pycqa/isort
+  rev: 5.13.2
+  hooks:
+  - id: isort
+    name: isort (python)
+    args: ["--profile", "black", "--filter-files"]
+
 - repo: https://github.com/psf/black
   rev: 24.4.2
   hooks:

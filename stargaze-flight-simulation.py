@@ -6,7 +6,6 @@ import os
 import typing as t
 
 from core.flight_simulation import FlightSimulation
-
 from core.location_library import LocationLibrary
 from core.motor_library import MotorLibrary
 from core.parachute_library import ParachuteLibrary
@@ -16,7 +15,7 @@ from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.nose_cone_config import NoseConeConfig
 from parsers.parachute_config import ParachuteConfig
-from parsers.parts_list_parser import PartsListParser
+from parsers.parts_list_parser import Part, PartsListParser
 from parsers.rail_button_config import RailButtonConfig
 
 CONFIG_FILENAME = "/configuration.yaml"
@@ -199,10 +198,10 @@ def main() -> None:
         fins_config = FinsConfig(file)
 
     # Parse parts list
-    parts_list_parser: PartsListParser
+    parts_list: t.List[Part]
     with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
         parts_list_parser = PartsListParser(file)
-    # TODO do something with the parts list
+        parts_list = parts_list_parser.parts
 
     # Initialize flight simulation
     sim: FlightSimulation = FlightSimulation(
@@ -221,6 +220,7 @@ def main() -> None:
         fins_config=fins_config,
         fins_radians_file_path=config_folder + FINS_RADIANS_FILENAME,
         launch_location=launch_location,
+        parts=parts_list,
     )
 
     # Show infos about configured flight

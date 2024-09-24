@@ -1,7 +1,8 @@
 import typing as t
+
 import yaml
 
-from utilities.ConfigCalc import grainDensity, grainCom
+from utilities.ConfigCalc import grainCom, grainDensity
 
 
 class MotorConfig:
