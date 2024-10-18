@@ -2,7 +2,8 @@
     "files.exclude": {
         "**/__pycache__": true,
         "**/venv": true,
-        "**/.venv": true
+        "**/.venv": true,
+        "**/.ruff_cache": true
     },
     "python.analysis.typeCheckingMode": "basic",
     "python.testing.pytestArgs": [
