@@ -9,6 +9,7 @@ from core.flight_simulation import FlightSimulation
 from core.location_library import LocationLibrary
 from core.motor_library import MotorLibrary
 from core.parachute_library import ParachuteLibrary
+from hacks.matplotlib_hacks import hack_override_matplotlib_show
 from parsers.config import Config
 from parsers.fins_config import FinsConfig
 from parsers.location import Location
@@ -42,6 +43,9 @@ def main() -> None:
     # Set default logging level
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
+
+    # HACK Override matplotlib's show to redirect files to disk (should be overridden again before every method that internally calls matplotlib.show)
+    hack_override_matplotlib_show()
 
     # Setup argparse
     argument_parser = argparse.ArgumentParser(prog="stargaze-flight-simulation")
