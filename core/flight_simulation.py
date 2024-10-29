@@ -11,10 +11,6 @@ from parsers.parachute_config import ParachuteConfig
 from parsers.parts_list_parser import Part
 from parsers.rail_button_config import RailButtonConfig
 from rocketpy import Environment, Flight, Rocket, SolidMotor
-from utilities.RocketCalcuations import (
-    calculate_rocket_mass_in_kg,
-    get_maximum_diameter_in_m,
-)
 
 
 class FlightSimulation:
@@ -154,9 +150,9 @@ class FlightSimulation:
         )
 
     def show_input_info(self) -> None:
-        assert self.environment != None
-        assert self.motor != None
-        assert self.rocket != None
+        assert self.environment is not None
+        assert self.motor is not None
+        assert self.rocket is not None
 
         # Print environment info
         print("ENVIRONMENT INFO START")
@@ -189,7 +185,7 @@ class FlightSimulation:
         print("ROCKET GRAPHICS END")
 
     def show_results(self) -> None:
-        assert self.simulation != None
+        assert self.simulation is not None
 
         # Print simulation results
         print("RESULTS INFO START")
@@ -249,7 +245,7 @@ class FlightSimulation:
             )
         if self.config.export_plot_pressure_signals:
             for parachute in self.simulation.rocket.parachutes:
-                assert parachute.name != None and parachute.name != ""
+                assert parachute.name is not None and parachute.name != ""
                 foldername = (
                     self.output_folder
                     + "/plots/results/parachutes/"
@@ -268,7 +264,7 @@ class FlightSimulation:
         print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:
-        assert self.simulation != None
+        assert self.simulation is not None
 
         # Before export, ensure output folder exists
         Path(self.output_folder).mkdir(parents=True, exist_ok=True)

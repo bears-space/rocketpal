@@ -112,7 +112,7 @@ def main() -> None:
         config_folder + LOCATION_FOLDERNAME
     )
     launch_location: t.Union[Location, None] = location_library.get(config.location_id)
-    if launch_location == None:
+    if launch_location is None:
         logging.error(
             "StargazeFlightSimulation: The location with the id '"
             + config.location_id
@@ -131,7 +131,7 @@ def main() -> None:
     motors: t.List[MotorConfig] = []
     for id in config.motor_ids:
         motor: t.Union[MotorConfig, None] = motor_library.get(id)
-        if motor == None:
+        if motor is None:
             logging.warning(
                 "StargazeFlightSimulation: The motor with the id '"
                 + id
@@ -168,7 +168,7 @@ def main() -> None:
     parachutes: t.List[ParachuteConfig] = []
     for id in config.parachute_ids:
         parachute: t.Union[ParachuteConfig, None] = parachute_library.get(id)
-        if parachute == None:
+        if parachute is None:
             logging.warning(
                 "StargazeFlightSimulation: The parachute with the id '"
                 + id
