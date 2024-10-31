@@ -49,6 +49,7 @@ class Config:
 
     # Export options - Analysis
     export_raw_flight_data: bool
+    export_flight_data: bool
     export_trajectory_for_google_earth: bool
 
     def __init__(self, config_file: t.TextIO) -> None:
@@ -112,6 +113,7 @@ class Config:
 
         # Parse export options - Analysis
         self.export_raw_flight_data = bool(data["exportRawFlightData"])
+        self.export_flight_data = bool(data["exportFlightData"])
         self.export_trajectory_for_google_earth = bool(
             data["exportTrajectoryForGoogleEarth"]
         )

@@ -36,4 +36,5 @@ exportPlotPressureRocketAltitude: True
 exportPlotPressureSignals: True
 # Export Options: Analysis
 exportRawFlightData: True
+exportFlightData: True
 exportTrajectoryForGoogleEarth: True

@@ -13,6 +13,8 @@ from parsers.parts_list_parser import Part
 from parsers.rail_button_config import RailButtonConfig
 from rocketpy import Environment, Flight, Rocket, SolidMotor
 
+from exporters.flight_data_export import export_flight_data_to_csv
+
 
 class FlightSimulation:
     # Configs
@@ -292,7 +294,13 @@ class FlightSimulation:
 
         # Export raw flight data
         if self.config.export_raw_flight_data:
-            self.simulation.export_data(self.output_folder + "/calisto_flight_data.csv")
+            self.simulation.export_data(self.output_folder + "/raw_flight_data.csv")
+
+        # Export flight data to csv
+        if self.config.export_flight_data:
+            export_flight_data_to_csv(
+                self.simulation, self.output_folder + "/custom_flight_data.csv"
+            )
 
         # Export trajectory for Google Earth visulization
         if self.config.export_trajectory_for_google_earth:
