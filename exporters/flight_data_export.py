@@ -51,7 +51,12 @@ def export_flight_data_to_csv(
         )
 
         # Write flight data row-by-row
-        for t in np.arange(0.0, flight.max_time, time_step_seconds):
+        for t in np.linspace(
+            0.0,
+            flight.max_time,
+            round(flight.max_time / time_step_seconds) + 1,
+            endpoint=True,
+        ):
             row = []
 
             # time
