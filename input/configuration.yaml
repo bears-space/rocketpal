@@ -37,4 +37,5 @@ exportPlotPressureSignals: True
 # Export Options: Analysis
 exportRawFlightData: True
 exportFlightData: True
+exportFlightDataTimeStepSeconds: 0.1
 exportTrajectoryForGoogleEarth: True

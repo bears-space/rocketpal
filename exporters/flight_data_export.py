@@ -1,10 +1,25 @@
 import csv
 from pathlib import Path
+import numpy as np
 
 from rocketpy import Flight
 
 
-def export_flight_data_to_csv(flight: Flight, filename: str) -> None:
+def export_flight_data_to_csv(
+    flight: Flight, filename: str, time_step_seconds: float = 1.0
+) -> None:
+    """Export selected flight data in csv format, using a constant time step as specified in seconds.
+
+    Parameters
+    ----------
+    flight : Flight
+        The RocketPy flight simulation to extract the data from.
+    filename : str
+        The file to write the data into, in .csv format.
+    time_step_seconds : float, optional
+        The constant time step to use, by default 1.0
+    """
+
     # Before export, ensure the folder the file should go into exists
     Path(filename).parent.mkdir(parents=True, exist_ok=True)
 
@@ -36,7 +51,7 @@ def export_flight_data_to_csv(flight: Flight, filename: str) -> None:
         )
 
         # Write flight data row-by-row
-        for t in range(0, flight.max_time):
+        for t in np.arange(0.0, flight.max_time, time_step_seconds):
             row = []
 
             # time

@@ -299,7 +299,9 @@ class FlightSimulation:
         # Export flight data to csv
         if self.config.export_flight_data:
             export_flight_data_to_csv(
-                self.simulation, self.output_folder + "/custom_flight_data.csv"
+                self.simulation,
+                self.output_folder + "/custom_flight_data.csv",
+                self.config.export_flight_data_time_step_seconds,
             )
 
         # Export trajectory for Google Earth visulization
