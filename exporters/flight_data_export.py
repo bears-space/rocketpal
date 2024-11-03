@@ -26,7 +26,7 @@ def export_flight_data_to_csv(
     # Open file and write content
     with open(filename, "w") as file:
         # Prepare csv writer object
-        writer = csv.writer(file, dialect="excel-tab")
+        writer = csv.writer(file, dialect="excel")
 
         # Write header
         writer.writerow(
