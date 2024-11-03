@@ -4,6 +4,8 @@ import argparse
 import logging
 import os
 import typing as t
+from socket import gethostname
+from datetime import datetime, timezone
 
 from core.flight_simulation import FlightSimulation
 from core.location_library import LocationLibrary
@@ -67,6 +69,11 @@ def main() -> None:
     # Get variables from args
     config_folder: str = args.config_folder
     output_folder: str = args.output
+
+    # Log current time and hostname for later reference
+    logging.info(
+        f"Running on {gethostname()} at {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")} (UTC)"
+    )
 
     # Check that all expected files are present in the config folder
     for filename in [
