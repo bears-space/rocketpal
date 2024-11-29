@@ -31,13 +31,13 @@ In both cases, the simulation uses the `./input` folder to read its configuratio
 The simulation is provided in the shape of a Python program. You can run the simulation from a terminal as follows:
 
 ```sh
-python stargaze-flight-simulation.py ./input --output ./output
+python stargaze_flight_simulation.py ./input --output ./output
 ```
 
 To see the available command line parameters, run:
 
 ```sh
-python stargaze-flight-simulation.py -h
+python stargaze_flight_simulation.py -h
 ```
 
 ### Configuration

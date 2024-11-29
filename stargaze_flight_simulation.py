@@ -41,40 +41,7 @@ def dir_path(path_to_dir: str) -> str:
         raise NotADirectoryError(path_to_dir)
 
 
-def main() -> None:
-    # Set default logging level
-    logging.basicConfig()
-    logging.getLogger().setLevel(logging.INFO)
-
-    # HACK Override matplotlib's show to redirect files to disk (should be overridden again before every method that internally calls matplotlib.show)
-    hack_override_matplotlib_show()
-
-    # Setup argparse
-    argument_parser = argparse.ArgumentParser(prog="stargaze-flight-simulation")
-
-    # Add arguments
-    argument_parser.add_argument(
-        "config_folder", type=dir_path, help="The input folder containing config files"
-    )
-    argument_parser.add_argument(
-        "--output",
-        type=str,
-        help="The output folder, by default './output'",
-        default="./output",
-    )
-
-    # Parse arguments
-    args = argument_parser.parse_args()
-
-    # Get variables from args
-    config_folder: str = args.config_folder
-    output_folder: str = args.output
-
-    # Log current time and hostname for later reference
-    logging.info(
-        f"Running on {gethostname()} at {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")} (UTC)"
-    )
-
+def _ensure_config_files_exist(config_folder: str) -> bool:
     # Check that all expected files are present in the config folder
     for filename in [
         CONFIG_FILENAME,
@@ -93,7 +60,7 @@ def main() -> None:
                 + str(filename)
                 + "' in specified config folder! Aborting ..."
             )
-            exit(2)  # 2 means "No such file or directory"
+            return False
 
     # Check that all expected folders are present in the config folder
     for foldername in [
@@ -108,55 +75,110 @@ def main() -> None:
                 + str(foldername)
                 + "' in specified config folder! Aborting ..."
             )
-            exit(2)  # 2 means "No such file or directory"
+            return False
 
-    # Load config
-    config: Config
-    with open(config_folder + CONFIG_FILENAME, "r") as file:
-        config = Config(file)
-        logging.info(
-            "StargazeFlightSimulation: Using Config with id '" + str(config.id) + "'"
-        )
+    return True
 
-    # Load requested location from location library
-    location_library: LocationLibrary = LocationLibrary(
-        config_folder + LOCATION_FOLDERNAME
-    )
-    launch_location: t.Union[Location, None] = location_library.get(config.location_id)
-    if launch_location is None:
-        logging.error(
-            "StargazeFlightSimulation: The location with the id '"
-            + config.location_id
-            + "' does not exist in the location library. Aborting ..."
-        )
-        exit(2)  # 2 means "No such file or directory"
-    else:
-        logging.info(
-            "StargazeFlightSimulation: Using Location with id '"
-            + str(launch_location.id)
-            + "'"
-        )
 
-    # Load requested motors from motor library
+def _load_motors_from_library(
+    config_folder: str, motor_ids: t.List[str]
+) -> t.List[MotorConfig]:
     motor_library: MotorLibrary = MotorLibrary(config_folder + MOTOR_FOLDERNAME)
+
     motors: t.List[MotorConfig] = []
-    for id in config.motor_ids:
+    for id in motor_ids:
         motor: t.Union[MotorConfig, None] = motor_library.get(id)
         if motor is None:
             logging.warning(
-                "StargazeFlightSimulation: The motor with the id '"
-                + id
-                + "' does not exist in the motor library. Skipping ..."
+                f"StargazeFlightSimulation: The motor with the id '{id}' does not exist in the motor library. Skipping ..."
             )
         else:
             motors.append(motor)
             logging.info(
-                "StargazeFlightSimulation: Loaded MotorConfig with id '"
-                + str(motor.id)
-                + "'"
+                f"StargazeFlightSimulation: Loaded MotorConfig with id '{motor.id}'"
             )
 
-    # Ensure at least one motor is loaded
+    return motors
+
+
+def _load_parachutes_from_library(
+    config_folder: str, parachute_ids: t.List[str]
+) -> t.List[ParachuteConfig]:
+    parachute_library: ParachuteLibrary = ParachuteLibrary(
+        config_folder + PARACHUTE_FOLDERNAME
+    )
+    parachutes: t.List[ParachuteConfig] = []
+    for id in parachute_ids:
+        parachute: t.Union[ParachuteConfig, None] = parachute_library.get(id)
+        if parachute is None:
+            logging.warning(
+                f"StargazeFlightSimulation: The parachute with the id '{id}' does not exist in the parachute library. Skipping ..."
+            )
+        else:
+            parachutes.append(parachute)
+            logging.info(
+                f"StargazeFlightSimulation: Loaded ParachuteConfig with id '{parachute.id}'"
+            )
+    return parachutes
+
+
+def _load_config(config_folder: str) -> Config:
+    with open(config_folder + CONFIG_FILENAME, "r") as file:
+        config = Config(file)
+        logging.info(f"StargazeFlightSimulation: Using Config with id '{config.id}'")
+        return config
+
+
+def _load_launch_location_from_library(
+    config_folder: str, location_id: str
+) -> Location | None:
+    location_library: LocationLibrary = LocationLibrary(
+        config_folder + LOCATION_FOLDERNAME
+    )
+    return location_library.get(location_id)
+
+
+def _load_rail_button_config(config_folder: str) -> RailButtonConfig:
+    with open(config_folder + RAIL_BUTTONS_FILENAME, "r") as file:
+        return RailButtonConfig(file)
+
+
+def _load_nose_cone_config(config_folder: str) -> NoseConeConfig:
+    with open(config_folder + NOSE_CONE_FILENAME, "r") as file:
+        return NoseConeConfig(file)
+
+
+def _load_fins_config(config_folder: str) -> FinsConfig:
+    with open(config_folder + FINS_CONFIG_FILENAME, "r") as file:
+        return FinsConfig(file)
+
+
+def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> None:
+    # Log current time and hostname for later reference
+    logging.info(
+        f"Running on {gethostname()} at {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")} (UTC)"
+    )
+
+    if not _ensure_config_files_exist(config_folder):
+        exit(2)  # 2 means "No such file or directory"
+
+    config = _load_config(config_folder)
+
+    launch_location = _load_launch_location_from_library(
+        config_folder, config.location_id
+    )
+    if launch_location is None:
+        logging.error(
+            f"StargazeFlightSimulation: The location with the id '{config.location_id}'"
+            f" does not exist in the location library. Aborting ..."
+        )
+        exit(2)  # 2 means "No such file or directory"
+    else:
+        logging.info(
+            f"StargazeFlightSimulation: Using Location with id '{launch_location.id}'"
+        )
+
+    motors = _load_motors_from_library(config_folder, config.motor_ids)
     if len(motors) == 0:
         logging.error(
             "StargazeFlightSimulation: No motors have been loaded. Aborting ..."
@@ -167,46 +189,16 @@ def main() -> None:
     # TODO Iterate over motors instead, allowing for comparison between different motors in one run
     motor_config = motors[0]
     logging.info(
-        "StargazeFlightSimulation: Choosing MotorConfig with id '"
-        + str(motor_config.id)
-        + "'"
+        f"StargazeFlightSimulation: Choosing MotorConfig with id '{motor_config.id}'"
     )
 
-    # Load requested parachutes from parachute library
-    parachute_library: ParachuteLibrary = ParachuteLibrary(
-        config_folder + PARACHUTE_FOLDERNAME
-    )
-    parachutes: t.List[ParachuteConfig] = []
-    for id in config.parachute_ids:
-        parachute: t.Union[ParachuteConfig, None] = parachute_library.get(id)
-        if parachute is None:
-            logging.warning(
-                "StargazeFlightSimulation: The parachute with the id '"
-                + id
-                + "' does not exist in the parachute library. Skipping ..."
-            )
-        else:
-            parachutes.append(parachute)
-            logging.info(
-                "StargazeFlightSimulation: Loaded ParachuteConfig with id '"
-                + str(parachute.id)
-                + "'"
-            )
+    parachutes = _load_parachutes_from_library(config_folder, config.parachute_ids)
 
-    # Load rail button config
-    rail_button_config: RailButtonConfig
-    with open(config_folder + RAIL_BUTTONS_FILENAME, "r") as file:
-        rail_button_config = RailButtonConfig(file)
+    rail_button_config = _load_rail_button_config(config_folder)
 
-    # Load nose cone config
-    nose_cone_config: NoseConeConfig
-    with open(config_folder + NOSE_CONE_FILENAME, "r") as file:
-        nose_cone_config = NoseConeConfig(file)
+    nose_cone_config = _load_nose_cone_config(config_folder)
 
-    # Load fins config
-    fins_config: FinsConfig
-    with open(config_folder + FINS_CONFIG_FILENAME, "r") as file:
-        fins_config = FinsConfig(file)
+    fins_config = _load_fins_config(config_folder)
 
     # Parse parts list
     parts_list: t.List[Part]
@@ -245,6 +237,31 @@ def main() -> None:
     sim.export_results()
 
 
-# Run main if launched directly
-if __name__ == "__main__":  # type: ignore
-    main()
+if __name__ == "__main__":
+    # Set default logging level
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.INFO)
+
+    # HACK Override matplotlib's show to redirect files to disk (should be overridden again before every method that internally calls matplotlib.show)
+    hack_override_matplotlib_show()
+
+    # Setup argparse
+    argument_parser = argparse.ArgumentParser(prog="stargaze-flight-simulation")
+
+    # Add arguments
+    argument_parser.add_argument(
+        "config_folder", type=dir_path, help="The input folder containing config files"
+    )
+    argument_parser.add_argument(
+        "--output",
+        type=str,
+        help="The output folder, by default './output'",
+        default="./output",
+    )
+
+    # Parse arguments
+    args = argument_parser.parse_args()
+
+    load_configs_and_run_simulation(
+        config_folder=args.config_folder, output_folder=args.output
+    )
