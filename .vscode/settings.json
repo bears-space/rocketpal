@@ -6,7 +6,7 @@
         "**/.ruff_cache": true,
         "**/.pytest_cache": true
     },
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "standard",
     "python.testing.pytestArgs": [
         "tests"
     ],
