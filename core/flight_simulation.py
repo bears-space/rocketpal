@@ -2,7 +2,6 @@ import datetime
 import typing as t
 from pathlib import Path
 
-from hacks.matplotlib_hacks import hack_override_matplotlib_show
 from parsers.config import Config
 from parsers.fins_config import FinsConfig
 from parsers.location import Location
@@ -162,10 +161,9 @@ class FlightSimulation:
         if self.config.export_text_environment:
             self.environment.prints.all()
         if self.config.export_plot_environment:
-            hack_override_matplotlib_show(
+            self.environment.plots.info(
                 filename=self.output_folder + "/plots/environment.png"
             )
-            self.environment.plots.info()
         print("ENVIRONMENT INFO END")
 
         # Print motor info
@@ -173,24 +171,19 @@ class FlightSimulation:
         if self.config.export_text_motor:
             self.motor.prints.all()
         if self.config.export_plot_thrust:
-            hack_override_matplotlib_show(
+            self.motor.plots.thrust(
                 filename=self.output_folder + "/plots/rocket/motor_thrust.png"
             )
-            self.motor.plots.thrust()
         print("MOTOR INFO END")
 
         # Show graphics about the rocket
         print("ROCKET GRAPHICS START")
         if self.config.export_plot_static_margin:
-            hack_override_matplotlib_show(
+            self.rocket.plots.static_margin(
                 filename=self.output_folder + "/plots/rocket/static_margin.png"
             )
-            self.rocket.plots.static_margin()
         if self.config.export_plot_rocket:
-            hack_override_matplotlib_show(
-                filename=self.output_folder + "/plots/rocket/rocket.png"
-            )
-            self.rocket.draw()
+            self.rocket.draw(filename=self.output_folder + "/plots/rocket/rocket.png")
         print("ROCKET GRAPHICS END")
 
     def show_results(self) -> None:
@@ -205,64 +198,53 @@ class FlightSimulation:
         # Show simulation results graphics
         print("RESULTS GRAPHICS START")
         if self.config.export_plot_trajectory_3d:
-            hack_override_matplotlib_show(
+            self.simulation.plots.trajectory_3d(
                 filename=self.output_folder + "/plots/results/trajectory_3d.png"
             )
-            self.simulation.plots.trajectory_3d()
         if self.config.export_plot_linear_kinematic_data:
-            hack_override_matplotlib_show(
+            self.simulation.plots.linear_kinematics_data(
                 filename=self.output_folder + "/plots/results/linear_kinematics.png"
             )
-            self.simulation.plots.linear_kinematics_data()
         if self.config.export_plot_flight_path_angle_data:
-            hack_override_matplotlib_show(
+            self.simulation.plots.flight_path_angle_data(
                 filename=self.output_folder
                 + "/plots/results/flight_path_angle_data.png"
             )
-            self.simulation.plots.flight_path_angle_data()
         if self.config.export_plot_attitude_data:
-            hack_override_matplotlib_show(
+            self.simulation.plots.attitude_data(
                 filename=self.output_folder + "/plots/results/attitude_data.png"
             )
-            self.simulation.plots.attitude_data()
         if self.config.export_plot_angular_kinematics_data:
-            hack_override_matplotlib_show(
+            self.simulation.plots.angular_kinematics_data(
                 filename=self.output_folder
                 + "/plots/results/angular_kinematics_data.png"
             )
-            self.simulation.plots.angular_kinematics_data()
         if self.config.export_plot_aerodynamic_forces:
-            hack_override_matplotlib_show(
+            self.simulation.plots.aerodynamic_forces(
                 filename=self.output_folder + "/plots/results/aerodynamic_forces.png"
             )
-            self.simulation.plots.aerodynamic_forces()
         if self.config.export_plot_rail_buttons_forces:
-            hack_override_matplotlib_show(
+            self.simulation.plots.rail_buttons_forces(
                 filename=self.output_folder + "/plots/results/rail_button_forces.png"
             )
-            self.simulation.plots.rail_buttons_forces()
         if self.config.export_plot_energy_data:
-            hack_override_matplotlib_show(
+            self.simulation.plots.energy_data(
                 filename=self.output_folder + "/plots/results/energy_data.png"
             )
-            self.simulation.plots.energy_data()
         if self.config.export_plot_fluid_mechanics_data:
-            hack_override_matplotlib_show(
+            self.simulation.plots.fluid_mechanics_data(
                 filename=self.output_folder + "/plots/results/fluid_mechanics_data.png"
             )
-            self.simulation.plots.fluid_mechanics_data()
         if self.config.export_plot_stability_and_control_data:
-            hack_override_matplotlib_show(
+            self.simulation.plots.stability_and_control_data(
                 filename=self.output_folder
                 + "/plots/results/stability_and_control_data.png"
             )
-            self.simulation.plots.stability_and_control_data()
         if self.config.export_plot_pressure_rocket_altitude:
-            hack_override_matplotlib_show(
+            self.simulation.plots.pressure_rocket_altitude(
                 filename=self.output_folder
                 + "/plots/results/pressure_rocket_altitude.png"
             )
-            self.simulation.plots.pressure_rocket_altitude()
         if self.config.export_plot_pressure_signals:
             for parachute in self.simulation.rocket.parachutes:
                 assert parachute.name is not None and parachute.name != ""
@@ -272,18 +254,15 @@ class FlightSimulation:
                     + parachute.name
                     + "/"
                 )
-                hack_override_matplotlib_show(
+                parachute.noise_signal_function(
                     filename=foldername + "noise_signal_function.png"
                 )
-                parachute.noise_signal_function()
-                hack_override_matplotlib_show(
+                parachute.noisy_pressure_signal_function(
                     filename=foldername + "noisy_pressure_signal_function.png"
                 )
-                parachute.noisy_pressure_signal_function()
-                hack_override_matplotlib_show(
+                parachute.clean_pressure_signal_function(
                     filename=foldername + "noisy_pressure_signal_function.png"
                 )
-                parachute.clean_pressure_signal_function()
         print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:
