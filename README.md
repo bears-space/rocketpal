@@ -6,7 +6,7 @@ This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight 
 
 ### Setup / Installation
 
-Before you can run the simulation, you need to install the correct version of Python (3.8.0) and the required packages from Pip. For this, please follow the instructions in the section [Setup development environment](#setup-development-environment).
+Before you can run the simulation, you need to install the correct version of Python (3.12.6) and the required packages from Pip. For this, please follow the instructions in the section [Setup development environment](#setup-development-environment).
 
 ### Basic usage
 
@@ -31,13 +31,13 @@ In both cases, the simulation uses the `./input` folder to read its configuratio
 The simulation is provided in the shape of a Python program. You can run the simulation from a terminal as follows:
 
 ```sh
-python stargaze_flight_simulation.py ./input --output ./output
+python simulation/flight_simulation.py ./input --output ./output
 ```
 
 To see the available command line parameters, run:
 
 ```sh
-python stargaze_flight_simulation.py -h
+python simulation/flight_simulation.py -h
 ```
 
 ### Configuration
@@ -48,7 +48,7 @@ A file for the motor has to be provided in `.eng` format. On at least one websit
 
 ### Setup pyenv
 
-First, we need to setup pyenv. This is required because we need to use a specific Python version, namely 3.8.0, and pyenv allows us to specify a Python version for this specific repository without affecting your system-wide Python installation.
+First, we need to setup pyenv. This is required because we need to use a specific Python version, namely 3.12.6, and pyenv allows us to specify a Python version for this specific repository without affecting your system-wide Python installation.
 
 Install pyenv on your system. This step varies based on your OS:
 
@@ -69,13 +69,13 @@ Additionally, on **Linux** systems, it is recommended that you install typical b
 
 If you are on a **Linux or MacOS** system, ensure Tk (for `tkinter`) is installed before you continue or you won't be able to see any graphical output. For example, on Arch-based systems, run `sudo pacman -S tk`.
 
-Now, install Python 3.8.0 using pyenv, like this:
+Now, install Python 3.12.6 using pyenv, like this:
 
 ```sh
-pyenv install 3.8.0
+pyenv install 3.12.6
 ```
 
-Confirm Python 3.8.0 has been installed by checking the output of this command:
+Confirm Python 3.12.6 has been installed by checking the output of this command:
 
 ```sh
 pyenv versions

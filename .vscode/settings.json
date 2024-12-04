@@ -4,7 +4,8 @@
         "**/venv": true,
         "**/.venv": true,
         "**/.ruff_cache": true,
-        "**/.pytest_cache": true
+        "**/.pytest_cache": true,
+        "**/.mypy_cache": true
     },
     "python.analysis.typeCheckingMode": "standard",
     "python.testing.pytestArgs": [
