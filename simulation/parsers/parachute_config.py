@@ -1,9 +1,9 @@
 import typing as t
 
-import yaml
+from core.library_entry import LibraryEntry
 
 
-class ParachuteConfig:
+class ParachuteConfig(LibraryEntry):
     id: str
     drag_coefficient_times_reference_area: float
     ejection_altitude: t.Union[str, float]  # in meters or "apogee"
@@ -13,9 +13,8 @@ class ParachuteConfig:
     noise_standard_deviation_pascal: float
     noise_time_correlation_pascal: float
 
-    def __init__(self, parachute_file: t.TextIO) -> None:
-        # Load yaml file
-        data = yaml.safe_load(parachute_file)
+    def __init__(self, data: t.Dict) -> None:
+        super().__init__(data)
 
         # Load parachute data
         self.id = str(data["ID"])

@@ -86,12 +86,13 @@ def _load_motors_from_library(
 
     motors: t.List[MotorConfig] = []
     for id in motor_ids:
-        motor: t.Union[MotorConfig, None] = motor_library.get(id)
+        motor = motor_library.get(id)
         if motor is None:
             logging.warning(
                 f"StargazeFlightSimulation: The motor with the id '{id}' does not exist in the motor library. Skipping ..."
             )
         else:
+            assert isinstance(motor, MotorConfig)
             motors.append(motor)
             logging.info(
                 f"StargazeFlightSimulation: Loaded MotorConfig with id '{motor.id}'"
@@ -108,12 +109,13 @@ def _load_parachutes_from_library(
     )
     parachutes: t.List[ParachuteConfig] = []
     for id in parachute_ids:
-        parachute: t.Union[ParachuteConfig, None] = parachute_library.get(id)
+        parachute = parachute_library.get(id)
         if parachute is None:
             logging.warning(
                 f"StargazeFlightSimulation: The parachute with the id '{id}' does not exist in the parachute library. Skipping ..."
             )
         else:
+            assert isinstance(parachute, ParachuteConfig)
             parachutes.append(parachute)
             logging.info(
                 f"StargazeFlightSimulation: Loaded ParachuteConfig with id '{parachute.id}'"
@@ -134,7 +136,9 @@ def _load_launch_location_from_library(
     location_library: LocationLibrary = LocationLibrary(
         config_folder + LOCATION_FOLDERNAME
     )
-    return location_library.get(location_id)
+    library_entry = location_library.get(location_id)
+    assert isinstance(library_entry, Location) or library_entry is None
+    return library_entry
 
 
 def _load_rail_button_config(config_folder: str) -> RailButtonConfig:

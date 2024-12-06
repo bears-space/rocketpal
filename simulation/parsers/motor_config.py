@@ -1,14 +1,11 @@
 import typing as t
 
-import yaml
-
 from utilities.ConfigCalc import grainCom, grainDensity
 
+from core.library_entry import LibraryEntry
 
-class MotorConfig:
-    # Identifier
-    id: str
 
+class MotorConfig(LibraryEntry):
     # Engine file name
     engine_filename: str
 
@@ -32,12 +29,8 @@ class MotorConfig:
     center_of_dry_mass_position: float  # in m
     nozzle_position: float  # in m
 
-    def __init__(self, motor_config_yaml_file: t.TextIO) -> None:
-        # Load yaml file
-        data = yaml.safe_load(motor_config_yaml_file)
-
-        # Parse identifier
-        self.id = str(data["ID"])
+    def __init__(self, data: t.Dict) -> None:
+        super().__init__(data)
 
         # Parse filename of engine
         self.engine_filename = str(data["engFileName"])

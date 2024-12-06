@@ -1,23 +1,16 @@
 import typing as t
 
-import yaml
+from core.library_entry import LibraryEntry
 
 
-class Location:
-    # Identifier
-    id: str
-
+class Location(LibraryEntry):
     # Location data
     latitude: float
     longitude: float
     elevation: float
 
-    def __init__(self, launch_location_file: t.TextIO) -> None:
-        # Load yaml file
-        data = yaml.safe_load(launch_location_file)
-
-        # Load identifier
-        self.id = str(data["ID"])
+    def __init__(self, data: t.Dict) -> None:
+        super().__init__(data)
 
         # Load location data
         self.latitude = float(data["latitude"])
