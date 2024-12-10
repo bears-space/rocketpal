@@ -8,7 +8,7 @@ import random
 from PySide6 import QtCore, QtWidgets
 
 
-class HelloWorldWidget(QtWidgets.QWidget):
+class FlightSimulationGUI(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     app.setApplicationName("FSG - Flight Simulation GUI")
 
     # Hello world test
-    widget = HelloWorldWidget()
+    widget = FlightSimulationGUI()
     widget.resize(1280, 720)
     widget.show()
 
