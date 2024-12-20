@@ -1,6 +1,7 @@
 # type: ignore
 
 import sys
+
 from PySide6 import QtWidgets
 
 from library_selector_widget import LibrarySelectorWidget
