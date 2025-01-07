@@ -16,23 +16,19 @@ class LibrarySelectorWidget(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QVBoxLayout(self)
 
-        self.selection_list = QtWidgets.QListWidget(self)
+        self.selection_list = QtWidgets.QListWidget()
         self.layout.addWidget(self.selection_list)
 
-        self.button_layout_widget = QtWidgets.QWidget(self)
+        self.button_layout_widget = QtWidgets.QWidget()
         _button_layout = QtWidgets.QHBoxLayout()
         self.button_layout_widget.setLayout(_button_layout)
         self.layout.addWidget(self.button_layout_widget)
 
-        self.button_delete = QtWidgets.QPushButton(
-            parent=self.button_layout_widget, text="Delete"
-        )
+        self.button_delete = QtWidgets.QPushButton(text="Delete")
         self.button_delete.clicked.connect(self._button_delete_pressed)
         _button_layout.addWidget(self.button_delete)
 
-        self.button_new = QtWidgets.QPushButton(
-            parent=self.button_layout_widget, text="New"
-        )
+        self.button_new = QtWidgets.QPushButton(text="New")
         self.button_new.clicked.connect(self._button_new_pressed)
         _button_layout.addWidget(self.button_new)
 
