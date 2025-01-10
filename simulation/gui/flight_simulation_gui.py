@@ -5,7 +5,7 @@ import platformdirs
 from pathlib import Path
 import sys
 import os
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets, QtSvgWidgets
 
 from simulation import load_configs_and_run_simulation
 
@@ -14,6 +14,9 @@ SIMULATION_CONFIG_BASE_FOLDER = (
 )
 OUTPUT_FOLDER = str(Path(os.path.realpath(sys.argv[0])).parent) + "/output"
 TEMPLATE_FOLDER = str(Path(__file__).parent.parent.parent) + "/template"
+LOGO_PATH = (
+    str(Path(__file__).parent.parent.parent) + "/img/BEARS_writing_with_motto.svg"
+)
 
 
 class FlightSimulationGUI(QtWidgets.QWidget):
@@ -32,12 +35,35 @@ class FlightSimulationGUI(QtWidgets.QWidget):
         )
         self.layout.addSpacerItem(_spacer_top)
 
+        self.horizontal_centering_widget = QtWidgets.QWidget()
+        _horizontal_centering_layout = QtWidgets.QHBoxLayout()
+        _horizontal_centering_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.layout.addWidget(self.horizontal_centering_widget)
+        self.horizontal_centering_widget.setLayout(_horizontal_centering_layout)
+
+        self.main_layout_widget = QtWidgets.QWidget()
+        _main_layout = QtWidgets.QVBoxLayout()
+        _main_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.main_layout_widget.setMaximumWidth(1024)
+        _horizontal_centering_layout.addWidget(self.main_layout_widget)
+        self.main_layout_widget.setLayout(_main_layout)
+
+        self.logo_layout_widget = QtWidgets.QWidget()
+        _logo_layout = QtWidgets.QHBoxLayout()
+        _logo_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 32))
+        _main_layout.addWidget(self.logo_layout_widget)
+        self.logo_layout_widget.setLayout(_logo_layout)
+
+        self.logo_widget = QtSvgWidgets.QSvgWidget(LOGO_PATH)
+        self.logo_widget.setFixedSize(576, 158)
+        _logo_layout.addWidget(self.logo_widget)
+
         self.selection_layout_widget = QtWidgets.QWidget()
         _selection_layout = QtWidgets.QHBoxLayout()
         _selection_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
-        self.layout.addWidget(self.selection_layout_widget)
-
+        _main_layout.addWidget(self.selection_layout_widget)
         self.selection_layout_widget.setLayout(_selection_layout)
+
         self.simulation_selector_dropdown = QtWidgets.QComboBox()
         self.simulation_selector_dropdown.currentTextChanged.connect(
             self._simulation_selector_dropdown_changed
@@ -54,11 +80,11 @@ class FlightSimulationGUI(QtWidgets.QWidget):
 
         self.run_simulation_button = QtWidgets.QPushButton("Run Simulation")
         self.run_simulation_button.clicked.connect(self._run_simulation_button_pressed)
-        self.layout.addWidget(self.run_simulation_button)
+        _main_layout.addWidget(self.run_simulation_button)
 
         self.show_results_button = QtWidgets.QPushButton("Show Results")
         self.show_results_button.clicked.connect(self._show_results_button_pressed)
-        self.layout.addWidget(self.show_results_button)
+        _main_layout.addWidget(self.show_results_button)
 
         _spacer_bottom = QtWidgets.QSpacerItem(
             20,
