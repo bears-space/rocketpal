@@ -1,5 +1,6 @@
 # type: ignore
 
+from shutil import copytree
 import platformdirs
 from pathlib import Path
 import sys
@@ -12,6 +13,7 @@ SIMULATION_CONFIG_BASE_FOLDER = (
     platformdirs.user_config_dir() + "/bears-flight-simulation/simulations"
 )
 OUTPUT_FOLDER = str(Path(os.path.realpath(sys.argv[0])).parent) + "/output"
+TEMPLATE_FOLDER = str(Path(__file__).parent.parent.parent) + "/template"
 
 
 class FlightSimulationGUI(QtWidgets.QWidget):
@@ -75,6 +77,17 @@ class FlightSimulationGUI(QtWidgets.QWidget):
         pass
 
     def _selection_new_button_pressed(self):
+        # Ask for name of new simulation from user
+        (new_simulation_name, dialog_accepted) = QtWidgets.QInputDialog.getText(
+            self,
+            "New Simulation",
+            "Enter name for new simulation (please DO NOT use special characters like '/'):",
+        )
+
+        # Create folder and copy template for new simulation
+        new_simulation_path = SIMULATION_CONFIG_BASE_FOLDER + "/" + new_simulation_name
+        copytree(TEMPLATE_FOLDER, new_simulation_path, dirs_exist_ok=False)
+
         self._refresh_selectable_simulations()
 
     def _run_simulation_button_pressed(self):
