@@ -3,10 +3,13 @@
 
 import logging
 
+from pathlib import Path
 import sys
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 
 from gui.flight_simulation_gui import FlightSimulationGUI
+
+ICON_PATH = str(Path(__file__).parent.parent) + "/img/BEARS_Logo_white_circle.png"
 
 if __name__ == "__main__":
     # Set default logging level
@@ -16,6 +19,7 @@ if __name__ == "__main__":
     # Prepare application
     app = QtWidgets.QApplication([])
     app.setApplicationName("FSG - Flight Simulation GUI")
+    app.setWindowIcon(QtGui.QIcon(ICON_PATH))
 
     # Hello world test
     widget = FlightSimulationGUI()
