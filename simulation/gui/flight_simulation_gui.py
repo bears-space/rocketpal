@@ -124,6 +124,7 @@ class FlightSimulationGUI(QtWidgets.QWidget):
             simulation_config_folders is None or len(simulation_config_folders) == 0
         )
         self.run_simulation_button.setDisabled(no_simulations_exist)
+        self.selection_edit_button.setDisabled(no_simulations_exist)
 
 
 def get_config_folders() -> set[str]:
