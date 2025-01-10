@@ -42,7 +42,6 @@ class FlightSimulationGUI(QtWidgets.QWidget):
         self.simulation_selector_dropdown.currentTextChanged.connect(
             self._simulation_selector_dropdown_changed
         )
-        self._refresh_selectable_simulations()
         _selection_layout.addWidget(self.simulation_selector_dropdown)
 
         self.selection_edit_button = QtWidgets.QPushButton("Edit")
@@ -69,6 +68,9 @@ class FlightSimulationGUI(QtWidgets.QWidget):
         )
         self.layout.addSpacerItem(_spacer_bottom)
 
+        # Actually generate content for the GUI elements
+        self._refresh_selectable_simulations()
+
     def _simulation_selector_dropdown_changed(self, new_text):
         self.current_selection = new_text
 
@@ -83,6 +85,10 @@ class FlightSimulationGUI(QtWidgets.QWidget):
             "New Simulation",
             "Enter name for new simulation (please DO NOT use special characters like '/'):",
         )
+
+        # Abort if name is empty or dialog not accepted
+        if not dialog_accepted or new_simulation_name == "":
+            return
 
         # Create folder and copy template for new simulation
         new_simulation_path = SIMULATION_CONFIG_BASE_FOLDER + "/" + new_simulation_name
@@ -102,8 +108,9 @@ class FlightSimulationGUI(QtWidgets.QWidget):
     def _refresh_selectable_simulations(self):
         old_selection = self.simulation_selector_dropdown.currentText()
 
+        simulation_config_folders = get_config_folders()
         self.simulation_selector_dropdown.clear()
-        self.simulation_selector_dropdown.addItems(get_config_folders())
+        self.simulation_selector_dropdown.addItems(simulation_config_folders)
 
         index_equal_to_old_selection = self.simulation_selector_dropdown.findText(
             old_selection
@@ -112,6 +119,11 @@ class FlightSimulationGUI(QtWidgets.QWidget):
             self.simulation_selector_dropdown.setCurrentIndex(
                 index_equal_to_old_selection
             )
+
+        no_simulations_exist = (
+            simulation_config_folders is None or len(simulation_config_folders) == 0
+        )
+        self.run_simulation_button.setDisabled(no_simulations_exist)
 
 
 def get_config_folders() -> set[str]:
