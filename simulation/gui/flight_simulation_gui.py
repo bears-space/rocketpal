@@ -1,23 +1,17 @@
 # type: ignore
 
 from shutil import copytree
-import platformdirs
-from pathlib import Path
-import sys
-import os
 from PySide6 import QtCore, QtWidgets, QtSvgWidgets
 
+from common.common_paths import (
+    SIMULATION_CONFIG_BASE_FOLDER,
+    OUTPUT_FOLDER,
+    TEMPLATE_FOLDER,
+    LOGO_PATH,
+    get_simulation_config_folders,
+)
 from gui.asset_library_editor_main_widget import AssetLibraryEditorMainWidget
 from simulation import load_configs_and_run_simulation
-
-SIMULATION_CONFIG_BASE_FOLDER = (
-    platformdirs.user_config_dir() + "/bears-flight-simulation/simulations"
-)
-OUTPUT_FOLDER = str(Path(os.path.realpath(sys.argv[0])).parent) + "/output"
-TEMPLATE_FOLDER = str(Path(__file__).parent.parent.parent) + "/template"
-LOGO_PATH = (
-    str(Path(__file__).parent.parent.parent) + "/img/BEARS_writing_with_motto.svg"
-)
 
 
 class FlightSimulationGUI(QtWidgets.QWidget):
@@ -162,7 +156,7 @@ class FlightSimulationGUI(QtWidgets.QWidget):
     def _refresh_selectable_simulations(self):
         old_selection = self.simulation_selector_dropdown.currentText()
 
-        simulation_config_folders = get_config_folders()
+        simulation_config_folders = get_simulation_config_folders()
         self.simulation_selector_dropdown.clear()
         self.simulation_selector_dropdown.addItems(simulation_config_folders)
 
@@ -179,10 +173,3 @@ class FlightSimulationGUI(QtWidgets.QWidget):
         )
         self.run_simulation_button.setDisabled(no_simulations_exist)
         self.selection_edit_button.setDisabled(no_simulations_exist)
-
-
-def get_config_folders() -> set[str]:
-    # Create the simulation config folder if it doesn't exist yet
-    Path(SIMULATION_CONFIG_BASE_FOLDER).mkdir(parents=True, exist_ok=True)
-
-    return os.listdir(SIMULATION_CONFIG_BASE_FOLDER)
