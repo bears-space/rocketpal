@@ -62,6 +62,8 @@ class AssetLibraryEditorMainWidget(QtWidgets.QWidget):
         self.layout.addSpacerItem(_spacer_bottom)
 
     def closeEvent(self, event):
+        if self.location_library_editor_widget is not None:
+            self.location_library_editor_widget.close()
         self.close_pressed.emit()
         event.accept()
 

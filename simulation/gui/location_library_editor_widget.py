@@ -4,6 +4,9 @@ import sys
 
 from PySide6 import QtCore, QtWidgets
 
+from common.common_paths import (
+    get_location_config_folders,
+)
 from gui.library_selector_widget import LibrarySelectorWidget
 
 
@@ -15,7 +18,12 @@ class LocationLibraryEditorWidget(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QHBoxLayout(self)
 
-        self.selector_widget = LibrarySelectorWidget()
+        self.selector_widget = LibrarySelectorWidget(
+            get_selectable_config_folders=get_location_config_folders
+        )
+        self.selector_widget.selection_list_refreshed.connect(
+            self._selector_widget_refreshed
+        )
         self.layout.addWidget(self.selector_widget)
 
         self.options_layout_widget = QtWidgets.QWidget()
@@ -38,9 +46,14 @@ class LocationLibraryEditorWidget(QtWidgets.QWidget):
         self.spinbox_height = QtWidgets.QDoubleSpinBox()
         _options_layout.addRow(self.label_height, self.spinbox_height)
 
+        self.selector_widget.force_refresh()  # NOTE: this is needed because the internal refresh happens before we connect
+
     def closeEvent(self, event):
         self.close_pressed.emit()
         event.accept()
+
+    def _selector_widget_refreshed(self, empty: bool):
+        self.options_layout_widget.setDisabled(empty)
 
 
 if __name__ == "__main__":
