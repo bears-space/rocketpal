@@ -7,6 +7,7 @@ import sys
 import os
 from PySide6 import QtCore, QtWidgets, QtSvgWidgets
 
+from gui.asset_library_editor_main_widget import AssetLibraryEditorMainWidget
 from simulation import load_configs_and_run_simulation
 
 SIMULATION_CONFIG_BASE_FOLDER = (
@@ -21,6 +22,7 @@ LOGO_PATH = (
 
 class FlightSimulationGUI(QtWidgets.QWidget):
     current_selection: str | None = None
+    asset_library_editor_main_widget: QtWidgets.QWidget | None = None
 
     def __init__(self):
         super().__init__()
@@ -57,6 +59,12 @@ class FlightSimulationGUI(QtWidgets.QWidget):
         self.logo_widget = QtSvgWidgets.QSvgWidget(LOGO_PATH)
         self.logo_widget.setFixedSize(576, 158)
         _logo_layout.addWidget(self.logo_widget)
+
+        self.library_editors_button = QtWidgets.QPushButton("Asset Library Editors")
+        self.library_editors_button.clicked.connect(
+            self._library_editors_button_pressed
+        )
+        _main_layout.addWidget(self.library_editors_button)
 
         self.selection_layout_widget = QtWidgets.QWidget()
         _selection_layout = QtWidgets.QHBoxLayout()
@@ -96,6 +104,26 @@ class FlightSimulationGUI(QtWidgets.QWidget):
 
         # Actually generate content for the GUI elements
         self._refresh_selectable_simulations()
+
+    def closeEvent(self, event):
+        if self.asset_library_editor_main_widget is not None:
+            self.asset_library_editor_main_widget.close()
+        event.accept()
+
+    def _library_editors_button_pressed(self):
+        # Open asset library editor main window if not already open
+        if self.asset_library_editor_main_widget is None:
+            self.setDisabled(True)
+            self.asset_library_editor_main_widget = AssetLibraryEditorMainWidget()
+            self.asset_library_editor_main_widget.close_pressed.connect(
+                self._asset_library_editor_main_widget_close_pressed
+            )
+            self.asset_library_editor_main_widget.resize(640, 360)
+            self.asset_library_editor_main_widget.show()
+
+    def _asset_library_editor_main_widget_close_pressed(self):
+        self.asset_library_editor_main_widget = None
+        self.setDisabled(False)
 
     def _simulation_selector_dropdown_changed(self, new_text):
         self.current_selection = new_text
