@@ -2,12 +2,14 @@
 
 import sys
 
-from PySide6 import QtWidgets
+from PySide6 import QtCore, QtWidgets
 
-from library_selector_widget import LibrarySelectorWidget
+from gui.library_selector_widget import LibrarySelectorWidget
 
 
-class LocationLibraryWidget(QtWidgets.QWidget):
+class LocationLibraryEditorWidget(QtWidgets.QWidget):
+    close_pressed = QtCore.Signal()
+
     def __init__(self, parent: QtWidgets.QWidget | None = None):
         super().__init__(parent)
 
@@ -36,9 +38,13 @@ class LocationLibraryWidget(QtWidgets.QWidget):
         self.spinbox_height = QtWidgets.QDoubleSpinBox()
         _options_layout.addRow(self.label_height, self.spinbox_height)
 
+    def closeEvent(self, event):
+        self.close_pressed.emit()
+        event.accept()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
-    widget = LocationLibraryWidget()
+    widget = LocationLibraryEditorWidget()
     widget.show()
     sys.exit(app.exec())

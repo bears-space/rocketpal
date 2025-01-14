@@ -3,9 +3,13 @@
 import sys
 from PySide6 import QtCore, QtWidgets
 
+from gui.location_library_editor_widget import LocationLibraryEditorWidget
+
 
 class AssetLibraryEditorMainWidget(QtWidgets.QWidget):
     close_pressed = QtCore.Signal()
+
+    location_library_editor_widget: LocationLibraryEditorWidget | None = None
 
     def __init__(self, parent: QtWidgets.QWidget | None = None):
         super().__init__(parent)
@@ -62,7 +66,19 @@ class AssetLibraryEditorMainWidget(QtWidgets.QWidget):
         event.accept()
 
     def _button_locations_pressed(self):
-        pass
+        # Open location library editor window if not already open
+        if self.location_library_editor_widget is None:
+            self.setDisabled(True)
+            self.location_library_editor_widget = LocationLibraryEditorWidget()
+            self.location_library_editor_widget.close_pressed.connect(
+                self._location_library_editor_widget_close_pressed
+            )
+            self.location_library_editor_widget.resize(640, 360)
+            self.location_library_editor_widget.show()
+
+    def _location_library_editor_widget_close_pressed(self):
+        self.location_library_editor_widget = None
+        self.setDisabled(False)
 
     def _button_motors_pressed(self):
         pass

@@ -22,7 +22,7 @@ LOGO_PATH = (
 
 class FlightSimulationGUI(QtWidgets.QWidget):
     current_selection: str | None = None
-    asset_library_editor_main_widget: QtWidgets.QWidget | None = None
+    asset_library_editor_main_widget: AssetLibraryEditorMainWidget | None = None
 
     def __init__(self):
         super().__init__()
