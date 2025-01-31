@@ -2,17 +2,16 @@
 
 import sys
 
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtWidgets
 
 from common.common_paths import (
     get_location_config_folders,
 )
 from gui.library_selector_widget import LibrarySelectorWidget
+from gui.cloeseable_window_widget import CloseableWindowWidget
 
 
-class LocationLibraryEditorWidget(QtWidgets.QWidget):
-    close_pressed = QtCore.Signal()
-
+class LocationLibraryEditorWidget(CloseableWindowWidget):
     def __init__(self, parent: QtWidgets.QWidget | None = None):
         super().__init__(parent)
 
@@ -47,10 +46,6 @@ class LocationLibraryEditorWidget(QtWidgets.QWidget):
         _options_layout.addRow(self.label_height, self.spinbox_height)
 
         self.selector_widget.force_refresh()  # NOTE: this is needed because the internal refresh happens before we connect
-
-    def closeEvent(self, event):
-        self.close_pressed.emit()
-        event.accept()
 
     def _selector_widget_refreshed(self, empty: bool):
         self.options_layout_widget.setDisabled(empty)
