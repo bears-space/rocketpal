@@ -3,4 +3,4 @@ pre-commit==4.0.1
 PySide6==6.8.1
 pytest==8.3.3
 PyYAML==6.0.2
-rocketpy==1.7.0
+rocketpy==1.8.0
