@@ -12,7 +12,10 @@ from parsers.parts_list_parser import Part
 from parsers.rail_button_config import RailButtonConfig
 from rocketpy import Environment, Flight, Rocket, SolidMotor
 
-from exporters.flight_data_export import export_flight_data_to_csv
+from exporters.flight_data_export import (
+    export_flight_data_to_csv,
+    export_flight_data_to_csv_in_simulated_sensor_module_format,
+)
 
 
 class FlightSimulation:
@@ -280,6 +283,15 @@ class FlightSimulation:
             export_flight_data_to_csv(
                 self.simulation,
                 self.output_folder + "/custom_flight_data.csv",
+                self.config.export_flight_data_time_step_seconds,
+            )
+
+        # Export simulated sensor module data to csv
+        if self.config.export_flight_data:
+            export_flight_data_to_csv_in_simulated_sensor_module_format(
+                self.simulation,
+                self.output_folder + "/simulated_sensor_module_data.csv",
+                self.environment,
                 self.config.export_flight_data_time_step_seconds,
             )
 
