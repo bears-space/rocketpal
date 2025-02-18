@@ -227,9 +227,9 @@ def _convert_acceleration_from_ground_reference_frame_to_rocket_reference_frame(
     acceleration = np.array([[ax], [ay], [az]])
     converted_acceleration = np.dot(t_fg, acceleration)
     return (
-        converted_acceleration[0],
-        converted_acceleration[1],
-        converted_acceleration[2],
+        converted_acceleration[0][0],
+        converted_acceleration[1][0],
+        converted_acceleration[2][0],
     )
 
 
