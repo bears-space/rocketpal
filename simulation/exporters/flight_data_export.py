@@ -156,26 +156,38 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
 
             # low_g_accel_x, low_g_accel_y, low_g_accel_z
             g_in_ms2 = environment.gravity(0)  # at 0 m above sea
+            (
+                converted_acceleration_x,
+                converted_acceleration_y,
+                converted_acceleration_z,
+            ) = _convert_acceleration_from_ground_reference_frame_to_rocket_reference_frame(
+                flight.ax.get_value(t),
+                flight.ay.get_value(t),
+                flight.az.get_value(t),
+                flight.phi.get_value(t),
+                flight.theta.get_value(t),
+                flight.psi.get_value(t),
+            )
             row.append(
                 _clamp_acceleration_to_multiple_of_g(
-                    flight.ax.get_value(t), 16.0, g_in_ms2
+                    converted_acceleration_x, 16.0, g_in_ms2
                 )
             )
             row.append(
                 _clamp_acceleration_to_multiple_of_g(
-                    flight.ay.get_value(t), 16.0, g_in_ms2
+                    converted_acceleration_y, 16.0, g_in_ms2
                 )
             )
             row.append(
                 _clamp_acceleration_to_multiple_of_g(
-                    flight.az.get_value(t), 16.0, g_in_ms2
+                    converted_acceleration_z, 16.0, g_in_ms2
                 )
             )
 
             # high_g_accel_x, high_g_accel_y, high_g_accel_z
-            row.append(flight.ax.get_value(t))
-            row.append(flight.ay.get_value(t))
-            row.append(flight.az.get_value(t))
+            row.append(converted_acceleration_x)
+            row.append(converted_acceleration_y)
+            row.append(converted_acceleration_z)
 
             # altitude
             row.append(flight.altitude.get_value(t))
@@ -186,6 +198,39 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
             row.append(flight.vz.get_value(t))
 
             writer.writerow(row)
+
+
+def _convert_acceleration_from_ground_reference_frame_to_rocket_reference_frame(
+    ax: float, ay: float, az: float, phi: float, theta: float, psi: float
+):
+    # NOTE this is black magic, do not touch
+    az = -az
+    theta = theta + 90.0
+    phi = np.deg2rad(phi)
+    theta = np.deg2rad(theta)
+    psi = np.deg2rad(psi)
+    t_fg = np.array(
+        [
+            [np.cos(psi) * np.cos(theta), np.cos(theta) * np.sin(psi), -np.sin(theta)],
+            [
+                np.cos(psi) * np.sin(phi) * np.sin(theta) - np.cos(phi) * np.sin(psi),
+                np.cos(phi) * np.cos(psi) + np.sin(phi) * np.sin(psi) * np.sin(theta),
+                np.cos(theta) * np.sin(phi),
+            ],
+            [
+                np.sin(phi) * np.sin(psi) + np.cos(phi) * np.cos(psi) * np.sin(theta),
+                np.cos(phi) * np.sin(psi) * np.sin(theta) - np.cos(psi) * np.sin(phi),
+                np.cos(phi) * np.cos(theta),
+            ],
+        ]
+    )
+    acceleration = np.array([[ax], [ay], [az]])
+    converted_acceleration = np.dot(t_fg, acceleration)
+    return (
+        converted_acceleration[0],
+        converted_acceleration[1],
+        converted_acceleration[2],
+    )
 
 
 def _clamp_acceleration_to_multiple_of_g(
