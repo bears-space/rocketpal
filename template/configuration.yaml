@@ -1,12 +1,12 @@
 # Identificator for Simulation/Export
-ID: Ver001 # ID used for simulation run and export
+ID: STARGAZE # ID used for simulation run and export
 # Input Options
-location: Example # ID for location file at which simulation shall be executed
+location: Campo Militar de Santa Margarida # ID for location file at which simulation shall be executed
 motors: [M1670-P] # IDs of used motors (multiple for comparison) for simulation
 parachutes: [example-main, example-drogue] # IDs of parachutes to add to rocket
 dateDiff: 7 # day difference relative to today for which simulation shall be executed
 railL: 4 # launch rail length in meter
-inclination: 85 # launch inclination from ground in degree
+inclination: 84 # launch inclination from ground in degree
 heading: 0 # launch heading relative to north in degree
 dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
