@@ -11,6 +11,7 @@ heading: 0 # launch heading relative to north in degree
 dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
 diameter: 0.1236 # diameter of the rocket in m
+launch_date: 2025-10-12_12-00-00
 
 # Export Options: Environment
 exportTextEnvironment: True

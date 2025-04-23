@@ -1,4 +1,3 @@
-import datetime
 import typing as t
 from pathlib import Path
 
@@ -60,14 +59,9 @@ class FlightSimulation:
             longitude=launch_location.longitude,
             elevation=launch_location.elevation,
         )
-        launch_date = datetime.date.today() + datetime.timedelta(
-            days=self.config.date_difference_days
-        )
-        self.environment.set_date(
-            (launch_date.year, launch_date.month, launch_date.day, 12),
-            timezone="America/Denver",
-        )
-        self.environment.set_atmospheric_model(type="Forecast", file="GFS")
+        self.environment.set_date(config.launch_date)
+        # self.environment.set_atmospheric_model(type="Forecast", file="GFS")
+        self.environment.set_atmospheric_model(type="standard_atmosphere")
 
         # Setup motor
         self.motor = SolidMotor(

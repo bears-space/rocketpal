@@ -1,3 +1,4 @@
+from datetime import datetime
 import typing as t
 
 import yaml
@@ -19,6 +20,7 @@ class Config:
     launch_rail_length: float
     inclination: float
     heading: float
+    launch_date: datetime
 
     # Rocket settings
     diameter: float
@@ -75,6 +77,9 @@ class Config:
         self.launch_rail_length = float(data["railL"])
         self.inclination = float(data["inclination"])
         self.heading = float(data["heading"])
+        self.launch_date = datetime.strptime(
+            str(data["launch_date"]), "%Y-%m-%d_%H-%M-%S"
+        )
 
         # Parse rocket settings
         self.diameter = float(data["diameter"])
