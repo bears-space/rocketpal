@@ -1,4 +1,4 @@
-from parsers.parts_list_parser import (
+from bears_flight_simulation.parsers.parts_list_parser import (
     Part,
     is_segment_based_on_hierarchy,
     part_is_motor,

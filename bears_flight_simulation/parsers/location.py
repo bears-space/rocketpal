@@ -1,6 +1,6 @@
 import typing as t
 
-from core.library_entry import LibraryEntry
+from bears_flight_simulation.core.library_entry import LibraryEntry
 
 
 class Location(LibraryEntry):

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Ensure the output folder exists
-mkdir -p ./output
+mkdir -p $PWD/output
 
 # Run simulation and redirect terminal output to ./output/log.txt
-python bears_flight_simulation/simulation.py ./template --output ./output &> ./output/log.txt
+python -m bears_flight_simulation ./template --output $PWD/output &> $PWD/output/log.txt

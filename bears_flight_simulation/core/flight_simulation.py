@@ -2,21 +2,25 @@ import typing as t
 import logging
 from pathlib import Path
 
-from parsers.config import Config
-from parsers.fins_config import FinsConfig
-from parsers.location import Location
-from parsers.motor_config import MotorConfig
-from parsers.nose_cone_config import NoseConeConfig
-from parsers.parachute_config import ParachuteConfig
-from parsers.parts_list_parser import Part, get_nosecone_position, get_motor_position
-from parsers.rail_button_config import RailButtonConfig
+from bears_flight_simulation.parsers.config import Config
+from bears_flight_simulation.parsers.fins_config import FinsConfig
+from bears_flight_simulation.parsers.location import Location
+from bears_flight_simulation.parsers.motor_config import MotorConfig
+from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
+from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
+from bears_flight_simulation.parsers.parts_list_parser import (
+    Part,
+    get_nosecone_position,
+    get_motor_position,
+)
+from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
 from rocketpy import Environment, Flight, Rocket, SolidMotor
 
-from utilities.rocket_calculations import (
+from bears_flight_simulation.utilities.rocket_calculations import (
     calculate_rocket_mass_without_motor_in_kg,
 )
-from utilities.config_calc import rocket_center_of_mass
-from exporters.flight_data_export import (
+from bears_flight_simulation.utilities.config_calc import rocket_center_of_mass
+from bears_flight_simulation.exporters.flight_data_export import (
     export_flight_data_to_csv,
     export_flight_data_to_csv_in_simulated_sensor_module_format,
 )

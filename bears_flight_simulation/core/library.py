@@ -5,7 +5,7 @@ import yaml
 
 from abc import ABC
 
-from core.library_entry import LibraryEntry
+from bears_flight_simulation.core.library_entry import LibraryEntry
 
 
 class Library(ABC):

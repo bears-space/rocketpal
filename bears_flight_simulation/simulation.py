@@ -1,24 +1,23 @@
 #!/usr/bin/env python3
 
-import argparse
 import logging
 import os
 import typing as t
 from socket import gethostname
 from datetime import datetime, timezone
 
-from core.flight_simulation import FlightSimulation
-from core.location_library import LocationLibrary
-from core.motor_library import MotorLibrary
-from core.parachute_library import ParachuteLibrary
-from parsers.config import Config
-from parsers.fins_config import FinsConfig
-from parsers.location import Location
-from parsers.motor_config import MotorConfig
-from parsers.nose_cone_config import NoseConeConfig
-from parsers.parachute_config import ParachuteConfig
-from parsers.parts_list_parser import Part, parse_parts_list
-from parsers.rail_button_config import RailButtonConfig
+from bears_flight_simulation.core.flight_simulation import FlightSimulation
+from bears_flight_simulation.core.location_library import LocationLibrary
+from bears_flight_simulation.core.motor_library import MotorLibrary
+from bears_flight_simulation.core.parachute_library import ParachuteLibrary
+from bears_flight_simulation.parsers.config import Config
+from bears_flight_simulation.parsers.fins_config import FinsConfig
+from bears_flight_simulation.parsers.location import Location
+from bears_flight_simulation.parsers.motor_config import MotorConfig
+from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
+from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
+from bears_flight_simulation.parsers.parts_list_parser import Part, parse_parts_list
+from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
 
 CONFIG_FILENAME = "/configuration.yaml"
 MOTOR_FOLDERNAME = "/motors"
@@ -30,13 +29,6 @@ FINS_CONFIG_FILENAME = "/fins.yaml"
 PARTS_LIST_FILENAME = "/parts_list.csv"
 LOCATION_FOLDERNAME = "/locations"
 PARACHUTE_FOLDERNAME = "/parachutes"
-
-
-def dir_path(path_to_dir: str) -> str:
-    if os.path.isdir(path_to_dir):
-        return path_to_dir
-    else:
-        raise NotADirectoryError(path_to_dir)
 
 
 def _ensure_config_files_exist(config_folder: str) -> bool:
@@ -157,7 +149,7 @@ def _load_fins_config(config_folder: str) -> FinsConfig:
 def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> None:
     # Log current time and hostname for later reference
     logging.info(
-        f"Running on {gethostname()} at {datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")} (UTC)"
+        f"Running on {gethostname()} at {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} (UTC)"
     )
 
     if not _ensure_config_files_exist(config_folder):
@@ -234,30 +226,3 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
     # Show and save results
     sim.show_results()
     sim.export_results()
-
-
-if __name__ == "__main__":
-    # Set default logging level
-    logging.basicConfig()
-    logging.getLogger().setLevel(logging.INFO)
-
-    # Setup argparse
-    argument_parser = argparse.ArgumentParser(prog="stargaze-flight-simulation")
-
-    # Add arguments
-    argument_parser.add_argument(
-        "config_folder", type=dir_path, help="The input folder containing config files"
-    )
-    argument_parser.add_argument(
-        "--output",
-        type=str,
-        help="The output folder, by default './output'",
-        default="./output",
-    )
-
-    # Parse arguments
-    args = argument_parser.parse_args()
-
-    load_configs_and_run_simulation(
-        config_folder=args.config_folder, output_folder=args.output
-    )

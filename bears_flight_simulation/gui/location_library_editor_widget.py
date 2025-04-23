@@ -4,11 +4,11 @@ import sys
 
 from PySide6 import QtWidgets
 
-from common.common_paths import (
+from bears_flight_simulation.common.common_paths import (
     get_location_config_folders,
 )
-from gui.library_selector_widget import LibrarySelectorWidget
-from gui.cloeseable_window_widget import CloseableWindowWidget
+from bears_flight_simulation.gui.library_selector_widget import LibrarySelectorWidget
+from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindowWidget
 
 
 class LocationLibraryEditorWidget(CloseableWindowWidget):

@@ -3,18 +3,18 @@
 from shutil import copytree
 from PySide6 import QtCore, QtWidgets, QtSvgWidgets
 
-from common.common_paths import (
+from bears_flight_simulation.common.common_paths import (
     SIMULATION_CONFIG_BASE_FOLDER,
     OUTPUT_FOLDER,
     TEMPLATE_FOLDER,
     LOGO_PATH,
     get_simulation_config_folders,
 )
-from gui.asset_library_editor_main_widget import (
+from bears_flight_simulation.gui.asset_library_editor_main_widget import (
     AssetLibraryEditorMainWidget,
 )
-from gui.cloeseable_window_widget import CloseableWindowWidget
-from bears_flight_simulation import (
+from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindowWidget
+from bears_flight_simulation.simulation import (
     load_configs_and_run_simulation,
 )
 

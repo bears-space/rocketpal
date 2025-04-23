@@ -1,7 +1,7 @@
 @echo off
 
 # Ensure the output folder exists
-if not exist .\output mkdir .\output
+if not exist %cd%\output mkdir %cd%\output
 
 # Run simulation and redirect terminal output to ./output/log.txt
-python bears_flight_simulation\simulation.py .\template --output .\output >> .\output\log.txt 2>&1
+python bears_flight_simulation\simulation.py .\template --output %cd%\output >> %cd%\output\log.txt 2>&1

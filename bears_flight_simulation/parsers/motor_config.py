@@ -1,8 +1,8 @@
 import typing as t
 
-from utilities.config_calc import grainCom, grainDensity
+from bears_flight_simulation.utilities.config_calc import grainCom, grainDensity
 
-from core.library_entry import LibraryEntry
+from bears_flight_simulation.core.library_entry import LibraryEntry
 
 
 class MotorConfig(LibraryEntry):

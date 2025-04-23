@@ -1,7 +1,11 @@
 import numpy as np
 
 
-from parsers.parts_list_parser import Part, part_is_motor, get_part_center_of_mass
+from bears_flight_simulation.parsers.parts_list_parser import (
+    Part,
+    part_is_motor,
+    get_part_center_of_mass,
+)
 
 
 def grainDensity(

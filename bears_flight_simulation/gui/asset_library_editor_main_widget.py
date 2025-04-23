@@ -3,10 +3,10 @@
 import sys
 from PySide6 import QtCore, QtWidgets
 
-from gui.location_library_editor_widget import (
+from bears_flight_simulation.gui.location_library_editor_widget import (
     LocationLibraryEditorWidget,
 )
-from gui.cloeseable_window_widget import CloseableWindowWidget
+from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindowWidget
 
 
 class AssetLibraryEditorMainWidget(CloseableWindowWidget):

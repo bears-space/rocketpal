@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 from PySide6 import QtWidgets, QtGui
 
-from gui.flight_simulation_gui import FlightSimulationGUI
+from bears_flight_simulation.gui.flight_simulation_gui import FlightSimulationGUI
 
 ICON_PATH = str(Path(__file__).parent.parent) + "/img/BEARS_Logo_white_circle.png"
 
