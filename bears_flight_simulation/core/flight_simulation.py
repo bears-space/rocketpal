@@ -12,6 +12,9 @@ from parsers.parts_list_parser import Part
 from parsers.rail_button_config import RailButtonConfig
 from rocketpy import Environment, Flight, Rocket, SolidMotor
 
+from utilities.rocket_calculations import (
+    calculate_rocket_mass_in_kg,
+)
 from exporters.flight_data_export import (
     export_flight_data_to_csv,
     export_flight_data_to_csv_in_simulated_sensor_module_format,
@@ -88,8 +91,8 @@ class FlightSimulation:
 
         # Create rocket
         self.rocket = Rocket(
-            radius=127 / 2000,  # get_maximum_diameter_in_m(parts)
-            mass=14.426,  # calculate_rocket_mass_in_kg(parts)
+            radius=127 / 2000,  # TODO make configurable in config
+            mass=calculate_rocket_mass_in_kg(parts),  # 14.426,
             inertia=(6.321, 6.321, 0.034),
             power_off_drag=power_off_drag_curve_file_path,
             power_on_drag=power_on_drag_curve_file_path,

@@ -3,7 +3,9 @@
 import sys
 from PySide6 import QtCore, QtWidgets
 
-from gui.location_library_editor_widget import LocationLibraryEditorWidget
+from gui.location_library_editor_widget import (
+    LocationLibraryEditorWidget,
+)
 from gui.cloeseable_window_widget import CloseableWindowWidget
 
 

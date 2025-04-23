@@ -17,7 +17,7 @@ from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.nose_cone_config import NoseConeConfig
 from parsers.parachute_config import ParachuteConfig
-from parsers.parts_list_parser import Part, PartsListParser
+from parsers.parts_list_parser import Part, parse_parts_list
 from parsers.rail_button_config import RailButtonConfig
 
 CONFIG_FILENAME = "/configuration.yaml"
@@ -206,8 +206,7 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
     # Parse parts list
     parts_list: t.List[Part]
     with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
-        parts_list_parser = PartsListParser(file)
-        parts_list = parts_list_parser.parts
+        parts_list = parse_parts_list(file)
 
     # Initialize flight simulation
     sim: FlightSimulation = FlightSimulation(

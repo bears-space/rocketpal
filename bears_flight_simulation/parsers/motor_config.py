@@ -1,6 +1,6 @@
 import typing as t
 
-from utilities.ConfigCalc import grainCom, grainDensity
+from utilities.config_calc import grainCom, grainDensity
 
 from core.library_entry import LibraryEntry
 

@@ -10,9 +10,13 @@ from common.common_paths import (
     LOGO_PATH,
     get_simulation_config_folders,
 )
-from gui.asset_library_editor_main_widget import AssetLibraryEditorMainWidget
+from gui.asset_library_editor_main_widget import (
+    AssetLibraryEditorMainWidget,
+)
 from gui.cloeseable_window_widget import CloseableWindowWidget
-from simulation import load_configs_and_run_simulation
+from bears_flight_simulation import (
+    load_configs_and_run_simulation,
+)
 
 
 class FlightSimulationGUI(CloseableWindowWidget):
