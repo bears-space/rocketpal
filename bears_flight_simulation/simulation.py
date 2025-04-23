@@ -27,7 +27,6 @@ NOSE_CONE_FILENAME = "/nose_cone.yaml"
 POWER_OFF_DRAG_CURVE_FILENAME = "/power_off_drag_curve.csv"
 POWER_ON_DRAG_CURVE_FILENAME = "/power_on_drag_curve.csv"
 FINS_CONFIG_FILENAME = "/fins.yaml"
-FINS_RADIANS_FILENAME = "/fins_radians.csv"
 PARTS_LIST_FILENAME = "/parts_list.csv"
 LOCATION_FOLDERNAME = "/locations"
 PARACHUTE_FOLDERNAME = "/parachutes"
@@ -49,7 +48,6 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
         POWER_OFF_DRAG_CURVE_FILENAME,
         POWER_ON_DRAG_CURVE_FILENAME,
         FINS_CONFIG_FILENAME,
-        FINS_RADIANS_FILENAME,
         PARTS_LIST_FILENAME,
     ]:
         file_path = config_folder + filename
@@ -223,7 +221,6 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,
         power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
         fins_config=fins_config,
-        fins_radians_file_path=config_folder + FINS_RADIANS_FILENAME,
         launch_location=launch_location,
         parts=parts_list,
     )

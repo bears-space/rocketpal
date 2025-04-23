@@ -46,7 +46,6 @@ class FlightSimulation:
         power_off_drag_curve_file_path: str,
         power_on_drag_curve_file_path: str,
         fins_config: FinsConfig,
-        fins_radians_file_path: str,
         launch_location: Location,
         parts: t.List[Part],
     ) -> None:
@@ -128,7 +127,6 @@ class FlightSimulation:
             sweep_length=fins_config.sweep_length,
             sweep_angle=fins_config.sweep_angle,
             radius=fins_config.radius,
-            airfoil=(fins_radians_file_path, "radians"),
         )
 
         # Add parachutes
