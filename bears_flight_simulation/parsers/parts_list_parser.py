@@ -12,7 +12,9 @@ class Part:
     hierarchy: list[int]
     mass: float  # in g
     length: float  # in mm
+    position_from_bottom: float  # in mm
     position_from_bottom_of_compartment: float  # in mm
+    center_of_mass_offset_from_position: float  # in mm
     radial_distance_to_midline: float  # in mm
     radial_direction: float  # in degrees
 
@@ -75,8 +77,44 @@ def get_parents_from_hierarchy(
     return parents
 
 
+def get_part_position(part: Part, parts: list[Part]) -> float:
+    parents = get_parents_from_hierarchy(part.hierarchy, parts)
+    position = 0.0
+    for p in parents + [part]:
+        position += p.position_from_bottom + p.position_from_bottom_of_compartment
+    return position
+
+
+def get_part_center_of_mass(part: Part, parts: list[Part]) -> float:
+    return get_part_position(part, parts) + part.center_of_mass_offset_from_position
+
+
 def part_is_motor(part: Part) -> bool:
     return part.name == "Motor" and not is_segment_based_on_hierarchy(part.hierarchy)
+
+
+def get_motor_position(parts: list[Part]) -> float:
+    for part in parts:
+        if part_is_motor(part):
+            return get_part_position(part, parts)
+
+    # NOTE: A motor has to be included, so if there isn't one, raise an error.
+    raise AssertionError
+
+
+def part_is_nosecone(part: Part) -> bool:
+    return part.name == "Nose Cone" and not is_segment_based_on_hierarchy(
+        part.hierarchy
+    )
+
+
+def get_nosecone_position(parts: list[Part]) -> float:
+    for part in parts:
+        if part_is_nosecone(part):
+            return get_part_position(part, parts)
+
+    # NOTE: A nosecone has to be included, so if there isn't one, raise an error.
+    raise AssertionError
 
 
 def parse_parts_list(parts_list_csv_file: t.TextIO) -> list[Part]:
@@ -168,8 +206,12 @@ def parse_parts_list(parts_list_csv_file: t.TextIO) -> list[Part]:
             hierarchy=hierarchy,
             mass=mass,
             length=length,
+            position_from_bottom=(float(row[9]) if row[9] not in ["-", ""] else 0.0),
             position_from_bottom_of_compartment=(
                 float(row[10]) if row[10] not in ["-", ""] else 0.0
+            ),
+            center_of_mass_offset_from_position=(
+                float(row[11]) if row[11] not in ["", "-"] else 0.0
             ),
             radial_distance_to_midline=radial_distance_to_midline,
             radial_direction=radial_direction,

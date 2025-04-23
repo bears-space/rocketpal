@@ -2,7 +2,7 @@ n: 3
 root_chord: 0.120
 tip_chord: 0.060
 span: 0.110
-position: -1.04956
+position: 0.2
 cant_angle: 0.5
 sweep_length: null
 sweep_angle: null

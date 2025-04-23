@@ -1,6 +1,9 @@
 import numpy as np
 
 
+from parsers.parts_list_parser import Part, part_is_motor, get_part_center_of_mass
+
+
 def grainDensity(
     propWeight: float, grain_num: int, grain_h: float, grain_or: float, grain_ir: float
 ) -> float:
@@ -77,6 +80,33 @@ def rocket_cog(
         COG_temp[2] += comp * (aft_end_comps[index] + len_comps[index] / 2)
     rocketCOG = COG_temp / mass_total
     return (rocketCOG[0], rocketCOG[1], rocketCOG[2])
+
+
+def rocket_center_of_mass(
+    parts: list[Part],
+    ignore_motor: bool = True,
+) -> tuple[float, float, float]:
+    center_of_mass = np.array([0.0, 0.0, 0.0])
+    mass_total = 0.0
+    for part in parts:
+        # Ignore motor
+        if ignore_motor and part_is_motor(part):
+            continue
+
+        mass_total += part.mass
+        center_of_mass[0] += (
+            part.mass
+            * part.radial_distance_to_midline
+            * np.cos(np.deg2rad(part.radial_direction))
+        )
+        center_of_mass[1] += (
+            part.mass
+            * part.radial_distance_to_midline
+            * np.sin(np.deg2rad(part.radial_direction))
+        )
+        center_of_mass[2] += part.mass * get_part_center_of_mass(part, parts)
+    center_of_mass /= mass_total
+    return (center_of_mass[0], center_of_mass[1], center_of_mass[2])
 
 
 def inertia_component(

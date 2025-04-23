@@ -8,13 +8,14 @@ from parsers.location import Location
 from parsers.motor_config import MotorConfig
 from parsers.nose_cone_config import NoseConeConfig
 from parsers.parachute_config import ParachuteConfig
-from parsers.parts_list_parser import Part
+from parsers.parts_list_parser import Part, get_nosecone_position, get_motor_position
 from parsers.rail_button_config import RailButtonConfig
 from rocketpy import Environment, Flight, Rocket, SolidMotor
 
 from utilities.rocket_calculations import (
     calculate_rocket_mass_without_motor_in_kg,
 )
+from utilities.config_calc import rocket_center_of_mass
 from exporters.flight_data_export import (
     export_flight_data_to_csv,
     export_flight_data_to_csv_in_simulated_sensor_module_format,
@@ -94,12 +95,16 @@ class FlightSimulation:
             inertia=(6.321, 6.321, 0.034),
             power_off_drag=power_off_drag_curve_file_path,
             power_on_drag=power_on_drag_curve_file_path,
-            center_of_mass_without_motor=0,
+            center_of_mass_without_motor=rocket_center_of_mass(parts)[2] / 1000.0,
             coordinate_system_orientation="tail_to_nose",
+        )
+        logging.info(f"ROCKET COM WITHOUT MOTOR is {rocket_center_of_mass(parts)}")
+        logging.info(
+            f"ROCKET COM WITH MOTOR is {rocket_center_of_mass(parts, ignore_motor=False)}"
         )
 
         # Add motor to rocket
-        self.rocket.add_motor(self.motor, position=-1.255)
+        self.rocket.add_motor(self.motor, position=get_motor_position(parts) / 1000.0)
 
         # Add rail guides
         self.rocket.set_rail_buttons(
@@ -112,7 +117,8 @@ class FlightSimulation:
         self.rocket.add_nose(
             length=nose_cone_config.length,
             kind=nose_cone_config.kind,
-            position=nose_cone_config.position,
+            position=get_nosecone_position(parts)
+            / 1000.0,  # nose_cone_config.position,
             bluffness=nose_cone_config.bluffness,
             power=nose_cone_config.power_if_using_powerseries_kind,
             base_radius=nose_cone_config.base_radius,
