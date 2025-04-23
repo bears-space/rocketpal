@@ -20,6 +20,9 @@ class Config:
     inclination: float
     heading: float
 
+    # Rocket settings
+    diameter: float
+
     # Export options - Environment
     export_text_environment: bool
     export_plot_environment: bool
@@ -72,6 +75,9 @@ class Config:
         self.launch_rail_length = float(data["railL"])
         self.inclination = float(data["inclination"])
         self.heading = float(data["heading"])
+
+        # Parse rocket settings
+        self.diameter = float(data["diameter"])
 
         # Parse export options - Environment
         self.export_text_environment = bool(data["exportTextEnvironment"])

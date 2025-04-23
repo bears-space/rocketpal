@@ -10,6 +10,7 @@ inclination: 84 # launch inclination from ground in degree
 heading: 0 # launch heading relative to north in degree
 dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
+diameter: 0.1236 # diameter of the rocket in m
 
 # Export Options: Environment
 exportTextEnvironment: True

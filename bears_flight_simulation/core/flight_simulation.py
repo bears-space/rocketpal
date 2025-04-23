@@ -91,7 +91,7 @@ class FlightSimulation:
 
         # Create rocket
         self.rocket = Rocket(
-            radius=127 / 2000,  # TODO make configurable in config
+            radius=config.diameter / 2.0,  # 127 / 2000,
             mass=calculate_rocket_mass_in_kg(parts),  # 14.426,
             inertia=(6.321, 6.321, 0.034),
             power_off_drag=power_off_drag_curve_file_path,
