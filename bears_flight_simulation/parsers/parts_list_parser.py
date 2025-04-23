@@ -75,6 +75,10 @@ def get_parents_from_hierarchy(
     return parents
 
 
+def part_is_motor(part: Part) -> bool:
+    return part.name == "Motor" and not is_segment_based_on_hierarchy(part.hierarchy)
+
+
 def parse_parts_list(parts_list_csv_file: t.TextIO) -> list[Part]:
     # Initialize parts list
     parts: list[Part] = []

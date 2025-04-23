@@ -1,4 +1,5 @@
 import typing as t
+import logging
 from pathlib import Path
 
 from parsers.config import Config
@@ -12,7 +13,7 @@ from parsers.rail_button_config import RailButtonConfig
 from rocketpy import Environment, Flight, Rocket, SolidMotor
 
 from utilities.rocket_calculations import (
-    calculate_rocket_mass_in_kg,
+    calculate_rocket_mass_without_motor_in_kg,
 )
 from exporters.flight_data_export import (
     export_flight_data_to_csv,
@@ -84,9 +85,13 @@ class FlightSimulation:
         )
 
         # Create rocket
+        rocket_mass_without_motor = calculate_rocket_mass_without_motor_in_kg(parts)
+        logging.info(
+            f"FlightSimulation: calculated rocket mass (without motor) is {rocket_mass_without_motor}kg"
+        )
         self.rocket = Rocket(
             radius=config.diameter / 2.0,  # 127 / 2000,
-            mass=calculate_rocket_mass_in_kg(parts),  # 14.426,
+            mass=rocket_mass_without_motor,  # 14.426,
             inertia=(6.321, 6.321, 0.034),
             power_off_drag=power_off_drag_curve_file_path,
             power_on_drag=power_on_drag_curve_file_path,
@@ -177,14 +182,14 @@ class FlightSimulation:
         print("MOTOR INFO END")
 
         # Show graphics about the rocket
-        print("ROCKET GRAPHICS START")
+        # print("ROCKET GRAPHICS START")
         if self.config.export_plot_static_margin:
             self.rocket.plots.static_margin(
                 filename=self.output_folder + "/plots/rocket/static_margin.png"
             )
         if self.config.export_plot_rocket:
             self.rocket.draw(filename=self.output_folder + "/plots/rocket/rocket.png")
-        print("ROCKET GRAPHICS END")
+        # print("ROCKET GRAPHICS END")
 
     def show_results(self) -> None:
         assert self.simulation is not None
