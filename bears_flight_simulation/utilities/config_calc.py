@@ -90,6 +90,10 @@ def rocket_center_of_mass(
     parts: list[Part],
     ignore_motor: bool = True,
 ) -> tuple[float, float, float]:
+    # Return early if parts is empty
+    if len(parts) == 0:
+        return (0.0, 0.0, 0.0)
+
     center_of_mass = np.array([0.0, 0.0, 0.0])
     mass_total = 0.0
     for part in parts:
