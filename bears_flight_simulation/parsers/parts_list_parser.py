@@ -3,6 +3,7 @@ import logging
 import re
 import typing as t
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass
@@ -108,13 +109,17 @@ def part_is_nosecone(part: Part) -> bool:
     )
 
 
-def get_nosecone_position(parts: list[Part]) -> float:
+def get_nosecone(parts: list[Part]) -> Part:
     for part in parts:
         if part_is_nosecone(part):
-            return get_part_position(part, parts)
+            return part
 
     # NOTE: A nosecone has to be included, so if there isn't one, raise an error.
     raise AssertionError
+
+
+def get_nosecone_position(parts: list[Part]) -> float:
+    return get_part_position(get_nosecone(parts), parts)
 
 
 def parse_parts_list(parts_list_csv_file: t.TextIO) -> list[Part]:
@@ -221,3 +226,12 @@ def parse_parts_list(parts_list_csv_file: t.TextIO) -> list[Part]:
         parts.append(part)
 
     return parts
+
+
+if __name__ == "__main__":
+    parts_list_path = (
+        Path(__file__).parent.parent.parent / "template" / "parts_list.csv"
+    )
+    parts: list[Part] = []
+    with parts_list_path.open("r") as file:
+        parts = parse_parts_list(file)
