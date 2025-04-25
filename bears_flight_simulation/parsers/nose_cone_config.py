@@ -6,7 +6,6 @@ import yaml
 class NoseConeConfig:
     length: float
     kind: str
-    position: float
     bluffness: float
     power_if_using_powerseries_kind: t.Union[float, None]
     base_radius: t.Union[float, None]
@@ -18,7 +17,6 @@ class NoseConeConfig:
         # Load nose cone data
         self.length = float(data["length"])
         self.kind = str(data["kind"])
-        self.position = float(data["position"])
         self.bluffness = float(data["bluffness"])
         self.power_if_using_powerseries_kind = data["power_if_using_powerseries_kind"]
         self.base_radius = data["base_radius"]

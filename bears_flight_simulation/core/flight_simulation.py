@@ -10,7 +10,6 @@ from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
 from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
 from bears_flight_simulation.parsers.parts_list_parser import (
     Part,
-    get_nosecone,
     get_nosecone_position,
     get_motor_position,
 )
@@ -122,7 +121,8 @@ class FlightSimulation:
         )
 
         # Add aerodynamic components
-        nosecone_length = get_nosecone(parts).length
+        # nosecone_length = get_nosecone(parts).length
+        nosecone_length = nose_cone_config.length * 1000.0
         self.rocket.add_nose(
             length=nosecone_length / 1000.0,
             kind=nose_cone_config.kind,

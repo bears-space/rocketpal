@@ -1,7 +1,6 @@
-length: 0.55829
+length: 0.37004
 # Nose cone kinds supported: "von karman", "conical", "ogive", "lvhaack", "powerseries"
-kind: "von karman"
-position: 1.278
-bluffness: 0
+kind: "ogive"
+bluffness: 0.1618
 power_if_using_powerseries_kind: null
 base_radius: null
