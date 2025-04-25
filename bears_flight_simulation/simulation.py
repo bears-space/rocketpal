@@ -2,7 +2,6 @@
 
 import logging
 import os
-import typing as t
 from socket import gethostname
 from datetime import datetime, timezone
 
@@ -10,12 +9,14 @@ from bears_flight_simulation.core.flight_simulation import FlightSimulation
 from bears_flight_simulation.core.location_library import LocationLibrary
 from bears_flight_simulation.core.motor_library import MotorLibrary
 from bears_flight_simulation.core.parachute_library import ParachuteLibrary
+from bears_flight_simulation.core.airbrake_library import AirbrakeLibrary
 from bears_flight_simulation.parsers.config import Config
 from bears_flight_simulation.parsers.fins_config import FinsConfig
 from bears_flight_simulation.parsers.location import Location
 from bears_flight_simulation.parsers.motor_config import MotorConfig
 from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
 from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
+from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
 from bears_flight_simulation.parsers.parts_list_parser import Part, parse_parts_list
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
 
@@ -29,6 +30,7 @@ FINS_CONFIG_FILENAME = "/fins.yaml"
 PARTS_LIST_FILENAME = "/parts_list.csv"
 LOCATION_FOLDERNAME = "/locations"
 PARACHUTE_FOLDERNAME = "/parachutes"
+AIRBRAKE_FOLDERNAME = "/airbrakes"
 
 
 def _ensure_config_files_exist(config_folder: str) -> bool:
@@ -56,6 +58,7 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
         MOTOR_FOLDERNAME,
         LOCATION_FOLDERNAME,
         PARACHUTE_FOLDERNAME,
+        AIRBRAKE_FOLDERNAME,
     ]:
         file_path = config_folder + foldername
         if not os.path.isdir(file_path):
@@ -70,11 +73,11 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
 
 
 def _load_motors_from_library(
-    config_folder: str, motor_ids: t.List[str]
-) -> t.List[MotorConfig]:
+    config_folder: str, motor_ids: list[str]
+) -> list[MotorConfig]:
     motor_library: MotorLibrary = MotorLibrary(config_folder + MOTOR_FOLDERNAME)
 
-    motors: t.List[MotorConfig] = []
+    motors: list[MotorConfig] = []
     for id in motor_ids:
         motor = motor_library.get(id)
         if motor is None:
@@ -92,12 +95,12 @@ def _load_motors_from_library(
 
 
 def _load_parachutes_from_library(
-    config_folder: str, parachute_ids: t.List[str]
-) -> t.List[ParachuteConfig]:
+    config_folder: str, parachute_ids: list[str]
+) -> list[ParachuteConfig]:
     parachute_library: ParachuteLibrary = ParachuteLibrary(
         config_folder + PARACHUTE_FOLDERNAME
     )
-    parachutes: t.List[ParachuteConfig] = []
+    parachutes: list[ParachuteConfig] = []
     for id in parachute_ids:
         parachute = parachute_library.get(id)
         if parachute is None:
@@ -111,6 +114,28 @@ def _load_parachutes_from_library(
                 f"StargazeFlightSimulation: Loaded ParachuteConfig with id '{parachute.id}'"
             )
     return parachutes
+
+
+def _load_airbrakes_from_library(
+    config_folder: str, airbrake_ids: list[str]
+) -> list[AirbrakeConfig]:
+    airbrake_library: AirbrakeLibrary = AirbrakeLibrary(
+        config_folder + AIRBRAKE_FOLDERNAME
+    )
+    airbrakes: list[AirbrakeConfig] = []
+    for id in airbrake_ids:
+        airbrake = airbrake_library.get(id)
+        if airbrake is None:
+            logging.warning(
+                f"StargazeFlightSimulation: The airbrake with the id '{id}' does not exist in the airbrake library. Skipping ..."
+            )
+        else:
+            assert isinstance(airbrake, AirbrakeConfig)
+            airbrakes.append(airbrake)
+            logging.info(
+                f"StargazeFlightSimulation: Loaded AirbrakeConfig with id '{airbrake.id}'"
+            )
+    return airbrakes
 
 
 def _load_config(config_folder: str) -> Config:
@@ -187,6 +212,8 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
 
     parachutes = _load_parachutes_from_library(config_folder, config.parachute_ids)
 
+    airbrakes = _load_airbrakes_from_library(config_folder, config.airbrake_ids)
+
     rail_button_config = _load_rail_button_config(config_folder)
 
     nose_cone_config = _load_nose_cone_config(config_folder)
@@ -194,7 +221,7 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
     fins_config = _load_fins_config(config_folder)
 
     # Parse parts list
-    parts_list: t.List[Part]
+    parts_list: list[Part]
     with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
         parts_list = parse_parts_list(file)
 
@@ -208,6 +235,7 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
         + motor_config.engine_filename,
         motor_config=motor_config,
         parachutes=parachutes,
+        airbrakes=airbrakes,
         rail_button_config=rail_button_config,
         nose_cone_config=nose_cone_config,
         power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,

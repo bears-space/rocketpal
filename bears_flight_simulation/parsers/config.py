@@ -10,10 +10,11 @@ class Config:
 
     # Input ids
     location_id: str
-    motor_ids: t.List[str]
+    motor_ids: list[str]
     drag_curve_power_on_file: str
     drag_curve_power_off_file: str
-    parachute_ids: t.List[str]
+    parachute_ids: list[str]
+    airbrake_ids: list[str]
 
     # Simulation settings
     date_difference_days: int
@@ -71,6 +72,7 @@ class Config:
         self.drag_curve_power_on_file = str(data["dragCurvePowerOnFile"])
         self.drag_curve_power_off_file = str(data["dragCurvePowerOffFile"])
         self.parachute_ids = data["parachutes"]
+        self.airbrake_ids = data["airbrakes"]
 
         # Parse simulation settings
         self.date_difference_days = int(data["dateDiff"])

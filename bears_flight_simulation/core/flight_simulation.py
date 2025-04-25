@@ -1,4 +1,3 @@
-import typing as t
 import logging
 from pathlib import Path
 
@@ -8,6 +7,7 @@ from bears_flight_simulation.parsers.location import Location
 from bears_flight_simulation.parsers.motor_config import MotorConfig
 from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
 from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
+from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
 from bears_flight_simulation.parsers.parts_list_parser import (
     Part,
     get_nosecone_position,
@@ -45,14 +45,15 @@ class FlightSimulation:
         output_folder: str,
         motor_file_path: str,
         motor_config: MotorConfig,
-        parachutes: t.List[ParachuteConfig],
+        parachutes: list[ParachuteConfig],
+        airbrakes: list[AirbrakeConfig],
         rail_button_config: RailButtonConfig,
         nose_cone_config: NoseConeConfig,
         power_off_drag_curve_file_path: str,
         power_on_drag_curve_file_path: str,
         fins_config: FinsConfig,
         launch_location: Location,
-        parts: t.List[Part],
+        parts: list[Part],
     ) -> None:
         # Store configs / folders
         self.config = config
@@ -102,9 +103,11 @@ class FlightSimulation:
             center_of_mass_without_motor=rocket_center_of_mass(parts)[2] / 1000.0,
             coordinate_system_orientation="tail_to_nose",
         )
-        logging.info(f"ROCKET COM WITHOUT MOTOR is {rocket_center_of_mass(parts)}")
         logging.info(
-            f"ROCKET COM WITH MOTOR is {rocket_center_of_mass(parts, ignore_motor=False)}"
+            f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {rocket_center_of_mass(parts)}"
+        )
+        logging.info(
+            f"FlightSimulation: ROCKET COM WITH MOTOR is {rocket_center_of_mass(parts, ignore_motor=False)}"
         )
 
         # Add motor to rocket
@@ -152,6 +155,14 @@ class FlightSimulation:
                     parachute.noise_standard_deviation_pascal,
                     parachute.noise_time_correlation_pascal,
                 ),
+            )
+
+        # Add airbrakes
+        for airbrake in airbrakes:
+            # TODO Add airbrakes to the rocket (including controller functions)
+            # self.rocket.add_air_brakes()
+            logging.info(
+                f"FlightSimulation: ignoring configured airbrake '{airbrake.id}' (not implemented yet)"
             )
 
     def simulate(self) -> None:
