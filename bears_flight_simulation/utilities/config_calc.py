@@ -5,6 +5,7 @@ from bears_flight_simulation.parsers.parts_list_parser import (
     Part,
     part_is_motor,
     get_part_center_of_mass,
+    is_segment_based_on_hierarchy,
 )
 
 
@@ -99,6 +100,10 @@ def rocket_center_of_mass(
     for part in parts:
         # Ignore motor
         if ignore_motor and part_is_motor(part):
+            continue
+
+        # Ignore groups
+        if is_segment_based_on_hierarchy(part.hierarchy):
             continue
 
         mass_total += part.mass

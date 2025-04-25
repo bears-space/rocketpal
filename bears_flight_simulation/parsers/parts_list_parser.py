@@ -4,6 +4,7 @@ import re
 import typing as t
 from dataclasses import dataclass
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 
 @dataclass
@@ -228,6 +229,28 @@ def parse_parts_list(parts_list_csv_file: t.TextIO) -> list[Part]:
     return parts
 
 
+def visualize_mass_distribution(parts: list[Part]):
+    parts_that_are_not_groups = [
+        part for part in parts if not is_segment_based_on_hierarchy(part.hierarchy)
+    ]
+
+    plt.figure()
+
+    for part in parts_that_are_not_groups:
+        plt.scatter(
+            x=get_part_center_of_mass(part, parts),
+            y=part.mass,
+            color="blue",
+            marker="o",
+        )
+
+    plt.xlabel("x")
+    plt.ylabel("mass in g")
+    plt.title("Mass distribution of parts list")
+    plt.grid()
+    plt.show()
+
+
 if __name__ == "__main__":
     parts_list_path = (
         Path(__file__).parent.parent.parent / "template" / "parts_list.csv"
@@ -235,3 +258,5 @@ if __name__ == "__main__":
     parts: list[Part] = []
     with parts_list_path.open("r") as file:
         parts = parse_parts_list(file)
+
+    visualize_mass_distribution(parts)
