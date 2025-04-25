@@ -1,0 +1,19 @@
+# Identificator
+ID: Cesaroni_6800M3700-P # ID used for configuration file etc.
+engFileName: Cesaroni_6800M3700-P.eng # Filename of the motor file in .eng format
+# Physical Parameters
+dryMass: 2.672 # dry mass in kg; burnout weight from cessaroni website
+# dry inertia: [0.125, 0.125, 0.002] # dry inertia in kg*m2; height dry weight and inner, outer radius cylinder required --> from CAD?
+dryInertia: [0,0,0] # placeholder until better estimation of dry inertia of motor
+nozzleR: 33 # nozzle radius in mm PS: should be same for every Pro75; Pro54 must be measured?
+throatR: 11 # throat radius in mm PS: should be same for every Pro75; Pro54 must be measured?
+# Propellant Parameters
+propMass: 3.019 # propellant mass in kg; propellant weight from cessaroni website
+grainNumber: 6 # amount of grains
+grainOR: 33 # grain outer radius in mm PS: should be same for every Pro75; Pro54 must be measured?
+grainIIR: 15 # grain intial inner radius in mm PS: should be same for every Pro75; Pro54 must be measured?
+grainIH: 120 # grain intial height in mm PS: should be the same for every Pro75 "full" grain; Pro54 must be measured?
+grainSep: 5 # grain seperation in mm PS: should be same for every Pro75; Pro54 must be measured? (length of grain spacer ring)
+burnT: 1.83 # burn time in s from cesaroni website for corresponding motor; not necessary if thrust curve is given in .eng, .csv, or as function with list as instance
+# Position Parameters
+nozzlePos: 0 # nozzle position in m from nozzle to combustion chamber
