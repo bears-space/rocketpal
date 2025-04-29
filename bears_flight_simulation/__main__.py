@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse
+import click
 import logging
 import os
 
@@ -14,27 +14,24 @@ def dir_path(path_to_dir: str) -> str:
         raise NotADirectoryError(path_to_dir)
 
 
-# Set default logging level
-logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)
-
-# Setup argparse
-argument_parser = argparse.ArgumentParser(prog="stargaze-flight-simulation")
-
-# Add arguments
-argument_parser.add_argument(
-    "config_folder", type=dir_path, help="The input folder containing config files"
+@click.command()
+@click.argument(
+    "config_folder", type=click.Path(exists=True, file_okay=False, path_type=str)
 )
-argument_parser.add_argument(
+@click.option(
+    "-o",
     "--output",
-    type=str,
-    help="The output folder, by default './output'",
     default="./output",
+    type=click.Path(exists=False, file_okay=False, path_type=str),
+    help="The output folder, by default './output'",
 )
+def run_bears_flight_simulation(config_folder, output):
+    """Run the BEARS flight simulation using the given config_folder."""
+    # Set default logging level
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.INFO)
 
-# Parse arguments
-args = argument_parser.parse_args()
+    load_configs_and_run_simulation(config_folder, output)
 
-load_configs_and_run_simulation(
-    config_folder=args.config_folder, output_folder=args.output
-)
+
+run_bears_flight_simulation()
