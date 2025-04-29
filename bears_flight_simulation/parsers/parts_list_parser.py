@@ -95,6 +95,20 @@ def part_is_motor(part: Part) -> bool:
     return part.name == "Motor" and not is_segment_based_on_hierarchy(part.hierarchy)
 
 
+def part_is_motor_group(part: Part) -> bool:
+    return part.name == "Motor_Components" and is_segment_based_on_hierarchy(
+        part.hierarchy
+    )
+
+
+def part_is_in_motor_group(part: Part, parts: list[Part]) -> bool:
+    parents = get_parents_from_hierarchy(part.hierarchy, parts)
+    for parent in parents:
+        if part_is_motor_group(parent):
+            return True
+    return False
+
+
 def get_motor_position(parts: list[Part]) -> float:
     for part in parts:
         if part_is_motor(part):
