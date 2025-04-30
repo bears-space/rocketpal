@@ -48,7 +48,7 @@ A file for the motor has to be provided in `.eng` format. On at least one websit
 
 ### Setup pyenv
 
-First, we need to setup pyenv. This is required because we need to use a specific Python version, namely 3.12.6, and pyenv allows us to specify a Python version for this specific repository without affecting your system-wide Python installation.
+First, we need to setup pyenv. This is required because we need to use a specific Python version, namely 3.13.2, and pyenv allows us to specify a Python version for this specific repository without affecting your system-wide Python installation.
 
 Install pyenv on your system. This step varies based on your OS:
 
@@ -69,13 +69,13 @@ Additionally, on **Linux** systems, it is recommended that you install typical b
 
 If you are on a **Linux or MacOS** system, ensure Tk (for `tkinter`) is installed before you continue or you won't be able to see any graphical output. For example, on Arch-based systems, run `sudo pacman -S tk`.
 
-Now, install Python 3.12.6 using pyenv, like this:
+Now, install Python 3.13.2 using pyenv, like this:
 
 ```sh
-pyenv install 3.12.6
+pyenv install 3.13.2
 ```
 
-Confirm Python 3.12.6 has been installed by checking the output of this command:
+Confirm Python 3.13.2 has been installed by checking the output of this command:
 
 ```sh
 pyenv versions
