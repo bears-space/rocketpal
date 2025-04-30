@@ -6,7 +6,7 @@ This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight 
 
 ### Setup / Installation
 
-Before you can run the simulation, you need to install the correct version of Python (3.12.6) and the required packages from Pip. For this, please follow the instructions in the section [Setup development environment](#setup-development-environment).
+Before you can run the simulation, you need to install the correct version of Python (3.13.2) and the required packages from Pip. For this, please follow the instructions in the section [Setup development environment](#setup-development-environment).
 
 ### Basic usage
 
