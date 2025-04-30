@@ -2,6 +2,16 @@
 
 This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight simulation for the STARGAZE rocket, built by [BEARS (Berlin Experimental Astronautics Research Student Team e.V.)](https://www.bears-space.de/).
 
+## Instructions for EURoC evaluators
+
+To run the simulation, install Python and all requirements listend in the `requirements.txt` (refer ot the section [Setup development environment](#setup-development-environment)). Then, you should be able to run the simulation with the following command:
+
+```sh
+python Team08_RocketPy_v1.py
+```
+
+This will output the simulation results (graphics and other files) in the `./output` folder.
+
 ## Usage
 
 ### Setup / Installation
@@ -115,7 +125,7 @@ python -m pip -V
 Before we install the required packages, update the local pip installation:
 
 ```sh
-python -m pip install --upgrade pip --user
+python -m pip install --upgrade pip
 ```
 
 Install the required packages using pip:
