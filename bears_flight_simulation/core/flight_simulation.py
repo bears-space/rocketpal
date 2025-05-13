@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import math
 
 from bears_flight_simulation.parsers.config import Config
 from bears_flight_simulation.parsers.fins_config import FinsConfig
@@ -24,6 +25,18 @@ from bears_flight_simulation.exporters.flight_data_export import (
     export_flight_data_to_csv,
     export_flight_data_to_csv_in_simulated_sensor_module_format,
 )
+
+
+def wind_speed_and_direction_to_east_and_north(
+    wind_speed: float, wind_direction: float
+) -> tuple[float, float]:
+    # Convert from RocketPy direction convention to east-north-positive convention
+    wind_direction = (-wind_direction) - 90.0
+
+    wind_direction_rad = math.radians(wind_direction)
+    east_component = math.cos(wind_direction_rad)
+    north_component = math.sin(wind_direction_rad)
+    return (east_component * wind_speed, north_component * wind_speed)
 
 
 class FlightSimulation:
@@ -54,6 +67,8 @@ class FlightSimulation:
         fins_config: FinsConfig,
         launch_location: Location,
         parts: list[Part],
+        wind_speed: float,
+        wind_direction: float,
     ) -> None:
         # Store configs / folders
         self.config = config
@@ -67,7 +82,17 @@ class FlightSimulation:
         )
         self.environment.set_date(config.launch_date)
         # self.environment.set_atmospheric_model(type="Forecast", file="GFS")
-        self.environment.set_atmospheric_model(type="standard_atmosphere")
+        # self.environment.set_atmospheric_model(type="standard_atmosphere")
+        (wind_east, wind_north) = wind_speed_and_direction_to_east_and_north(
+            wind_speed, wind_direction
+        )
+        self.environment.set_atmospheric_model(
+            type="custom_atmosphere",
+            pressure=None,
+            temperature=None,
+            wind_u=[(0, wind_east)],  # type: ignore
+            wind_v=[(0, wind_north)],  # type: ignore
+        )
 
         # Setup motor
         self.motor = SolidMotor(

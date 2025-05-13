@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 
 from bears_flight_simulation.core.flight_simulation import FlightSimulation
 from bears_flight_simulation.core.location_library import LocationLibrary
+from bears_flight_simulation.core.weather_library import WeatherLibrary
 from bears_flight_simulation.core.motor_library import MotorLibrary
 from bears_flight_simulation.core.parachute_library import ParachuteLibrary
 from bears_flight_simulation.core.airbrake_library import AirbrakeLibrary
@@ -19,6 +20,7 @@ from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
 from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
 from bears_flight_simulation.parsers.parts_list_parser import Part, parse_parts_list
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
+from bears_flight_simulation.parsers.weather_config import WeatherConfig
 
 CONFIG_FILENAME = "/configuration.yaml"
 MOTOR_FOLDERNAME = "/motors"
@@ -29,6 +31,7 @@ POWER_ON_DRAG_CURVE_FILENAME = "/power_on_drag_curve.csv"
 FINS_CONFIG_FILENAME = "/fins.yaml"
 PARTS_LIST_FILENAME = "/parts_list.csv"
 LOCATION_FOLDERNAME = "/locations"
+WEATHER_FOLDERNAME = "/weathers"
 PARACHUTE_FOLDERNAME = "/parachutes"
 AIRBRAKE_FOLDERNAME = "/airbrakes"
 
@@ -57,6 +60,7 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
     for foldername in [
         MOTOR_FOLDERNAME,
         LOCATION_FOLDERNAME,
+        WEATHER_FOLDERNAME,
         PARACHUTE_FOLDERNAME,
         AIRBRAKE_FOLDERNAME,
     ]:
@@ -156,6 +160,15 @@ def _load_launch_location_from_library(
     return library_entry
 
 
+def _load_weather_config_from_library(
+    config_folder: str, weather_config_id: str
+) -> WeatherConfig | None:
+    weather_library: WeatherLibrary = WeatherLibrary(config_folder + WEATHER_FOLDERNAME)
+    library_entry = weather_library.get(weather_config_id)
+    assert isinstance(library_entry, WeatherConfig) or library_entry is None
+    return library_entry
+
+
 def _load_rail_button_config(config_folder: str) -> RailButtonConfig:
     with open(config_folder + RAIL_BUTTONS_FILENAME, "r") as file:
         return RailButtonConfig(file)
@@ -195,6 +208,26 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
         logging.info(
             f"StargazeFlightSimulation: Using Location with id '{launch_location.id}'"
         )
+
+    weather_config = _load_weather_config_from_library(
+        config_folder, config.weather_config_id
+    )
+    if weather_config is None:
+        logging.error(
+            f"StargazeFlightSimulation: The weather config with the id '{config.weather_config_id}'"
+            f" does not exist in the weather config library. Aborting ..."
+        )
+        exit(2)  # 2 means "No such file or directory"
+    else:
+        logging.info(
+            f"StargazeFlightSimulation: Using WeatherConfig with id '{weather_config.id}'"
+        )
+
+    # TODO Iterate over wind speeds and directions instead, allowing for comparison
+    print("weather_config.wind_speeds", weather_config.wind_speeds)
+    print("weather_config.wind_directions", weather_config.wind_directions)
+    wind_speed = list(weather_config.wind_speeds)[0]
+    wind_direction = list(weather_config.wind_directions)[0]
 
     motors = _load_motors_from_library(config_folder, config.motor_ids)
     if len(motors) == 0:
@@ -243,6 +276,8 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
         fins_config=fins_config,
         launch_location=launch_location,
         parts=parts_list,
+        wind_speed=wind_speed,
+        wind_direction=wind_direction,
     )
 
     # Show infos about configured flight
