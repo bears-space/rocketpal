@@ -223,25 +223,12 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
             f"StargazeFlightSimulation: Using WeatherConfig with id '{weather_config.id}'"
         )
 
-    # TODO Iterate over wind speeds and directions instead, allowing for comparison
-    print("weather_config.wind_speeds", weather_config.wind_speeds)
-    print("weather_config.wind_directions", weather_config.wind_directions)
-    wind_speed = list(weather_config.wind_speeds)[0]
-    wind_direction = list(weather_config.wind_directions)[0]
-
     motors = _load_motors_from_library(config_folder, config.motor_ids)
     if len(motors) == 0:
         logging.error(
             "StargazeFlightSimulation: No motors have been loaded. Aborting ..."
         )
         exit(2)  # 2 means "No such file or directory"
-
-    # Use first motor from list
-    # TODO Iterate over motors instead, allowing for comparison between different motors in one run
-    motor_config = motors[0]
-    logging.info(
-        f"StargazeFlightSimulation: Choosing MotorConfig with id '{motor_config.id}'"
-    )
 
     parachutes = _load_parachutes_from_library(config_folder, config.parachute_ids)
 
@@ -258,34 +245,51 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
     with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
         parts_list = parse_parts_list(file)
 
-    # Initialize flight simulation
-    sim: FlightSimulation = FlightSimulation(
-        config=config,
-        output_folder=output_folder,
-        motor_file_path=config_folder
-        + MOTOR_FOLDERNAME
-        + "/"
-        + motor_config.engine_filename,
-        motor_config=motor_config,
-        parachutes=parachutes,
-        airbrakes=airbrakes,
-        rail_button_config=rail_button_config,
-        nose_cone_config=nose_cone_config,
-        power_off_drag_curve_file_path=config_folder + POWER_OFF_DRAG_CURVE_FILENAME,
-        power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
-        fins_config=fins_config,
-        launch_location=launch_location,
-        parts=parts_list,
-        wind_speed=wind_speed,
-        wind_direction=wind_direction,
-    )
+    for motor_config_i, motor_config in enumerate(motors):
+        for wind_direction_i, wind_direction in enumerate(
+            weather_config.wind_directions,
+        ):
+            for wind_speed_i, wind_speed in enumerate(
+                weather_config.wind_speeds,
+            ):
+                logging.info(
+                    f"[motor {motor_config_i + 1}/{len(motors)}, wind_direction {wind_direction_i + 1}/{len(weather_config.wind_directions)}, wind_speed {wind_speed_i + 1}/{len(weather_config.wind_speeds)}] Testing this stuff"
+                )
 
-    # Show infos about configured flight
-    sim.show_input_info()
+                subfolder = (
+                    f"/{motor_config.id}/{wind_direction}_degrees/{wind_speed}_mps_wind"
+                )
 
-    # Run simulation
-    sim.simulate()
+                # Initialize flight simulation
+                sim: FlightSimulation = FlightSimulation(
+                    config=config,
+                    output_folder=output_folder + subfolder,
+                    motor_file_path=config_folder
+                    + MOTOR_FOLDERNAME
+                    + "/"
+                    + motor_config.engine_filename,
+                    motor_config=motor_config,
+                    parachutes=parachutes,
+                    airbrakes=airbrakes,
+                    rail_button_config=rail_button_config,
+                    nose_cone_config=nose_cone_config,
+                    power_off_drag_curve_file_path=config_folder
+                    + POWER_OFF_DRAG_CURVE_FILENAME,
+                    power_on_drag_curve_file_path=config_folder
+                    + POWER_ON_DRAG_CURVE_FILENAME,
+                    fins_config=fins_config,
+                    launch_location=launch_location,
+                    parts=parts_list,
+                    wind_speed=wind_speed,
+                    wind_direction=wind_direction,
+                )
 
-    # Show and save results
-    sim.show_results()
-    sim.export_results()
+                # Show infos about configured flight
+                sim.show_input_info()
+
+                # Run simulation
+                sim.simulate()
+
+                # Show and save results
+                sim.show_results()
+                sim.export_results()
