@@ -11,11 +11,8 @@ from bears_flight_simulation.gui.flight_simulation_gui import FlightSimulationGU
 
 ICON_PATH = str(Path(__file__).parent.parent) + "/img/BEARS_Logo_white_circle.png"
 
-if __name__ == "__main__":
-    # Set default logging level
-    logging.basicConfig()
-    logging.getLogger().setLevel(logging.INFO)
 
+def start_and_hand_over_to_simulation_gui():
     # Prepare application
     app = QtWidgets.QApplication([])
     app.setApplicationName("FSG - Flight Simulation GUI")
@@ -28,3 +25,11 @@ if __name__ == "__main__":
 
     # Enter GUI main loop
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    # Set default logging level
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.INFO)
+
+    start_and_hand_over_to_simulation_gui()

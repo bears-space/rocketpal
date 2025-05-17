@@ -5,6 +5,7 @@ import logging
 import os
 
 from bears_flight_simulation.simulation import load_configs_and_run_simulation
+from bears_flight_simulation.simulation_gui import start_and_hand_over_to_simulation_gui
 
 
 def dir_path(path_to_dir: str) -> str:
@@ -14,7 +15,12 @@ def dir_path(path_to_dir: str) -> str:
         raise NotADirectoryError(path_to_dir)
 
 
-@click.command()
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
 @click.argument(
     "config_folder", type=click.Path(exists=True, file_okay=False, path_type=str)
 )
@@ -25,7 +31,7 @@ def dir_path(path_to_dir: str) -> str:
     type=click.Path(exists=False, file_okay=False, path_type=str),
     help="The output folder, by default './output'",
 )
-def run_bears_flight_simulation(config_folder, output):
+def sim(config_folder, output):
     """Run the BEARS flight simulation using the given config_folder."""
     # Set default logging level
     logging.basicConfig()
@@ -34,4 +40,14 @@ def run_bears_flight_simulation(config_folder, output):
     load_configs_and_run_simulation(config_folder, output)
 
 
-run_bears_flight_simulation()
+@cli.command()
+def gui():
+    """Run FSG (the BEARS flight simulation GUI)."""
+    # Set default logging level
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.INFO)
+
+    start_and_hand_over_to_simulation_gui()
+
+
+cli()

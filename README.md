@@ -38,16 +38,20 @@ In both cases, the simulation uses the `./input` folder to read its configuratio
 
 ### Advanced usage
 
-The simulation is provided in the shape of a Python program. You can run the simulation from a terminal as follows:
+The package contains two commands: The simulation (`sim`) and the GUI (`gui`).
+
+You can run the simulation from a terminal as follows:
 
 ```sh
-python simulation/flight_simulation.py ./input --output ./output
+python -m bears_flight_simulation sim ./input --output ./output
 ```
 
-To see the available command line parameters, run:
+To see the available command line parameters, run one of the following (depending on what info you need):
 
 ```sh
-python simulation/flight_simulation.py -h
+python -m bears_flight_simulation --help
+python -m bears_flight_simulation sim --help
+python -m bears_flight_simulation gui --help
 ```
 
 ### Configuration

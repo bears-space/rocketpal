@@ -4,8 +4,8 @@ from collections.abc import Callable
 import sys
 from PySide6 import QtCore, QtWidgets
 
-# from simulation.core.library import Library
-# from simulation.core.library_entry import LibraryEntry
+# from bears_flight_simulation.simulation.core.library import Library
+# from bears_flight_simulation.simulation.core.library_entry import LibraryEntry
 
 
 class LibrarySelectorWidget(QtWidgets.QWidget):
