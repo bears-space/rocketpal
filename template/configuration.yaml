@@ -9,7 +9,7 @@ airbrakes: [stargaze-airbrake] # IDs of airbrakes to add to rocket
 dateDiff: 7 # day difference relative to today for which simulation shall be executed
 railL: 12 # launch rail length in meter
 inclination: 84 # launch inclination from ground in degree
-heading: 0 # launch heading relative to north in degree
+heading: 133 # launch heading relative to north in degree
 dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
 diameter: 0.1236 # diameter of the rocket in m
