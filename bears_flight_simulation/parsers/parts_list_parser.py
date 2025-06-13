@@ -87,6 +87,10 @@ def get_part_position(part: Part, parts: list[Part]) -> float:
     return position
 
 
+def get_part_position_plus_length(part: Part, parts: list[Part]) -> float:
+    return get_part_position(part, parts) + part.length
+
+
 def get_part_center_of_mass(part: Part, parts: list[Part]) -> float:
     return get_part_position(part, parts) + part.center_of_mass_offset_from_position
 
@@ -124,6 +128,19 @@ def part_is_nosecone(part: Part) -> bool:
     )
 
 
+def part_is_nosecone_tip(part: Part, parts: list[Part]) -> bool:
+    return (
+        part.name == "Tip"
+        and not is_segment_based_on_hierarchy(part.hierarchy)
+        and any(
+            [
+                p.name == "Nose Cone" and is_segment_based_on_hierarchy(p.hierarchy)
+                for p in get_parents_from_hierarchy(part.hierarchy, parts)
+            ]
+        )
+    )
+
+
 def get_nosecone(parts: list[Part]) -> Part:
     for part in parts:
         if part_is_nosecone(part):
@@ -133,8 +150,29 @@ def get_nosecone(parts: list[Part]) -> Part:
     raise AssertionError
 
 
+def get_nosecone_tip(parts: list[Part]) -> Part:
+    for part in parts:
+        if part_is_nosecone_tip(part, parts):
+            return part
+
+    # NOTE: A nosecone tip has to be included, so if there isn't one, raise an error.
+    raise AssertionError
+
+
 def get_nosecone_position(parts: list[Part]) -> float:
     return get_part_position(get_nosecone(parts), parts)
+
+
+def get_nosecone_tip_position(parts: list[Part]) -> float:
+    return get_part_position(get_nosecone_tip(parts), parts)
+
+
+def get_nosecone_tip_position_plus_length(parts: list[Part]) -> float:
+    return get_part_position_plus_length(get_nosecone_tip(parts), parts)
+
+
+def get_nosecone_total_length(parts: list[Part]) -> float:
+    return get_nosecone_tip_position_plus_length(parts) - get_nosecone_position(parts)
 
 
 def parse_parts_list(parts_list_csv_file: t.TextIO) -> list[Part]:

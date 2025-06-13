@@ -11,7 +11,8 @@ from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
 from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
 from bears_flight_simulation.parsers.parts_list_parser import (
     Part,
-    get_nosecone_position,
+    get_nosecone_total_length,
+    get_nosecone_tip_position_plus_length,
     get_motor_position,
 )
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
@@ -149,15 +150,17 @@ class FlightSimulation:
         )
 
         # Add aerodynamic components
-        # nosecone_length = get_nosecone(parts).length
-        nosecone_length = nose_cone_config.length * 1000.0
+        nosecone_length = get_nosecone_total_length(parts) / 1000.0
+        nosecone_tip_upper_limit_position = (
+            get_nosecone_tip_position_plus_length(parts) / 1000.0
+        )
+        logging.info(
+            f"FlightSimulation: Configured nosecone with length={nosecone_length}m, upper_position_limit={nosecone_tip_upper_limit_position}m based on parts list"
+        )
         self.rocket.add_nose(
-            length=nosecone_length / 1000.0,
+            length=nosecone_length,
             kind=nose_cone_config.kind,
-            position=(
-                get_nosecone_position(parts) + nosecone_length
-            )  # HACK: offset nosecone by length
-            / 1000.0,  # nose_cone_config.position,
+            position=nosecone_tip_upper_limit_position,
             bluffness=nose_cone_config.bluffness,
             power=nose_cone_config.power_if_using_powerseries_kind,
             base_radius=nose_cone_config.base_radius,

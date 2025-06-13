@@ -4,7 +4,6 @@ import yaml
 
 
 class NoseConeConfig:
-    length: float
     kind: str
     bluffness: float
     power_if_using_powerseries_kind: t.Union[float, None]
@@ -15,7 +14,6 @@ class NoseConeConfig:
         data = yaml.safe_load(nose_cone_file)
 
         # Load nose cone data
-        self.length = float(data["length"])
         self.kind = str(data["kind"])
         self.bluffness = float(data["bluffness"])
         self.power_if_using_powerseries_kind = data["power_if_using_powerseries_kind"]
