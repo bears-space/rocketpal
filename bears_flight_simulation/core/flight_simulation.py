@@ -25,6 +25,9 @@ from bears_flight_simulation.exporters.flight_data_export import (
     export_flight_data_to_csv,
     export_flight_data_to_csv_in_simulated_sensor_module_format,
 )
+from bears_flight_simulation.exporters.airbrake_export import (
+    plot_airbrake_deployment_over_time,
+)
 
 
 def wind_speed_and_direction_to_east_and_north(
@@ -302,10 +305,11 @@ class FlightSimulation:
             self.simulation.plots.rail_buttons_forces(
                 filename=self.output_folder + "/plots/results/rail_button_forces.png"
             )
-        if self.config.export_plot_energy_data:
-            self.simulation.plots.energy_data(
-                filename=self.output_folder + "/plots/results/energy_data.png"
-            )
+        # NOTE: The energy data plot crashes when an airbrake is configured
+        # if self.config.export_plot_energy_data:
+        #    self.simulation.plots.energy_data(
+        #        filename=self.output_folder + "/plots/results/energy_data.png"
+        #    )
         if self.config.export_plot_fluid_mechanics_data:
             self.simulation.plots.fluid_mechanics_data(
                 filename=self.output_folder + "/plots/results/fluid_mechanics_data.png"
@@ -338,6 +342,11 @@ class FlightSimulation:
                 parachute.clean_pressure_signal_function(
                     filename=foldername + "noisy_pressure_signal_function.png"
                 )
+        if self.config.export_plot_airbrake_deployment_if_available:
+            plot_airbrake_deployment_over_time(
+                self.simulation,
+                filename=self.output_folder + "/plots/results/airbrake_deployment.png",
+            )
         print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:

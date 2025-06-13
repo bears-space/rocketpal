@@ -16,20 +16,20 @@ class State:
     w_y: float
     w_z: float
 
-    def __init__(self, data: list) -> None:
-        self.x = data[0]
-        self.y = data[1]
-        self.z = data[2]
-        self.v_x = data[3]
-        self.v_y = data[4]
-        self.v_z = data[5]
-        self.e0 = data[6]
-        self.e1 = data[7]
-        self.e2 = data[8]
-        self.e3 = data[9]
-        self.w_x = data[10]
-        self.w_y = data[11]
-        self.w_z = data[12]
+    def __init__(self, data: list, offset: int = 0) -> None:
+        self.x = data[0 + offset]
+        self.y = data[1 + offset]
+        self.z = data[2 + offset]
+        self.v_x = data[3 + offset]
+        self.v_y = data[4 + offset]
+        self.v_z = data[5 + offset]
+        self.e0 = data[6 + offset]
+        self.e1 = data[7 + offset]
+        self.e2 = data[8 + offset]
+        self.e3 = data[9 + offset]
+        self.w_x = data[10 + offset]
+        self.w_y = data[11 + offset]
+        self.w_z = data[12 + offset]
 
 
 def calculate_mach_level(env: Environment, state: State) -> float:
@@ -53,12 +53,13 @@ def stupid_full_extension_controller(
     observed_variables: list,
     air_brakes: AirBrakes,
 ) -> tuple[float, float, float]:
-    state_now = State(state_raw)
-    state_history = [State(state) for state in state_history_raw]
+    state_now = State(state_raw, offset=0)
+    state_history = [State(state, offset=1) for state in state_history_raw]
 
-    was_already_higher_in_the_past = any(
-        [state.z > state_now.z for state in state_history]
-    )
+    max_z = 0.0
+    for state in state_history:
+        max_z = max(state.z, max_z)
+    was_already_higher_in_the_past = state_now.z < max_z
 
     if state_now.z >= 1500.0 and not was_already_higher_in_the_past:
         air_brakes.deployment_level = 100.0
