@@ -15,7 +15,7 @@ from bears_flight_simulation.parsers.parts_list_parser import (
     get_motor_position,
 )
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
-from rocketpy import Environment, Flight, Rocket, SolidMotor
+from rocketpy import Environment, Flight, Rocket, SolidMotor, AirBrakes
 
 from bears_flight_simulation.utilities.rocket_calculations import (
     calculate_rocket_mass_without_motor_in_kg,
@@ -188,10 +188,32 @@ class FlightSimulation:
 
         # Add airbrakes
         for airbrake in airbrakes:
-            # TODO Add airbrakes to the rocket (including controller functions)
-            # self.rocket.add_air_brakes()
-            logging.info(
-                f"FlightSimulation: ignoring configured airbrake '{airbrake.id}' (not implemented yet)"
+            # Create an airbrake controller function where the environment is pre-filled
+            def airbrake_controller_function(
+                time: float,
+                sampling_rate: float,
+                state_raw: list,
+                state_history_raw: list,
+                observed_variables: list,
+                air_brakes: AirBrakes,
+            ):
+                return airbrake.controller_function(
+                    self.environment,
+                    time,
+                    sampling_rate,
+                    state_raw,
+                    state_history_raw,
+                    observed_variables,
+                    air_brakes,
+                )
+
+            # Actually add the controller function
+            self.rocket.add_air_brakes(
+                drag_coefficient_curve=airbrake.drag_curve_filepath,
+                controller_function=airbrake_controller_function,
+                sampling_rate=airbrake.sampling_rate_hz,
+                clamp=True,
+                name=airbrake.id,
             )
 
     def simulate(self) -> None:
