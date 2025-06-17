@@ -5,6 +5,7 @@ from pathlib import Path
 from rocketpy import Environment, AirBrakes
 
 from bears_flight_simulation.utilities.airbrake_controllers import (
+    State,
     stupid_full_extension_controller,
 )
 
@@ -21,6 +22,69 @@ def standard_airbrakes() -> AirBrakes:
         reference_area=REFERENCE_AREA,
         clamp=True,
     )
+
+
+def test_state__now_format():
+    X = 42.0
+    Y = 43.0
+    Z = 44.0
+    V_X = 45.0
+    V_Y = 46.0
+    V_Z = 47.0
+    E0 = 48.0
+    E1 = 49.0
+    E2 = 50.0
+    E3 = 51.0
+    W_X = 52.0
+    W_Y = 53.0
+    W_Z = 54.0
+    state = State([X, Y, Z, V_X, V_Y, V_Z, E0, E1, E2, E3, W_X, W_Y, W_Z], offset=0)
+    assert state.x == X
+    assert state.y == Y
+    assert state.z == Z
+    assert state.v_x == V_X
+    assert state.v_y == V_Y
+    assert state.v_z == V_Z
+    assert state.e0 == E0
+    assert state.e1 == E1
+    assert state.e2 == E2
+    assert state.e3 == E3
+    assert state.w_x == W_X
+    assert state.w_y == W_Y
+    assert state.w_z == W_Z
+
+
+def test_state__history_format():
+    TIME = 41.0
+    X = 42.0
+    Y = 43.0
+    Z = 44.0
+    V_X = 45.0
+    V_Y = 46.0
+    V_Z = 47.0
+    E0 = 48.0
+    E1 = 49.0
+    E2 = 50.0
+    E3 = 51.0
+    W_X = 52.0
+    W_Y = 53.0
+    W_Z = 54.0
+    state = State(
+        [TIME, X, Y, Z, V_X, V_Y, V_Z, E0, E1, E2, E3, W_X, W_Y, W_Z], offset=1
+    )
+    assert state.x == X
+    assert state.y == Y
+    assert state.z == Z
+    assert state.v_x == V_X
+    assert state.v_y == V_Y
+    assert state.v_z == V_Z
+    assert state.e0 == E0
+    assert state.e1 == E1
+    assert state.e2 == E2
+    assert state.e3 == E3
+    assert state.w_x == W_X
+    assert state.w_y == W_Y
+    assert state.w_z == W_Z
 
 
 def test_stupid_full_extension_controller__pad_no_history(standard_airbrakes):
