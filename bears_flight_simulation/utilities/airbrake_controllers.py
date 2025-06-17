@@ -62,7 +62,7 @@ def stupid_full_extension_controller(
     was_already_higher_in_the_past = state_now.z < max_z
 
     if state_now.z >= 1500.0 and not was_already_higher_in_the_past:
-        air_brakes.deployment_level = 100.0
+        air_brakes.deployment_level = 1.0
     else:
         air_brakes.deployment_level = 0.0
 
