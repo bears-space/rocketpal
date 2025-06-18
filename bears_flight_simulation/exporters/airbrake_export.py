@@ -14,20 +14,30 @@ def plot_airbrake_deployment_over_time(flight: Flight, filename: str) -> None:
         drag_coefficient_list.append(drag_coefficient)
 
     # Setup plotting
-    fig = plt.figure()
+    fig = plt.figure(figsize=(16,9), dpi=300)
     fig.tight_layout()
 
     # Plot deployment over time
     plt.subplot(2, 1, 1)
     plt.plot(time_list, deployment_level_list)
+    plt.grid(visible=True, which='both', axis='both')
+    ax = plt.gca()
+    ax.spines['left'].set_position('zero')
+    ax.spines['bottom'].set_position('zero')
     plt.xlabel("time in s")
+    plt.ylim(0.0, 1.0)
     plt.ylabel("airbrake deployment level")
     plt.title("Airbrake extension over time")
 
     # Plot drag coefficient over time
     plt.subplot(2, 1, 2)
     plt.plot(time_list, drag_coefficient_list)
+    plt.grid(visible=True, which='both', axis='both')
+    ax = plt.gca()
+    ax.spines['left'].set_position('zero')
+    ax.spines['bottom'].set_position('zero')
     plt.xlabel("time in s")
+    plt.ylim(bottom=0.0)
     plt.ylabel("airbrake drag coefficient")
     plt.title("Airbrake drag coefficient over time")
 
