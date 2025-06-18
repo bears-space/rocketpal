@@ -2,7 +2,10 @@ import typing as t
 
 from bears_flight_simulation.core.library_entry import LibraryEntry
 from bears_flight_simulation.utilities.airbrake_controllers import (
+    disabled_controller,
+    enabled_controller,
     stupid_full_extension_controller,
+    stargaze_airbrake_controller,
 )
 
 
@@ -20,8 +23,14 @@ class AirbrakeConfig(LibraryEntry):
         controller_name = str(data["controller_function_name"])
 
         match controller_name:
+            case "disabled_controller":
+                self.controller_function = disabled_controller
+            case "enabled_controller":
+                self.controller_function = enabled_controller
             case "stupid_full_extension_controller":
                 self.controller_function = stupid_full_extension_controller
+            case "stargaze_airbrake_controller":
+                self.controller_function = stargaze_airbrake_controller
             case _:
                 raise NotImplementedError
 

@@ -44,6 +44,65 @@ def calculate_mach_level(env: Environment, state: State) -> float:
     return free_stream_speed / env.speed_of_sound(state.z)
 
 
+def smooth_deployment_change(
+    current_deployment: float,
+    target_deployment: float,
+    seconds_per_full_movement: float,
+    delta_t_in_seconds: float,
+) -> float:
+    delta_deployment = target_deployment - current_deployment
+    full_movements_per_second = 1.0 / seconds_per_full_movement
+    max_change_in_given_delta_t = full_movements_per_second * delta_t_in_seconds
+    change = max(
+        min(delta_deployment, max_change_in_given_delta_t), -max_change_in_given_delta_t
+    )
+    return current_deployment + change
+
+
+def disabled_controller(
+    env: Environment,
+    time: float,
+    sampling_rate: float,
+    state_raw: list,
+    state_history_raw: list,
+    observed_variables: list,
+    air_brakes: AirBrakes,
+) -> tuple[float, float, float]:
+    state_now = State(state_raw, offset=0)
+
+    air_brakes.deployment_level = 0.0
+
+    # NOTE: The real airbrake has to determine the mach level from acceleration only, so access to the "environment" isn't possible in real life!
+    mach_number = calculate_mach_level(env, state_now)
+    return (
+        time,
+        air_brakes.deployment_level,
+        air_brakes.drag_coefficient(air_brakes.deployment_level, mach_number),  # type: ignore
+    )
+
+
+def enabled_controller(
+    env: Environment,
+    time: float,
+    sampling_rate: float,
+    state_raw: list,
+    state_history_raw: list,
+    observed_variables: list,
+    air_brakes: AirBrakes,
+) -> tuple[float, float, float]:
+    state_now = State(state_raw, offset=0)
+
+    air_brakes.deployment_level = 1.0
+
+    # NOTE: The real airbrake has to determine the mach level from acceleration only, so access to the "environment" isn't possible in real life!
+    mach_number = calculate_mach_level(env, state_now)
+    return (
+        time,
+        air_brakes.deployment_level,
+        air_brakes.drag_coefficient(air_brakes.deployment_level, mach_number),  # type: ignore
+    )
+
+
 def stupid_full_extension_controller(
     env: Environment,
     time: float,
@@ -65,6 +124,56 @@ def stupid_full_extension_controller(
         air_brakes.deployment_level = 1.0
     else:
         air_brakes.deployment_level = 0.0
+
+    # NOTE: The real airbrake has to determine the mach level from acceleration only, so access to the "environment" isn't possible in real life!
+    mach_number = calculate_mach_level(env, state_now)
+    return (
+        time,
+        air_brakes.deployment_level,
+        air_brakes.drag_coefficient(air_brakes.deployment_level, mach_number),  # type: ignore
+    )
+
+
+def stargaze_airbrake_controller(
+    env: Environment,
+    time: float,
+    sampling_rate: float,
+    state_raw: list,
+    state_history_raw: list,
+    observed_variables: list,
+    air_brakes: AirBrakes,
+) -> tuple[float, float, float]:
+    state_now = State(state_raw, offset=0)
+    state_history = [State(state, offset=1) for state in state_history_raw]
+
+    TARGET_APOGEE = 3000.0
+    TIME_FOR_FULL_EXTENSION = 0.4  # in seconds
+
+    launched = any([state.z > 0.0 for state in state_history])
+    above_1500m = state_now.z >= 1500.0
+    apogee_reached = any([state.z > state_now.z for state in state_history])
+
+    # Decide on the airbrake deployment level to select
+    selected_deployment: float
+    if not launched or not above_1500m or apogee_reached:
+        selected_deployment = 0.0
+    else:
+        # TODO apogee estimation via KALMAN FILTER or EXTENDED KALMAN FILTER??
+        apogee_estimation = 3000.0
+
+        # TODO actual control logic
+        selected_deployment = air_brakes.deployment_level
+        if apogee_estimation > TARGET_APOGEE:
+            selected_deployment += 0.1
+        else:
+            selected_deployment -= 0.1
+
+    air_brakes.deployment_level = smooth_deployment_change(
+        current_deployment=air_brakes.deployment_level,
+        target_deployment=selected_deployment,
+        seconds_per_full_movement=TIME_FOR_FULL_EXTENSION,
+        delta_t_in_seconds=1.0 / sampling_rate,
+    )
 
     # NOTE: The real airbrake has to determine the mach level from acceleration only, so access to the "environment" isn't possible in real life!
     mach_number = calculate_mach_level(env, state_now)
