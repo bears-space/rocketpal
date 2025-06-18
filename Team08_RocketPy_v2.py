@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# NOTE for EURoC evaluators: Please make sure to install the Python requirements listed in the requirements.txt before running
+# NOTE for EuRoC evaluators: Please make sure to install the Python requirements listed in the requirements.txt before running
 
 import logging
 from pathlib import Path
