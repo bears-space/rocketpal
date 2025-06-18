@@ -1,4 +1,8 @@
 from rocketpy import AirBrakes, Environment
+# import logging
+
+
+GRAVITY_CONSTANT = 9.80665  # in m/s²
 
 
 class State:
@@ -134,6 +138,26 @@ def stupid_full_extension_controller(
     )
 
 
+def estimate_apogee_via_propagation(
+    state_now: State, time_step_seconds: float = 0.1
+) -> float:
+    vz = state_now.v_z
+    a = -GRAVITY_CONSTANT
+
+    if a >= 0.0:
+        # NOTE: If a is >= 0.0, the while loop won't quit
+        raise ValueError
+
+    z = state_now.z
+    while True:
+        # TODO consider aerodynamic drag of the rocket+airbrake
+
+        z += vz * time_step_seconds
+        vz += a * time_step_seconds
+        if vz <= 0.0:
+            return z
+
+
 def stargaze_airbrake_controller(
     env: Environment,
     time: float,
@@ -157,16 +181,22 @@ def stargaze_airbrake_controller(
     selected_deployment: float
     if not launched or not above_1500m or apogee_reached:
         selected_deployment = 0.0
+        # logging.info(f"AIRBRAKE: t={time}, z={state_now.z}")
     else:
-        # TODO apogee estimation via KALMAN FILTER or EXTENDED KALMAN FILTER??
-        apogee_estimation = 3000.0
+        # Estimate apogee
+        apogee_estimation: float = estimate_apogee_via_propagation(
+            state_now,
+        )
+        # logging.info(
+        #    f"AIRBRAKE: t={time}, z={state_now.z}, g={env.gravity(time)}, apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
+        # )
 
-        # TODO actual control logic
-        selected_deployment = air_brakes.deployment_level
+        # Change selected deployment level accordingly
+        # TODO better control logic
         if apogee_estimation > TARGET_APOGEE:
-            selected_deployment += 0.1
+            selected_deployment = 1.0
         else:
-            selected_deployment -= 0.1
+            selected_deployment = 0.0
 
     air_brakes.deployment_level = smooth_deployment_change(
         current_deployment=air_brakes.deployment_level,
