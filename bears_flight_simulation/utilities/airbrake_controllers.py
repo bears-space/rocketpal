@@ -1,5 +1,7 @@
-from rocketpy import AirBrakes, Environment
-# import logging
+from rocketpy import AirBrakes, Environment, Rocket
+
+import logging
+import math
 
 
 GRAVITY_CONSTANT = 9.80665  # in m/s²
@@ -139,27 +141,70 @@ def stupid_full_extension_controller(
 
 
 def estimate_apogee_via_propagation(
-    state_now: State, time_step_seconds: float = 0.1
+    env: Environment,
+    airbrake: AirBrakes,
+    rocket: Rocket,
+    state_now: State,
+    time_step_seconds: float = 0.1,
 ) -> float:
+    vx = state_now.v_x
+    vy = state_now.v_y
+    v_horizontal = math.sqrt(vx**2 + vy**2)
     vz = state_now.v_z
-    a = -GRAVITY_CONSTANT
-
-    if a >= 0.0:
-        # NOTE: If a is >= 0.0, the while loop won't quit
-        raise ValueError
 
     z = state_now.z
     while True:
-        # TODO consider aerodynamic drag of the rocket+airbrake
-
         z += vz * time_step_seconds
-        vz += a * time_step_seconds
+
+        A = math.pi * ((0.1236 / 2.0) ** 2)  # TODO remove hard-coded reference area
+        mass_burnout = 13.41065 + 2.672  # TODO remove hardcode
+        density = env.density(z)
+        adjusted_state = State(
+            [
+                state_now.x,
+                state_now.y,
+                z,
+                v_horizontal,
+                0.0,
+                vz,
+                state_now.e0,
+                state_now.e1,
+                state_now.e2,
+                state_now.e3,
+                state_now.w_x,
+                state_now.w_y,
+                state_now.w_z,
+            ]
+        )
+        mach_level = calculate_mach_level(env, adjusted_state)
+        drag_coefficient = airbrake.drag_coefficient(
+            airbrake.deployment_level, mach_level
+        ) + rocket.power_off_drag(mach_level)  # type: ignore
+        a_drag = (
+            density
+            * (v_horizontal**2 + vz**2)
+            * 0.5
+            * A
+            * drag_coefficient
+            / mass_burnout
+        )
+
+        elevation_angle_radians = math.atan(vz / v_horizontal)
+
+        a_horizontal = -a_drag * math.cos(elevation_angle_radians)
+        v_horizontal += a_horizontal * time_step_seconds
+
+        az_total = -GRAVITY_CONSTANT - (a_drag * math.sin(elevation_angle_radians))
+        assert az_total < 0.0
+        vz += az_total * time_step_seconds
+
         if vz <= 0.0:
             return z
 
 
 def stargaze_airbrake_controller(
     env: Environment,
+    rocket: Rocket,
     time: float,
     sampling_rate: float,
     state_raw: list,
@@ -171,25 +216,25 @@ def stargaze_airbrake_controller(
     state_history = [State(state, offset=1) for state in state_history_raw]
 
     TARGET_APOGEE = 3000.0
-    TIME_FOR_FULL_EXTENSION = 0.4  # in seconds
+    TIME_FOR_FULL_EXTENSION = 0.8  # in seconds
 
     launched = any([state.z > 0.0 for state in state_history])
-    above_1500m = state_now.z >= 1500.0
+    above_1500m = state_now.z >= 1500.0  # TODO reset 1500.0
     apogee_reached = any([state.z > state_now.z for state in state_history])
 
     # Decide on the airbrake deployment level to select
     selected_deployment: float
     if not launched or not above_1500m or apogee_reached:
         selected_deployment = 0.0
-        # logging.info(f"AIRBRAKE: t={time}, z={state_now.z}")
+        logging.info(f"AIRBRAKE: t={time}, z={state_now.z}")
     else:
         # Estimate apogee
         apogee_estimation: float = estimate_apogee_via_propagation(
-            state_now,
+            env, air_brakes, rocket, state_now, time_step_seconds=1.0 / sampling_rate
         )
-        # logging.info(
-        #    f"AIRBRAKE: t={time}, z={state_now.z}, g={env.gravity(time)}, apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
-        # )
+        logging.info(
+            f"AIRBRAKE: t={time}, z={state_now.z}, vz={state_now.v_z} apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
+        )
 
         # Change selected deployment level accordingly
         # TODO better control logic

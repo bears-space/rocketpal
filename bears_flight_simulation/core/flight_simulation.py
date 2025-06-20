@@ -205,6 +205,7 @@ class FlightSimulation:
             ):
                 return airbrake.controller_function(
                     self.environment,
+                    self.rocket,
                     time,
                     sampling_rate,
                     state_raw,
