@@ -233,7 +233,7 @@ def stargaze_airbrake_controller(
             env, air_brakes, rocket, state_now, time_step_seconds=1.0 / sampling_rate
         )
         logging.info(
-            f"AIRBRAKE: t={time}, z={state_now.z}, vz={state_now.v_z} apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
+            f"AIRBRAKE: t={time}, z={state_now.z}, vz={state_now.v_z}, apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
         )
 
         # Change selected deployment level accordingly
