@@ -152,12 +152,13 @@ def estimate_apogee_via_propagation(
     v_horizontal = math.sqrt(vx**2 + vy**2)
     vz = state_now.v_z
 
+    A = rocket.area
+    mass_burnout = rocket.dry_mass
+
     z = state_now.z
     while True:
         z += vz * time_step_seconds
 
-        A = math.pi * ((0.1236 / 2.0) ** 2)  # TODO remove hard-coded reference area
-        mass_burnout = 13.41065 + 2.672  # TODO remove hardcode
         density = env.density(z)
         adjusted_state = State(
             [
