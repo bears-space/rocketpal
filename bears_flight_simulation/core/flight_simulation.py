@@ -29,6 +29,7 @@ from bears_flight_simulation.exporters.flight_data_export import (
 from bears_flight_simulation.exporters.airbrake_export import (
     plot_airbrake_deployment_over_time,
 )
+from bears_flight_simulation.exporters.altitude_plots import plot_altitude_over_time
 
 
 def wind_speed_and_direction_to_east_and_north(
@@ -350,6 +351,11 @@ class FlightSimulation:
             plot_airbrake_deployment_over_time(
                 self.simulation,
                 filename=self.output_folder + "/plots/results/airbrake_deployment.png",
+            )
+        if self.config.export_plot_altitude_custom:
+            plot_altitude_over_time(
+                self.simulation,
+                filename=self.output_folder + "/plots/results/altitude_over_time.png",
             )
         print("RESULTS GRAPHICS END")
 

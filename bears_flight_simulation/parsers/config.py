@@ -54,6 +54,7 @@ class Config:
     export_plot_pressure_rocket_altitude: bool
     export_plot_pressure_signals: bool
     export_plot_airbrake_deployment_if_available: bool
+    export_plot_altitude_custom: bool
 
     # Export options - Analysis
     export_raw_flight_data: bool
@@ -130,6 +131,7 @@ class Config:
         self.export_plot_airbrake_deployment_if_available = bool(
             data["exportPlotAirbrakeDeploymentIfAvailable"]
         )
+        self.export_plot_altitude_custom = bool(data["exportPlotAltitudeCustom"])
 
         # Parse export options - Analysis
         self.export_raw_flight_data = bool(data["exportRawFlightData"])
