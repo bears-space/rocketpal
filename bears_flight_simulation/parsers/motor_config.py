@@ -16,6 +16,7 @@ class MotorConfig(LibraryEntry):
     throat_radius: float  # in m
 
     # Propellant parameters
+    prop_mass: float  # in kg
     grain_number: int
     grain_density: float  # in kg/m³
     grain_outer_radius: float  # in m
@@ -49,9 +50,9 @@ class MotorConfig(LibraryEntry):
         self.nozzle_position = float(data["nozzlePos"])
 
         # Calculate grain density
-        prop_mass = float(data["propMass"])
+        self.prop_mass = float(data["propMass"])
         self.grain_density = grainDensity(
-            prop_mass,
+            self.prop_mass,
             self.grain_number,
             self.grain_initial_height,
             self.grain_outer_radius,

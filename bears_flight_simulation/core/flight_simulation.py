@@ -20,6 +20,7 @@ from rocketpy import Environment, Flight, Rocket, SolidMotor, AirBrakes
 
 from bears_flight_simulation.utilities.rocket_calculations import (
     calculate_rocket_mass_without_motor_in_kg,
+    calculate_rocket_mass_in_kg,
 )
 from bears_flight_simulation.utilities.config_calc import rocket_center_of_mass
 from bears_flight_simulation.exporters.flight_data_export import (
@@ -123,6 +124,15 @@ class FlightSimulation:
         rocket_mass_without_motor = calculate_rocket_mass_without_motor_in_kg(parts)
         logging.info(
             f"FlightSimulation: calculated rocket mass (without motor) is {rocket_mass_without_motor}kg"
+        )
+        logging.info(
+            f"FlightSimulation: calculated rocket mass (without motor + motor drymass) is {rocket_mass_without_motor + motor_config.dry_mass}kg"
+        )
+        logging.info(
+            f"FlightSimulation: calculated rocket mass (without motor + motor drymass + motor propmass) is {rocket_mass_without_motor + motor_config.dry_mass + motor_config.prop_mass}kg"
+        )
+        logging.info(
+            f"FlightSimulation: calculated rocket mass (complete parts list) is {calculate_rocket_mass_in_kg(parts)}kg"
         )
         self.rocket = Rocket(
             radius=config.diameter / 2.0,  # 127 / 2000,
