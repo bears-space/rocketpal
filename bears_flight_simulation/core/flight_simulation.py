@@ -234,6 +234,10 @@ class FlightSimulation:
                 name=airbrake.id,
             )
 
+        logging.info(
+            f"FlightSimulation: calculated rocket mass (rocket.evaluate_dry_mass) is {self.rocket.evaluate_dry_mass()}kg"
+        )
+
     def simulate(self) -> None:
         # Run the simulation
         self.simulation = Flight(
