@@ -67,6 +67,7 @@ def smooth_deployment_change(
 
 def disabled_controller(
     env: Environment,
+    rocket: Rocket,
     time: float,
     sampling_rate: float,
     state_raw: list,
@@ -89,6 +90,7 @@ def disabled_controller(
 
 def enabled_controller(
     env: Environment,
+    rocket: Rocket,
     time: float,
     sampling_rate: float,
     state_raw: list,
@@ -111,6 +113,7 @@ def enabled_controller(
 
 def stupid_full_extension_controller(
     env: Environment,
+    rocket: Rocket,
     time: float,
     sampling_rate: float,
     state_raw: list,
