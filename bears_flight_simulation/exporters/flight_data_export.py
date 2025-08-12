@@ -121,18 +121,21 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
         writer.writerow(
             [
                 "module_timestamp",  # t
+                "gps_longitude",
+                "gps_latitude",
+                "gps_altitude",
+                "gps_time",
                 "temperature",  # in celsius
                 "pressure",  # pressure
                 "low_g_accel_x",  # ax
                 "low_g_accel_y",  # ay
                 "low_g_accel_z",  # az
+                "angular_velocity_1",  # w1
+                "angular_velocity_2",  # w2
+                "angular_velocity_3",  # w3
                 "high_g_accel_x",  # ax
                 "high_g_accel_y",  # ay
                 "high_g_accel_z",  # az
-                "altitude",
-                "velocity_x",  # vx
-                "velocity_y",  # vy
-                "velocity_z",  # vz
             ]
         )
 
@@ -147,6 +150,12 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
 
             # module_timestamp
             row.append(t)
+
+            # gps_longitude, gps_latitude, gps_altitude, gps_time
+            row.append(flight.longitude.get_value(t))
+            row.append(flight.latitude.get_value(t))
+            row.append(flight.altitude.get_value(t))
+            row.append("placeholder")
 
             # temperature
             row.append(21.0)
@@ -184,18 +193,15 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
                 )
             )
 
+            # angular_velocity x/y/z
+            row.append(flight.w1.get_value(t))
+            row.append(flight.w2.get_value(t))
+            row.append(flight.w3.get_value(t))
+
             # high_g_accel_x, high_g_accel_y, high_g_accel_z
             row.append(converted_acceleration_x)
             row.append(converted_acceleration_y)
             row.append(converted_acceleration_z)
-
-            # altitude
-            row.append(flight.altitude.get_value(t))
-
-            # velocity_x, velocity_y, velocity_z
-            row.append(flight.vx.get_value(t))
-            row.append(flight.vy.get_value(t))
-            row.append(flight.vz.get_value(t))
 
             writer.writerow(row)
 
