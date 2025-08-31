@@ -17,6 +17,7 @@ from bears_flight_simulation.parsers.parts_list_parser import (
     get_motor_position,
 )
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
+from bears_flight_simulation.hacks.matplotlib_hacks import hack_override_matplotlib_show, hack_override_matplotlib_show_reset
 from rocketpy import Environment, Flight, Rocket, SolidMotor, AirBrakes, MonteCarlo
 from rocketpy.stochastic import (
     StochasticEnvironment,
@@ -412,10 +413,16 @@ class FlightSimulation:
         )
         print("TRADITIONAL RESULTS GRAPHICS END")
 
+        print("MONTECARLO RESULTS START")
         print(f"number of loaded sims: {self.monte_carlo_simulation}")
         self.monte_carlo_simulation.prints.all()
         self.monte_carlo_simulation.plots.ellipses(save=True)
+        hack_override_matplotlib_show(
+            filename=self.output_folder + "/monte_carlo_analysis/histogram.png"
+        )
         self.monte_carlo_simulation.plots.all()
+        hack_override_matplotlib_show_reset()
+        print("MONTECARLO RESULTS END")
 
     def export_results(self) -> None:
         assert self.flight is not None
