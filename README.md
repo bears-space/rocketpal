@@ -9,7 +9,7 @@ This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight 
 To run the simulation, install Python and all requirements listend in the `requirements.txt` (refer ot the section [Setup development environment](#setup-development-environment)). Then, you should be able to run the simulation with the following command:
 
 ```sh
-python Team08_RocketPy_v2.py
+python Team08_RocketPy_v3.py
 ```
 
 This will output the simulation results (graphics and other files) in the `./output` folder.
