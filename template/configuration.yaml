@@ -28,6 +28,7 @@ power_off_drag_factor_standard_deviation: 0.1
 power_on_drag_factor_standard_deviation: 0.1
 
 # Monte Carlo Simulation Options
+enable_monte_carlo_simulation: True
 number_of_simulations: 100
 parallel: True
 n_workers: 16

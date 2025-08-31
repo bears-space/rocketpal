@@ -38,6 +38,7 @@ class Config:
     power_on_drag_factor_standard_deviation: float
 
     # Monte Carlo Simulation Options
+    enable_monte_carlo_simulation: bool
     number_of_simulations: int
     parallel: bool
     n_workers: int
@@ -94,6 +95,7 @@ class Config:
         )
 
         # Parse Monte Carlo Simulation Options
+        self.enable_monte_carlo_simulation = bool(data["enable_monte_carlo_simulation"])
         self.number_of_simulations = int(data["number_of_simulations"])
         self.parallel = bool(data["parallel"])
         self.n_workers = int(data["n_workers"])

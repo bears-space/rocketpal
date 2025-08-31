@@ -346,23 +346,28 @@ class FlightSimulation:
             heading=2.0,
         )
         self.stochastic_flight.visualize_attributes()
-        # ensure subfolder exists
-        Path(self.output_folder + "/monte_carlo_analysis").mkdir(
-            parents=True, exist_ok=True
-        )
-        self.monte_carlo_simulation = MonteCarlo(
-            filename=self.output_folder + "/monte_carlo_analysis/monte_carlo_class",
-            environment=self.stochastic_environment,
-            rocket=self.stochastic_rocket,
-            flight=self.stochastic_flight,
-        )
-        self.monte_carlo_simulation.simulate(
-            number_of_simulations=self.config.number_of_simulations,
-            append=False,
-            include_function_data=False,
-            parallel=self.config.parallel,
-            n_workers=self.config.n_workers,
-        )
+        if self.config.enable_monte_carlo_simulation:
+            # ensure subfolder exists
+            Path(self.output_folder + "/monte_carlo_analysis").mkdir(
+                parents=True, exist_ok=True
+            )
+            self.monte_carlo_simulation = MonteCarlo(
+                filename=self.output_folder + "/monte_carlo_analysis/monte_carlo_class",
+                environment=self.stochastic_environment,
+                rocket=self.stochastic_rocket,
+                flight=self.stochastic_flight,
+            )
+            self.monte_carlo_simulation.simulate(
+                number_of_simulations=self.config.number_of_simulations,
+                append=False,
+                include_function_data=False,
+                parallel=self.config.parallel,
+                n_workers=self.config.n_workers,
+            )
+        else:
+            logging.info(
+                "FlightSimulation: Monte Carlo simulation is disabled, skipping ..."
+            )
 
     def show_input_info(self) -> None:
         assert self.environment is not None
@@ -462,16 +467,17 @@ class FlightSimulation:
         )
         print("TRADITIONAL RESULTS GRAPHICS END")
 
-        print("MONTECARLO RESULTS START")
-        print(f"number of loaded sims: {self.monte_carlo_simulation}")
-        self.monte_carlo_simulation.prints.all()
-        self.monte_carlo_simulation.plots.ellipses(save=True)
-        hack_override_matplotlib_show(
-            filename=self.output_folder + "/monte_carlo_analysis/histogram.png"
-        )
-        self.monte_carlo_simulation.plots.all()
-        hack_override_matplotlib_show_reset()
-        print("MONTECARLO RESULTS END")
+        if self.config.enable_monte_carlo_simulation:
+            print("MONTECARLO RESULTS START")
+            print(f"number of loaded sims: {self.monte_carlo_simulation}")
+            self.monte_carlo_simulation.prints.all()
+            self.monte_carlo_simulation.plots.ellipses(save=True)
+            hack_override_matplotlib_show(
+                filename=self.output_folder + "/monte_carlo_analysis/histogram.png"
+            )
+            self.monte_carlo_simulation.plots.all()
+            hack_override_matplotlib_show_reset()
+            print("MONTECARLO RESULTS END")
 
     def export_results(self) -> None:
         assert self.flight is not None
@@ -505,9 +511,10 @@ class FlightSimulation:
         )
 
         # Export monte carlo ellipses for Google Earth visualization
-        self.monte_carlo_simulation.export_ellipses_to_kml(
-            filename=self.output_folder
-            + "/monte_carlo_analysis/monte_carlo_ellipses.kml",
-            origin_lat=self.environment.latitude,
-            origin_lon=self.environment.longitude,
-        )
+        if self.config.enable_monte_carlo_simulation:
+            self.monte_carlo_simulation.export_ellipses_to_kml(
+                filename=self.output_folder
+                + "/monte_carlo_analysis/monte_carlo_ellipses.kml",
+                origin_lat=self.environment.latitude,
+                origin_lon=self.environment.longitude,
+            )
