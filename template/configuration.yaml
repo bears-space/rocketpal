@@ -15,33 +15,5 @@ dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket
 diameter: 0.1236 # diameter of the rocket in m
 launch_date: 2025-10-12_12-00-00
 
-# Export Options: Environment
-exportTextEnvironment: True
-exportPlotEnvironment: True
-# Export Options: Motor
-exportTextMotor: True
-exportPlotThrust: True
-# Export Options: Rocket
-exportPlotStaticMargin: True
-exportPlotRocket: True
-# Export Options: Simulation
-exportTextSimulation: True
-exportPlotTrajectory3D: True
-exportPlotLinearKinematicData: True
-exportPlotFlightPathAngleData: True
-exportPlotAttitudeData: True
-exportPlotAngularKinematicsData: True
-exportPlotAerodynamicForces: True
-exportPlotRailButtonsForces: True
-exportPlotEnergyData: True
-exportPlotFluidMechanicsData: True
-exportPlotStabilityAndControlData: True
-exportPlotPressureRocketAltitude: True
-exportPlotPressureSignals: True
-exportPlotAirbrakeDeploymentIfAvailable: True
-exportPlotAltitudeCustom: True
-# Export Options: Analysis
-exportRawFlightData: True
-exportFlightData: True
+# Export Options
 exportFlightDataTimeStepSeconds: 0.01
-exportTrajectoryForGoogleEarth: True

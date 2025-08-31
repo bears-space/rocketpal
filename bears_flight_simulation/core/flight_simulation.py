@@ -255,122 +255,95 @@ class FlightSimulation:
 
         # Print environment info
         print("ENVIRONMENT INFO START")
-        if self.config.export_text_environment:
-            self.environment.prints.all()
-        if self.config.export_plot_environment:
-            self.environment.plots.info(
-                filename=self.output_folder + "/plots/environment.png"
-            )
+        self.environment.prints.all()
+        self.environment.plots.info(
+            filename=self.output_folder + "/plots/environment.png"
+        )
         print("ENVIRONMENT INFO END")
 
         # Print motor info
         print("MOTOR INFO START")
-        if self.config.export_text_motor:
-            self.motor.prints.all()
-        if self.config.export_plot_thrust:
-            self.motor.plots.thrust(
-                filename=self.output_folder + "/plots/rocket/motor_thrust.png"
-            )
+        self.motor.prints.all()
+        self.motor.plots.thrust(
+            filename=self.output_folder + "/plots/rocket/motor_thrust.png"
+        )
         print("MOTOR INFO END")
 
         # Show graphics about the rocket
-        # print("ROCKET GRAPHICS START")
-        if self.config.export_plot_static_margin:
-            self.rocket.plots.static_margin(
-                filename=self.output_folder + "/plots/rocket/static_margin.png"
-            )
-        if self.config.export_plot_rocket:
-            self.rocket.draw(filename=self.output_folder + "/plots/rocket/rocket.png")
-        # print("ROCKET GRAPHICS END")
+        self.rocket.plots.static_margin(
+            filename=self.output_folder + "/plots/rocket/static_margin.png"
+        )
+        self.rocket.draw(filename=self.output_folder + "/plots/rocket/rocket.png")
 
     def show_results(self) -> None:
         assert self.simulation is not None
 
         # Print simulation results
         print("RESULTS INFO START")
-        if self.config.export_text_simulation:
-            self.simulation.prints.all()
+        self.simulation.prints.all()
         print("RESULTS INFO END")
 
         # Show simulation results graphics
         print("RESULTS GRAPHICS START")
-        if self.config.export_plot_trajectory_3d:
-            self.simulation.plots.trajectory_3d(
-                filename=self.output_folder + "/plots/results/trajectory_3d.png"
-            )
-        if self.config.export_plot_linear_kinematic_data:
-            self.simulation.plots.linear_kinematics_data(
-                filename=self.output_folder + "/plots/results/linear_kinematics.png"
-            )
-        if self.config.export_plot_flight_path_angle_data:
-            self.simulation.plots.flight_path_angle_data(
-                filename=self.output_folder
-                + "/plots/results/flight_path_angle_data.png"
-            )
-        if self.config.export_plot_attitude_data:
-            self.simulation.plots.attitude_data(
-                filename=self.output_folder + "/plots/results/attitude_data.png"
-            )
-        if self.config.export_plot_angular_kinematics_data:
-            self.simulation.plots.angular_kinematics_data(
-                filename=self.output_folder
-                + "/plots/results/angular_kinematics_data.png"
-            )
-        if self.config.export_plot_aerodynamic_forces:
-            self.simulation.plots.aerodynamic_forces(
-                filename=self.output_folder + "/plots/results/aerodynamic_forces.png"
-            )
-        if self.config.export_plot_rail_buttons_forces:
-            self.simulation.plots.rail_buttons_forces(
-                filename=self.output_folder + "/plots/results/rail_button_forces.png"
-            )
+        self.simulation.plots.trajectory_3d(
+            filename=self.output_folder + "/plots/results/trajectory_3d.png"
+        )
+        self.simulation.plots.linear_kinematics_data(
+            filename=self.output_folder + "/plots/results/linear_kinematics.png"
+        )
+        self.simulation.plots.flight_path_angle_data(
+            filename=self.output_folder + "/plots/results/flight_path_angle_data.png"
+        )
+        self.simulation.plots.attitude_data(
+            filename=self.output_folder + "/plots/results/attitude_data.png"
+        )
+        self.simulation.plots.angular_kinematics_data(
+            filename=self.output_folder + "/plots/results/angular_kinematics_data.png"
+        )
+        self.simulation.plots.aerodynamic_forces(
+            filename=self.output_folder + "/plots/results/aerodynamic_forces.png"
+        )
+        self.simulation.plots.rail_buttons_forces(
+            filename=self.output_folder + "/plots/results/rail_button_forces.png"
+        )
         # NOTE: The energy data plot crashes when an airbrake is configured
-        # if self.config.export_plot_energy_data:
-        #    self.simulation.plots.energy_data(
-        #        filename=self.output_folder + "/plots/results/energy_data.png"
-        #    )
-        if self.config.export_plot_fluid_mechanics_data:
-            self.simulation.plots.fluid_mechanics_data(
-                filename=self.output_folder + "/plots/results/fluid_mechanics_data.png"
+        if len(self.config.airbrake_ids) == 0:
+            self.simulation.plots.energy_data(
+                filename=self.output_folder + "/plots/results/energy_data.png"
             )
-        if self.config.export_plot_stability_and_control_data:
-            self.simulation.plots.stability_and_control_data(
-                filename=self.output_folder
-                + "/plots/results/stability_and_control_data.png"
+        self.simulation.plots.fluid_mechanics_data(
+            filename=self.output_folder + "/plots/results/fluid_mechanics_data.png"
+        )
+        self.simulation.plots.stability_and_control_data(
+            filename=self.output_folder
+            + "/plots/results/stability_and_control_data.png"
+        )
+        self.simulation.plots.pressure_rocket_altitude(
+            filename=self.output_folder + "/plots/results/pressure_rocket_altitude.png"
+        )
+        for parachute in self.simulation.rocket.parachutes:
+            assert parachute.name is not None and parachute.name != ""
+            foldername = (
+                self.output_folder + "/plots/results/parachutes/" + parachute.name + "/"
             )
-        if self.config.export_plot_pressure_rocket_altitude:
-            self.simulation.plots.pressure_rocket_altitude(
-                filename=self.output_folder
-                + "/plots/results/pressure_rocket_altitude.png"
+            parachute.noise_signal_function(
+                filename=foldername + "noise_signal_function.png"
             )
-        if self.config.export_plot_pressure_signals:
-            for parachute in self.simulation.rocket.parachutes:
-                assert parachute.name is not None and parachute.name != ""
-                foldername = (
-                    self.output_folder
-                    + "/plots/results/parachutes/"
-                    + parachute.name
-                    + "/"
-                )
-                parachute.noise_signal_function(
-                    filename=foldername + "noise_signal_function.png"
-                )
-                parachute.noisy_pressure_signal_function(
-                    filename=foldername + "noisy_pressure_signal_function.png"
-                )
-                parachute.clean_pressure_signal_function(
-                    filename=foldername + "noisy_pressure_signal_function.png"
-                )
-        if self.config.export_plot_airbrake_deployment_if_available:
+            parachute.noisy_pressure_signal_function(
+                filename=foldername + "noisy_pressure_signal_function.png"
+            )
+            parachute.clean_pressure_signal_function(
+                filename=foldername + "noisy_pressure_signal_function.png"
+            )
+        if len(self.config.airbrake_ids) > 0:
             plot_airbrake_deployment_over_time(
                 self.simulation,
                 filename=self.output_folder + "/plots/results/airbrake_deployment.png",
             )
-        if self.config.export_plot_altitude_custom:
-            plot_altitude_over_time(
-                self.simulation,
-                filename=self.output_folder + "/plots/results/altitude_over_time.png",
-            )
+        plot_altitude_over_time(
+            self.simulation,
+            filename=self.output_folder + "/plots/results/altitude_over_time.png",
+        )
         print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:
@@ -380,30 +353,26 @@ class FlightSimulation:
         Path(self.output_folder).mkdir(parents=True, exist_ok=True)
 
         # Export raw flight data
-        if self.config.export_raw_flight_data:
-            self.simulation.export_data(self.output_folder + "/raw_flight_data.csv")
+        self.simulation.export_data(self.output_folder + "/raw_flight_data.csv")
 
         # Export flight data to csv
-        if self.config.export_flight_data:
-            export_flight_data_to_csv(
-                self.simulation,
-                self.output_folder + "/custom_flight_data.csv",
-                self.config.export_flight_data_time_step_seconds,
-            )
+        export_flight_data_to_csv(
+            self.simulation,
+            self.output_folder + "/custom_flight_data.csv",
+            self.config.export_flight_data_time_step_seconds,
+        )
 
         # Export simulated sensor module data to csv
-        if self.config.export_flight_data:
-            export_flight_data_to_csv_in_simulated_sensor_module_format(
-                self.simulation,
-                self.output_folder + "/simulated_sensor_module_data.csv",
-                self.environment,
-                self.config.export_flight_data_time_step_seconds,
-            )
+        export_flight_data_to_csv_in_simulated_sensor_module_format(
+            self.simulation,
+            self.output_folder + "/simulated_sensor_module_data.csv",
+            self.environment,
+            self.config.export_flight_data_time_step_seconds,
+        )
 
         # Export trajectory for Google Earth visulization
-        if self.config.export_trajectory_for_google_earth:
-            self.simulation.export_kml(
-                file_name=self.output_folder + "/trajectory.kml",
-                extrude=True,
-                altitude_mode="relative_to_ground",
-            )
+        self.simulation.export_kml(
+            file_name=self.output_folder + "/trajectory.kml",
+            extrude=True,
+            altitude_mode="relative_to_ground",
+        )
