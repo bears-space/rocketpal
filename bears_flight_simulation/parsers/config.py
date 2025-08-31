@@ -26,8 +26,18 @@ class Config:
 
     # Rocket settings
     diameter: float
+    inertia_11: float
+    inertia_22: float
+    inertia_33: float
 
-    # Monte Carlo Options
+    # Parts list parameters
+    mass_standard_deviation_factor: float
+    center_of_mass_standard_deviation_factor: float
+    inertia_standard_deviation_factor: float
+    power_off_drag_factor_standard_deviation: float
+    power_on_drag_factor_standard_deviation: float
+
+    # Monte Carlo Simulation Options
     number_of_simulations: int
     parallel: bool
     n_workers: int
@@ -61,9 +71,29 @@ class Config:
         )
 
         # Parse rocket settings
-        self.diameter = float(data["diameter"])
+        self.diameter = float(data["diameter_in_m"])
+        self.inertia_11 = float(data["inertia_11"])
+        self.inertia_22 = float(data["inertia_22"])
+        self.inertia_33 = float(data["inertia_33"])
 
-        # Parse Monte Carlo Options
+        # Parse parts list parameters
+        self.mass_standard_deviation_factor = float(
+            data["mass_standard_deviation_factor"]
+        )
+        self.center_of_mass_standard_deviation_factor = float(
+            data["center_of_mass_standard_deviation_factor"]
+        )
+        self.inertia_standard_deviation_factor = float(
+            data["inertia_standard_deviation_factor"]
+        )
+        self.power_off_drag_factor_standard_deviation = float(
+            data["power_off_drag_factor_standard_deviation"]
+        )
+        self.power_on_drag_factor_standard_deviation = float(
+            data["power_on_drag_factor_standard_deviation"]
+        )
+
+        # Parse Monte Carlo Simulation Options
         self.number_of_simulations = int(data["number_of_simulations"])
         self.parallel = bool(data["parallel"])
         self.n_workers = int(data["n_workers"])

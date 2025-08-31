@@ -12,11 +12,23 @@ inclination: 84 # launch inclination from ground in degree
 heading: 133 # launch heading relative to north in degree
 dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
-diameter: 0.1236 # diameter of the rocket in m
 launch_date: 2025-10-12_12-00-00
 
-# Monte Carlo Options
-number_of_simulations: 1000
+# Rocket settings
+diameter_in_m: 0.1236
+inertia_11: 6.321
+inertia_22: 6.321
+inertia_33: 0.034
+
+# Monte Carlo Parameters
+mass_standard_deviation_factor: 0.05
+center_of_mass_standard_deviation_factor: 0.05
+inertia_standard_deviation_factor: 0.1
+power_off_drag_factor_standard_deviation: 0.1
+power_on_drag_factor_standard_deviation: 0.1
+
+# Monte Carlo Simulation Options
+number_of_simulations: 100
 parallel: True
 n_workers: 16
 

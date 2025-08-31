@@ -30,6 +30,9 @@ class MotorConfig(LibraryEntry):
     center_of_dry_mass_position: float  # in m
     nozzle_position: float  # in m
 
+    # Monte Carlo parameters
+    total_impulse_standard_deviation_factor: float
+
     def __init__(self, data: t.Dict) -> None:
         super().__init__(data)
 
@@ -48,6 +51,9 @@ class MotorConfig(LibraryEntry):
         self.grain_separation = float(data["grainSep"]) / 1000.0
         self.burn_time = float(data["burnT"])
         self.nozzle_position = float(data["nozzlePos"])
+        self.total_impulse_standard_deviation_factor = float(
+            data["total_impulse_standard_deviation_factor"]
+        )
 
         # Calculate grain density
         self.prop_mass = float(data["propMass"])

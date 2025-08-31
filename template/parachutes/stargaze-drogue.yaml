@@ -1,9 +1,11 @@
 ID: stargaze-drogue
 drag_coefficient_times_reference_area: 0.4377952619 # cd_s
+drag_coefficient_times_reference_area_standard_deviation_factor: 0.1
 ejection_at_apogee: True
 ejection_altitude_meters_if_not_at_apogee: null
 ejection_sampling_rate_hertz: 100.0
 opening_lag_seconds: 0.5
+opening_lag_seconds_standard_deviation_factor: 0.1
 noise_mean_pascal: 0.0
 noise_standard_deviation_pascal: 0.0
 noise_time_correlation_pascal: 0.0

@@ -151,8 +151,8 @@ class FlightSimulation:
         )
         self.stochastic_motor = StochasticSolidMotor(
             solid_motor=self.motor,
-            burn_start_time=0.1,
-            total_impulse=0.01 * self.motor.total_impulse,
+            total_impulse=motor_config.total_impulse_standard_deviation_factor
+            * self.motor.total_impulse,
         )
 
         # Create rocket
@@ -173,7 +173,11 @@ class FlightSimulation:
         self.rocket = Rocket(
             radius=config.diameter / 2.0,  # 127 / 2000,
             mass=rocket_mass_without_motor,  # 14.426,
-            inertia=(6.321, 6.321, 0.034),
+            inertia=(
+                self.config.inertia_11,
+                self.config.inertia_22,
+                self.config.inertia_33,
+            ),
             power_off_drag=power_off_drag_curve_file_path,
             power_on_drag=power_on_drag_curve_file_path,
             center_of_mass_without_motor=center_of_mass_without_motor,
@@ -181,8 +185,23 @@ class FlightSimulation:
         )
         self.stochastic_rocket = StochasticRocket(
             rocket=self.rocket,
-            mass=0.001 * rocket_mass_without_motor,
-            center_of_mass_without_motor=0.01 * center_of_mass_without_motor,
+            mass=self.config.mass_standard_deviation_factor * rocket_mass_without_motor,
+            center_of_mass_without_motor=self.config.center_of_mass_standard_deviation_factor
+            * center_of_mass_without_motor,
+            inertia_11=self.config.inertia_standard_deviation_factor
+            * self.config.inertia_11,
+            inertia_22=self.config.inertia_standard_deviation_factor
+            * self.config.inertia_22,
+            inertia_33=self.config.inertia_standard_deviation_factor
+            * self.config.inertia_33,
+            power_off_drag_factor=(
+                1.0,
+                self.config.power_off_drag_factor_standard_deviation,
+            ),
+            power_on_drag_factor=(
+                1.0,
+                self.config.power_on_drag_factor_standard_deviation,
+            ),
         )
         logging.info(
             f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {rocket_center_of_mass(parts)}"
@@ -247,8 +266,10 @@ class FlightSimulation:
             )
             stochastic_parachute = StochasticParachute(
                 parachute=parachute_object,
-                cd_s=0.1 * parachute.drag_coefficient_times_reference_area,
-                lag=0.1 * parachute.opening_lag_seconds,
+                cd_s=parachute.drag_coefficient_times_reference_area_standard_deviation_factor
+                * parachute.drag_coefficient_times_reference_area,
+                lag=parachute.opening_lag_seconds_standard_deviation_factor
+                * parachute.opening_lag_seconds,
             )
             self.stochastic_parachutes.append(stochastic_parachute)
             self.stochastic_rocket.add_parachute(stochastic_parachute)
@@ -287,7 +308,10 @@ class FlightSimulation:
             )  # type: ignore
             stochastic_airbrake = StochasticAirBrakes(
                 air_brakes=airbrake_object,
-                drag_coefficient_curve_factor=(1.0, 0.1),
+                drag_coefficient_curve_factor=(
+                    1.0,
+                    airbrake.drag_curve_standard_deviation_factor,
+                ),
             )
             self.stochastic_airbrakes.append(stochastic_airbrake)
             self.stochastic_rocket.add_air_brakes(stochastic_airbrake, controller)

@@ -17,3 +17,5 @@ grainSep: 5 # grain seperation in mm PS: should be same for every Pro75; Pro54 m
 burnT: 4.94 # burn time in s from cesaroni website for corresponding motor; not necessary if thrust curve is given in .eng, .csv, or as function with list as instance
 # Position Parameters
 nozzlePos: 0 # nozzle position in m from nozzle to combustion chamber
+# Monte Carlo Parameters
+total_impulse_standard_deviation_factor: 0.1

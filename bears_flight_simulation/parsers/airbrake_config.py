@@ -13,6 +13,7 @@ class AirbrakeConfig(LibraryEntry):
     sampling_rate_hz: float
     controller_function: t.Callable
     drag_curve_filepath: str
+    drag_curve_standard_deviation_factor: float
 
     def __init__(self, data: t.Dict, airbrake_folder: str) -> None:
         super().__init__(data)
@@ -35,3 +36,6 @@ class AirbrakeConfig(LibraryEntry):
                 raise NotImplementedError
 
         self.drag_curve_filepath = airbrake_folder + "/" + str(data["drag_curve_file"])
+        self.drag_curve_standard_deviation_factor = float(
+            data["drag_curve_standard_deviation_factor"]
+        )
