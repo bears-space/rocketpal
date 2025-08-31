@@ -288,7 +288,6 @@ class FlightSimulation:
             stochastic_airbrake = StochasticAirBrakes(
                 air_brakes=airbrake_object,
                 drag_coefficient_curve_factor=(1.0, 0.1),
-                clamp=True,
             )
             self.stochastic_airbrakes.append(stochastic_airbrake)
             self.stochastic_rocket.add_air_brakes(stochastic_airbrake, controller)
