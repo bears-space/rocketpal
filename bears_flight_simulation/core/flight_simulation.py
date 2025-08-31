@@ -16,7 +16,18 @@ from bears_flight_simulation.parsers.parts_list_parser import (
     get_motor_position,
 )
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
-from rocketpy import Environment, Flight, Rocket, SolidMotor, AirBrakes
+from rocketpy import Environment, Flight, Rocket, SolidMotor, AirBrakes, MonteCarlo
+from rocketpy.stochastic import (
+    StochasticEnvironment,
+    StochasticFlight,
+    StochasticNoseCone,
+    StochasticParachute,
+    StochasticRailButtons,
+    StochasticRocket,
+    StochasticSolidMotor,
+    StochasticTail,
+    StochasticTrapezoidalFins,
+)
 
 from bears_flight_simulation.utilities.rocket_calculations import (
     calculate_rocket_mass_without_motor_in_kg,
@@ -51,9 +62,12 @@ class FlightSimulation:
 
     # Simulation stuff
     rocket: Rocket
-    simulation: Flight
+    flight: Flight
     environment: Environment
     motor: SolidMotor
+    stochastic_motor: StochasticSolidMotor
+    stochastic_rocket: StochasticRocket
+    stochastic_flight: StochasticFlight
 
     # Folders
     output_folder: str
@@ -99,6 +113,7 @@ class FlightSimulation:
             wind_u=[(0, wind_east)],  # type: ignore
             wind_v=[(0, wind_north)],  # type: ignore
         )
+        # self.environment.set_atmospheric_model(type="Ensemble", file="GEFS")
 
         # Setup motor
         self.motor = SolidMotor(
@@ -118,6 +133,11 @@ class FlightSimulation:
             burn_time=motor_config.burn_time,
             throat_radius=motor_config.throat_radius,
             coordinate_system_orientation="nozzle_to_combustion_chamber",
+        )
+        self.stochastic_motor = StochasticSolidMotor(
+            solid_motor=self.motor,
+            burn_start_time=0.1,
+            total_impulse=100,
         )
 
         # Create rocket
@@ -143,6 +163,11 @@ class FlightSimulation:
             center_of_mass_without_motor=rocket_center_of_mass(parts)[2] / 1000.0,
             coordinate_system_orientation="tail_to_nose",
         )
+        self.stochastic_rocket = StochasticRocket(
+            rocket=self.rocket,
+            mass=0.05,
+            center_of_mass_without_motor=0.05,
+        )
         logging.info(
             f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {rocket_center_of_mass(parts)}"
         )
@@ -152,6 +177,7 @@ class FlightSimulation:
 
         # Add motor to rocket
         self.rocket.add_motor(self.motor, position=get_motor_position(parts) / 1000.0)
+        self.stochastic_rocket.add_motor(self.stochastic_motor)
 
         # Add rail guides
         self.rocket.set_rail_buttons(
@@ -238,15 +264,25 @@ class FlightSimulation:
             f"FlightSimulation: calculated rocket mass (rocket.evaluate_dry_mass) is {self.rocket.evaluate_dry_mass()}kg"
         )
 
+        # Print uncertainties of the stochastic classes
+        self.stochastic_motor.visualize_attributes()
+        self.stochastic_rocket.visualize_attributes()
+
     def simulate(self) -> None:
         # Run the simulation
-        self.simulation = Flight(
+        self.flight = Flight(
             rocket=self.rocket,
             environment=self.environment,
             rail_length=self.config.launch_rail_length,  # rail length in meters
             inclination=self.config.inclination,  # inclination to ground in degrees
             heading=self.config.heading,  # launch heading relative to north in degrees
         )
+        self.stochastic_flight = StochasticFlight(
+            flight=self.flight,
+            inclination=1.0,
+            heading=2.0,
+        )
+        self.stochastic_flight.visualize_attributes()
 
     def show_input_info(self) -> None:
         assert self.environment is not None
@@ -276,52 +312,52 @@ class FlightSimulation:
         self.rocket.draw(filename=self.output_folder + "/plots/rocket/rocket.png")
 
     def show_results(self) -> None:
-        assert self.simulation is not None
+        assert self.flight is not None
 
         # Print simulation results
         print("RESULTS INFO START")
-        self.simulation.prints.all()
+        self.flight.prints.all()
         print("RESULTS INFO END")
 
         # Show simulation results graphics
         print("RESULTS GRAPHICS START")
-        self.simulation.plots.trajectory_3d(
+        self.flight.plots.trajectory_3d(
             filename=self.output_folder + "/plots/results/trajectory_3d.png"
         )
-        self.simulation.plots.linear_kinematics_data(
+        self.flight.plots.linear_kinematics_data(
             filename=self.output_folder + "/plots/results/linear_kinematics.png"
         )
-        self.simulation.plots.flight_path_angle_data(
+        self.flight.plots.flight_path_angle_data(
             filename=self.output_folder + "/plots/results/flight_path_angle_data.png"
         )
-        self.simulation.plots.attitude_data(
+        self.flight.plots.attitude_data(
             filename=self.output_folder + "/plots/results/attitude_data.png"
         )
-        self.simulation.plots.angular_kinematics_data(
+        self.flight.plots.angular_kinematics_data(
             filename=self.output_folder + "/plots/results/angular_kinematics_data.png"
         )
-        self.simulation.plots.aerodynamic_forces(
+        self.flight.plots.aerodynamic_forces(
             filename=self.output_folder + "/plots/results/aerodynamic_forces.png"
         )
-        self.simulation.plots.rail_buttons_forces(
+        self.flight.plots.rail_buttons_forces(
             filename=self.output_folder + "/plots/results/rail_button_forces.png"
         )
         # NOTE: The energy data plot crashes when an airbrake is configured
         if len(self.config.airbrake_ids) == 0:
-            self.simulation.plots.energy_data(
+            self.flight.plots.energy_data(
                 filename=self.output_folder + "/plots/results/energy_data.png"
             )
-        self.simulation.plots.fluid_mechanics_data(
+        self.flight.plots.fluid_mechanics_data(
             filename=self.output_folder + "/plots/results/fluid_mechanics_data.png"
         )
-        self.simulation.plots.stability_and_control_data(
+        self.flight.plots.stability_and_control_data(
             filename=self.output_folder
             + "/plots/results/stability_and_control_data.png"
         )
-        self.simulation.plots.pressure_rocket_altitude(
+        self.flight.plots.pressure_rocket_altitude(
             filename=self.output_folder + "/plots/results/pressure_rocket_altitude.png"
         )
-        for parachute in self.simulation.rocket.parachutes:
+        for parachute in self.flight.rocket.parachutes:
             assert parachute.name is not None and parachute.name != ""
             foldername = (
                 self.output_folder + "/plots/results/parachutes/" + parachute.name + "/"
@@ -337,41 +373,41 @@ class FlightSimulation:
             )
         if len(self.config.airbrake_ids) > 0:
             plot_airbrake_deployment_over_time(
-                self.simulation,
+                self.flight,
                 filename=self.output_folder + "/plots/results/airbrake_deployment.png",
             )
         plot_altitude_over_time(
-            self.simulation,
+            self.flight,
             filename=self.output_folder + "/plots/results/altitude_over_time.png",
         )
         print("RESULTS GRAPHICS END")
 
     def export_results(self) -> None:
-        assert self.simulation is not None
+        assert self.flight is not None
 
         # Before export, ensure output folder exists
         Path(self.output_folder).mkdir(parents=True, exist_ok=True)
 
         # Export raw flight data
-        self.simulation.export_data(self.output_folder + "/raw_flight_data.csv")
+        self.flight.export_data(self.output_folder + "/raw_flight_data.csv")
 
         # Export flight data to csv
         export_flight_data_to_csv(
-            self.simulation,
+            self.flight,
             self.output_folder + "/custom_flight_data.csv",
             self.config.export_flight_data_time_step_seconds,
         )
 
         # Export simulated sensor module data to csv
         export_flight_data_to_csv_in_simulated_sensor_module_format(
-            self.simulation,
+            self.flight,
             self.output_folder + "/simulated_sensor_module_data.csv",
             self.environment,
             self.config.export_flight_data_time_step_seconds,
         )
 
         # Export trajectory for Google Earth visulization
-        self.simulation.export_kml(
+        self.flight.export_kml(
             file_name=self.output_folder + "/trajectory.kml",
             extrude=True,
             altitude_mode="relative_to_ground",
