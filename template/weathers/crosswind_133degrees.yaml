@@ -1,7 +1,4 @@
 ID: crosswind-133degrees
-wind_speed_in_m_per_s_min: 0
-wind_speed_in_m_per_s_max: 16
-wind_speed_in_m_per_s_step: 2
-wind_direction_in_degrees_min: 133
-wind_direction_in_degrees_max_non_inclusive: 134
-wind_direction_in_degrees_step: 360
+wind_speed_in_m_per_s: 10
+wind_direction_in_degrees: 133
+wind_x_y_factor_standard_deviation: 5

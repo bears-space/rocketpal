@@ -9,6 +9,7 @@ from bears_flight_simulation.parsers.motor_config import MotorConfig
 from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
 from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
 from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
+from bears_flight_simulation.parsers.weather_config import WeatherConfig
 from bears_flight_simulation.parsers.parts_list_parser import (
     Part,
     get_nosecone_total_length,
@@ -65,6 +66,7 @@ class FlightSimulation:
     flight: Flight
     environment: Environment
     motor: SolidMotor
+    stochastic_environment: StochasticEnvironment
     stochastic_motor: StochasticSolidMotor
     stochastic_rocket: StochasticRocket
     stochastic_flight: StochasticFlight
@@ -87,8 +89,7 @@ class FlightSimulation:
         fins_config: FinsConfig,
         launch_location: Location,
         parts: list[Part],
-        wind_speed: float,
-        wind_direction: float,
+        weather_config: WeatherConfig,
     ) -> None:
         # Store configs / folders
         self.config = config
@@ -104,7 +105,7 @@ class FlightSimulation:
         # self.environment.set_atmospheric_model(type="Forecast", file="GFS")
         # self.environment.set_atmospheric_model(type="standard_atmosphere")
         (wind_east, wind_north) = wind_speed_and_direction_to_east_and_north(
-            wind_speed, wind_direction
+            weather_config.wind_speed, weather_config.wind_direction
         )
         self.environment.set_atmospheric_model(
             type="custom_atmosphere",
@@ -114,6 +115,11 @@ class FlightSimulation:
             wind_v=[(0, wind_north)],  # type: ignore
         )
         # self.environment.set_atmospheric_model(type="Ensemble", file="GEFS")
+        self.stochastic_environment = StochasticEnvironment(
+            environment=self.environment,
+            wind_velocity_x_factor=(1.0, weather_config.wind_x_y_factor_standard_distribution),
+            wind_velocity_y_factor=(1.0, weather_config.wind_x_y_factor_standard_distribution),
+        )
 
         # Setup motor
         self.motor = SolidMotor(
@@ -265,6 +271,7 @@ class FlightSimulation:
         )
 
         # Print uncertainties of the stochastic classes
+        self.stochastic_environment.visualize_attributes()
         self.stochastic_motor.visualize_attributes()
         self.stochastic_rocket.visualize_attributes()
 

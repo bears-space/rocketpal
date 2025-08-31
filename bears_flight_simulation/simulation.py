@@ -76,26 +76,11 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
     return True
 
 
-def _load_motors_from_library(
-    config_folder: str, motor_ids: list[str]
-) -> list[MotorConfig]:
+def _load_motor_from_library(config_folder: str, motor_id: str) -> MotorConfig | None:
     motor_library: MotorLibrary = MotorLibrary(config_folder + MOTOR_FOLDERNAME)
-
-    motors: list[MotorConfig] = []
-    for id in motor_ids:
-        motor = motor_library.get(id)
-        if motor is None:
-            logging.warning(
-                f"StargazeFlightSimulation: The motor with the id '{id}' does not exist in the motor library. Skipping ..."
-            )
-        else:
-            assert isinstance(motor, MotorConfig)
-            motors.append(motor)
-            logging.info(
-                f"StargazeFlightSimulation: Loaded MotorConfig with id '{motor.id}'"
-            )
-
-    return motors
+    motor = motor_library.get(motor_id)
+    assert isinstance(motor, MotorConfig) or motor is None
+    return motor
 
 
 def _load_parachutes_from_library(
@@ -223,12 +208,17 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
             f"StargazeFlightSimulation: Using WeatherConfig with id '{weather_config.id}'"
         )
 
-    motors = _load_motors_from_library(config_folder, config.motor_ids)
-    if len(motors) == 0:
+    motor_config = _load_motor_from_library(config_folder, config.motor_id)
+    if motor_config is None:
         logging.error(
-            "StargazeFlightSimulation: No motors have been loaded. Aborting ..."
+            f"StargazeFlightSimulation: The motor config with the id '{config.motor_id}'"
+            f" does not exist in the motor config library. Aborting ..."
         )
         exit(2)  # 2 means "No such file or directory"
+    else:
+        logging.info(
+            f"StargazeFlightSimulation: Using MotorConfig with id '{motor_config.id}'"
+        )
 
     parachutes = _load_parachutes_from_library(config_folder, config.parachute_ids)
 
@@ -245,51 +235,34 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
     with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
         parts_list = parse_parts_list(file)
 
-    for motor_config_i, motor_config in enumerate(motors):
-        for wind_direction_i, wind_direction in enumerate(
-            weather_config.wind_directions,
-        ):
-            for wind_speed_i, wind_speed in enumerate(
-                weather_config.wind_speeds,
-            ):
-                logging.info(
-                    f"[motor {motor_config_i + 1}/{len(motors)}, wind_direction {wind_direction_i + 1}/{len(weather_config.wind_directions)}, wind_speed {wind_speed_i + 1}/{len(weather_config.wind_speeds)}] Testing this stuff"
-                )
+        # Initialize flight simulation
+        sim: FlightSimulation = FlightSimulation(
+            config=config,
+            output_folder=output_folder,
+            motor_file_path=config_folder
+            + MOTOR_FOLDERNAME
+            + "/"
+            + motor_config.engine_filename,
+            motor_config=motor_config,
+            parachutes=parachutes,
+            airbrakes=airbrakes,
+            rail_button_config=rail_button_config,
+            nose_cone_config=nose_cone_config,
+            power_off_drag_curve_file_path=config_folder
+            + POWER_OFF_DRAG_CURVE_FILENAME,
+            power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
+            fins_config=fins_config,
+            launch_location=launch_location,
+            parts=parts_list,
+            weather_config=weather_config,
+        )
 
-                subfolder = (
-                    f"/{motor_config.id}/{wind_direction}_degrees/{wind_speed}_mps_wind"
-                )
+        # Show infos about configured flight
+        sim.show_input_info()
 
-                # Initialize flight simulation
-                sim: FlightSimulation = FlightSimulation(
-                    config=config,
-                    output_folder=output_folder + subfolder,
-                    motor_file_path=config_folder
-                    + MOTOR_FOLDERNAME
-                    + "/"
-                    + motor_config.engine_filename,
-                    motor_config=motor_config,
-                    parachutes=parachutes,
-                    airbrakes=airbrakes,
-                    rail_button_config=rail_button_config,
-                    nose_cone_config=nose_cone_config,
-                    power_off_drag_curve_file_path=config_folder
-                    + POWER_OFF_DRAG_CURVE_FILENAME,
-                    power_on_drag_curve_file_path=config_folder
-                    + POWER_ON_DRAG_CURVE_FILENAME,
-                    fins_config=fins_config,
-                    launch_location=launch_location,
-                    parts=parts_list,
-                    wind_speed=wind_speed,
-                    wind_direction=wind_direction,
-                )
+        # Run simulation
+        sim.simulate()
 
-                # Show infos about configured flight
-                sim.show_input_info()
-
-                # Run simulation
-                sim.simulate()
-
-                # Show and save results
-                sim.show_results()
-                sim.export_results()
+        # Show and save results
+        sim.show_results()
+        sim.export_results()

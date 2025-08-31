@@ -11,7 +11,7 @@ class Config:
     # Input ids
     location_id: str
     weather_config_id: str
-    motor_ids: list[str]
+    motor_id: str
     drag_curve_power_on_file: str
     drag_curve_power_off_file: str
     parachute_ids: list[str]
@@ -40,7 +40,7 @@ class Config:
         # Parse input ids
         self.location_id = str(data["location"])
         self.weather_config_id = str(data["weatherConfig"])
-        self.motor_ids = data["motors"]
+        self.motor_id = data["motor"]
         self.drag_curve_power_on_file = str(data["dragCurvePowerOnFile"])
         self.drag_curve_power_off_file = str(data["dragCurvePowerOffFile"])
         self.parachute_ids = data["parachutes"]
