@@ -15,5 +15,10 @@ dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket
 diameter: 0.1236 # diameter of the rocket in m
 launch_date: 2025-10-12_12-00-00
 
+# Monte Carlo Options
+number_of_simulations: 1000
+parallel: True
+n_workers: 16
+
 # Export Options
 exportFlightDataTimeStepSeconds: 0.01

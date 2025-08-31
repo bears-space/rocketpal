@@ -27,6 +27,11 @@ class Config:
     # Rocket settings
     diameter: float
 
+    # Monte Carlo Options
+    number_of_simulations: int
+    parallel: bool
+    n_workers: int
+
     # Export options
     export_flight_data_time_step_seconds: float
 
@@ -57,6 +62,11 @@ class Config:
 
         # Parse rocket settings
         self.diameter = float(data["diameter"])
+
+        # Parse Monte Carlo Options
+        self.number_of_simulations = int(data["number_of_simulations"])
+        self.parallel = bool(data["parallel"])
+        self.n_workers = int(data["n_workers"])
 
         # Parse export options
         self.export_flight_data_time_step_seconds = float(

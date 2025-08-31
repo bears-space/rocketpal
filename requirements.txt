@@ -4,4 +4,4 @@ pre-commit
 PySide6
 pytest
 PyYAML
-rocketpy==1.10.0
+rocketpy[all]==1.10.0

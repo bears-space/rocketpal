@@ -117,8 +117,14 @@ class FlightSimulation:
         # self.environment.set_atmospheric_model(type="Ensemble", file="GEFS")
         self.stochastic_environment = StochasticEnvironment(
             environment=self.environment,
-            wind_velocity_x_factor=(1.0, weather_config.wind_x_y_factor_standard_distribution),
-            wind_velocity_y_factor=(1.0, weather_config.wind_x_y_factor_standard_distribution),
+            wind_velocity_x_factor=(
+                1.0,
+                weather_config.wind_x_y_factor_standard_distribution,
+            ),
+            wind_velocity_y_factor=(
+                1.0,
+                weather_config.wind_x_y_factor_standard_distribution,
+            ),
         )
 
         # Setup motor
@@ -284,12 +290,29 @@ class FlightSimulation:
             inclination=self.config.inclination,  # inclination to ground in degrees
             heading=self.config.heading,  # launch heading relative to north in degrees
         )
+
+        # Run the monte carlo (stochastic) simulation
         self.stochastic_flight = StochasticFlight(
             flight=self.flight,
             inclination=1.0,
             heading=2.0,
         )
         self.stochastic_flight.visualize_attributes()
+        # ensure subfolder exists
+        Path(self.output_folder + "/monte_carlo_analysis").mkdir(parents=True, exist_ok=True)
+        self.monte_carlo_simulation = MonteCarlo(
+            filename=self.output_folder + "/monte_carlo_analysis/monte_carlo_class",
+            environment=self.stochastic_environment,
+            rocket=self.stochastic_rocket,
+            flight=self.stochastic_flight,
+        )
+        self.monte_carlo_simulation.simulate(
+            number_of_simulations=self.config.number_of_simulations,
+            append=False,
+            include_function_data=False,
+            parallel=self.config.parallel,
+            n_workers=self.config.n_workers,
+        )
 
     def show_input_info(self) -> None:
         assert self.environment is not None
@@ -322,12 +345,12 @@ class FlightSimulation:
         assert self.flight is not None
 
         # Print simulation results
-        print("RESULTS INFO START")
+        print("TRADITIONAL RESULTS INFO START")
         self.flight.prints.all()
-        print("RESULTS INFO END")
+        print("TRADITIONAL RESULTS INFO END")
 
         # Show simulation results graphics
-        print("RESULTS GRAPHICS START")
+        print("TRADITIONAL RESULTS GRAPHICS START")
         self.flight.plots.trajectory_3d(
             filename=self.output_folder + "/plots/results/trajectory_3d.png"
         )
@@ -387,7 +410,12 @@ class FlightSimulation:
             self.flight,
             filename=self.output_folder + "/plots/results/altitude_over_time.png",
         )
-        print("RESULTS GRAPHICS END")
+        print("TRADITIONAL RESULTS GRAPHICS END")
+
+        print(f"number of loaded sims: {self.monte_carlo_simulation}")
+        self.monte_carlo_simulation.prints.all()
+        self.monte_carlo_simulation.plots.ellipses(save=True)
+        self.monte_carlo_simulation.plots.all()
 
     def export_results(self) -> None:
         assert self.flight is not None
@@ -418,4 +446,11 @@ class FlightSimulation:
             file_name=self.output_folder + "/trajectory.kml",
             extrude=True,
             altitude_mode="relative_to_ground",
+        )
+
+        # Export monte carlo ellipses for Google Earth visualization
+        self.monte_carlo_simulation.export_ellipses_to_kml(
+            filename=self.output_folder + "/monte_carlo_analysis/monte_carlo_ellipses.kml",
+            origin_lat=self.environment.latitude,
+            origin_lon=self.environment.longitude,
         )
