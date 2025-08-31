@@ -5,6 +5,7 @@ import math
 
 
 GRAVITY_CONSTANT = 9.80665  # in m/s²
+PRINT_AIRBRAKE_STATUS = False
 
 
 class State:
@@ -230,15 +231,17 @@ def stargaze_airbrake_controller(
     selected_deployment: float
     if not launched or not above_1500m or apogee_reached:
         selected_deployment = 0.0
-        logging.info(f"AIRBRAKE: t={time}, z={state_now.z}")
+        if PRINT_AIRBRAKE_STATUS:
+            logging.info(f"AIRBRAKE: t={time}, z={state_now.z}")
     else:
         # Estimate apogee
         apogee_estimation: float = estimate_apogee_via_propagation(
             env, air_brakes, rocket, state_now, time_step_seconds=1.0 / sampling_rate
         )
-        logging.info(
-            f"AIRBRAKE: t={time}, z={state_now.z}, vz={state_now.v_z}, apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
-        )
+        if PRINT_AIRBRAKE_STATUS:
+            logging.info(
+                f"AIRBRAKE: t={time}, z={state_now.z}, vz={state_now.v_z}, apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
+            )
 
         # Change selected deployment level accordingly
         # TODO better control logic

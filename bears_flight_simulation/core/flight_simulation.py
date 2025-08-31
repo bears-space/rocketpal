@@ -17,18 +17,18 @@ from bears_flight_simulation.parsers.parts_list_parser import (
     get_motor_position,
 )
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
-from bears_flight_simulation.hacks.matplotlib_hacks import hack_override_matplotlib_show, hack_override_matplotlib_show_reset
+from bears_flight_simulation.hacks.matplotlib_hacks import (
+    hack_override_matplotlib_show,
+    hack_override_matplotlib_show_reset,
+)
 from rocketpy import Environment, Flight, Rocket, SolidMotor, AirBrakes, MonteCarlo
 from rocketpy.stochastic import (
     StochasticEnvironment,
     StochasticFlight,
-    StochasticNoseCone,
     StochasticParachute,
-    StochasticRailButtons,
     StochasticRocket,
     StochasticSolidMotor,
-    StochasticTail,
-    StochasticTrapezoidalFins,
+    StochasticAirBrakes,
 )
 
 from bears_flight_simulation.utilities.rocket_calculations import (
@@ -71,6 +71,8 @@ class FlightSimulation:
     stochastic_motor: StochasticSolidMotor
     stochastic_rocket: StochasticRocket
     stochastic_flight: StochasticFlight
+    stochastic_parachutes: list[StochasticParachute]
+    stochastic_airbrakes: list[StochasticAirBrakes]
 
     # Folders
     output_folder: str
@@ -150,7 +152,7 @@ class FlightSimulation:
         self.stochastic_motor = StochasticSolidMotor(
             solid_motor=self.motor,
             burn_start_time=0.1,
-            total_impulse=100,
+            total_impulse=0.01 * self.motor.total_impulse,
         )
 
         # Create rocket
@@ -167,19 +169,20 @@ class FlightSimulation:
         logging.info(
             f"FlightSimulation: calculated rocket mass (complete parts list) is {calculate_rocket_mass_in_kg(parts)}kg"
         )
+        center_of_mass_without_motor = rocket_center_of_mass(parts)[2] / 1000.0
         self.rocket = Rocket(
             radius=config.diameter / 2.0,  # 127 / 2000,
             mass=rocket_mass_without_motor,  # 14.426,
             inertia=(6.321, 6.321, 0.034),
             power_off_drag=power_off_drag_curve_file_path,
             power_on_drag=power_on_drag_curve_file_path,
-            center_of_mass_without_motor=rocket_center_of_mass(parts)[2] / 1000.0,
+            center_of_mass_without_motor=center_of_mass_without_motor,
             coordinate_system_orientation="tail_to_nose",
         )
         self.stochastic_rocket = StochasticRocket(
             rocket=self.rocket,
-            mass=0.05,
-            center_of_mass_without_motor=0.05,
+            mass=0.001 * rocket_mass_without_motor,
+            center_of_mass_without_motor=0.01 * center_of_mass_without_motor,
         )
         logging.info(
             f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {rocket_center_of_mass(parts)}"
@@ -196,7 +199,7 @@ class FlightSimulation:
         self.rocket.set_rail_buttons(
             upper_button_position=rail_button_config.upper_button_position,
             lower_button_position=rail_button_config.lower_button_position,
-            angular_position=rail_button_config.angular_position,
+            angular_position=rail_button_config.angular_position,  # type: ignore
         )
 
         # Add aerodynamic components
@@ -211,7 +214,7 @@ class FlightSimulation:
             length=nosecone_length,
             kind=nose_cone_config.kind,
             position=nosecone_tip_upper_limit_position,
-            bluffness=nose_cone_config.bluffness,
+            bluffness=nose_cone_config.bluffness,  # type: ignore
             power=nose_cone_config.power_if_using_powerseries_kind,
             base_radius=nose_cone_config.base_radius,
         )
@@ -228,21 +231,30 @@ class FlightSimulation:
         )
 
         # Add parachutes
+        self.stochastic_parachutes = []
         for parachute in parachutes:
-            self.rocket.add_parachute(
+            parachute_object = self.rocket.add_parachute(
                 name=parachute.id,
                 cd_s=parachute.drag_coefficient_times_reference_area,
                 trigger=parachute.ejection_altitude,
-                sampling_rate=parachute.ejection_sampling_rate_hertz,
-                lag=parachute.opening_lag_seconds,
+                sampling_rate=parachute.ejection_sampling_rate_hertz,  # type: ignore
+                lag=parachute.opening_lag_seconds,  # type: ignore
                 noise=(
                     parachute.noise_mean_pascal,
                     parachute.noise_standard_deviation_pascal,
                     parachute.noise_time_correlation_pascal,
                 ),
             )
+            stochastic_parachute = StochasticParachute(
+                parachute=parachute_object,
+                cd_s=0.1 * parachute.drag_coefficient_times_reference_area,
+                lag=0.1 * parachute.opening_lag_seconds,
+            )
+            self.stochastic_parachutes.append(stochastic_parachute)
+            self.stochastic_rocket.add_parachute(stochastic_parachute)
 
         # Add airbrakes
+        self.stochastic_airbrakes = []
         for airbrake in airbrakes:
             # Create an airbrake controller function where the environment is pre-filled
             def airbrake_controller_function(
@@ -265,13 +277,21 @@ class FlightSimulation:
                 )
 
             # Actually add the controller function
-            self.rocket.add_air_brakes(
+            airbrake_object, controller = self.rocket.add_air_brakes(
                 drag_coefficient_curve=airbrake.drag_curve_filepath,
                 controller_function=airbrake_controller_function,
                 sampling_rate=airbrake.sampling_rate_hz,
                 clamp=True,
                 name=airbrake.id,
+                return_controller=True,
+            )  # type: ignore
+            stochastic_airbrake = StochasticAirBrakes(
+                air_brakes=airbrake_object,
+                drag_coefficient_curve_factor=(1.0, 0.1),
+                clamp=True,
             )
+            self.stochastic_airbrakes.append(stochastic_airbrake)
+            self.stochastic_rocket.add_air_brakes(stochastic_airbrake, controller)
 
         logging.info(
             f"FlightSimulation: calculated rocket mass (rocket.evaluate_dry_mass) is {self.rocket.evaluate_dry_mass()}kg"
@@ -281,6 +301,10 @@ class FlightSimulation:
         self.stochastic_environment.visualize_attributes()
         self.stochastic_motor.visualize_attributes()
         self.stochastic_rocket.visualize_attributes()
+        for stochastic_parachute in self.stochastic_parachutes:
+            stochastic_parachute.visualize_attributes()
+        for stochastic_airbrake in self.stochastic_airbrakes:
+            stochastic_airbrake.visualize_attributes()
 
     def simulate(self) -> None:
         # Run the simulation
@@ -300,7 +324,9 @@ class FlightSimulation:
         )
         self.stochastic_flight.visualize_attributes()
         # ensure subfolder exists
-        Path(self.output_folder + "/monte_carlo_analysis").mkdir(parents=True, exist_ok=True)
+        Path(self.output_folder + "/monte_carlo_analysis").mkdir(
+            parents=True, exist_ok=True
+        )
         self.monte_carlo_simulation = MonteCarlo(
             filename=self.output_folder + "/monte_carlo_analysis/monte_carlo_class",
             environment=self.stochastic_environment,
@@ -457,7 +483,8 @@ class FlightSimulation:
 
         # Export monte carlo ellipses for Google Earth visualization
         self.monte_carlo_simulation.export_ellipses_to_kml(
-            filename=self.output_folder + "/monte_carlo_analysis/monte_carlo_ellipses.kml",
+            filename=self.output_folder
+            + "/monte_carlo_analysis/monte_carlo_ellipses.kml",
             origin_lat=self.environment.latitude,
             origin_lon=self.environment.longitude,
         )
