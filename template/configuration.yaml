@@ -14,6 +14,11 @@ dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket 
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
 launch_date: 2025-10-12_12-00-00
 
+# Parts list override settings
+override_parts_list: True
+override_parts_list_mass_without_motor_in_g: 16838
+override_parts_list_center_of_mass_in_m: 1.32
+
 # Rocket settings
 diameter_in_m: 0.1236
 inertia_11: 6.321

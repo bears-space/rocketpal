@@ -24,6 +24,11 @@ class Config:
     heading: float
     launch_date: datetime
 
+    # Parts list settings
+    override_parts_list: bool
+    override_parts_list_mass_without_motor_in_g: float
+    override_parts_list_center_of_mass_in_m: float
+
     # Rocket settings
     diameter: float
     inertia_11: float
@@ -69,6 +74,15 @@ class Config:
         self.heading = float(data["heading"])
         self.launch_date = datetime.strptime(
             str(data["launch_date"]), "%Y-%m-%d_%H-%M-%S"
+        )
+
+        # Parse parts list override settings
+        self.override_parts_list = bool(data["override_parts_list"])
+        self.override_parts_list_mass_without_motor_in_g = float(
+            data["override_parts_list_mass_without_motor_in_g"]
+        )
+        self.override_parts_list_center_of_mass_in_m = float(
+            data["override_parts_list_center_of_mass_in_m"]
         )
 
         # Parse rocket settings

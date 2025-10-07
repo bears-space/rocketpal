@@ -156,7 +156,18 @@ class FlightSimulation:
         )
 
         # Create rocket
-        rocket_mass_without_motor = calculate_rocket_mass_without_motor_in_kg(parts)
+        rocket_mass_without_motor: float
+        center_of_mass_without_motor: float
+        if config.override_parts_list:
+            rocket_mass_without_motor = (
+                config.override_parts_list_mass_without_motor_in_g / 1000.0
+            )
+            center_of_mass_without_motor = (
+                config.override_parts_list_center_of_mass_in_m
+            )
+        else:
+            rocket_mass_without_motor = calculate_rocket_mass_without_motor_in_kg(parts)
+            center_of_mass_without_motor = rocket_center_of_mass(parts)[2] / 1000.0
         logging.info(
             f"FlightSimulation: calculated rocket mass (without motor) is {rocket_mass_without_motor}kg"
         )
@@ -169,7 +180,6 @@ class FlightSimulation:
         logging.info(
             f"FlightSimulation: calculated rocket mass (complete parts list) is {calculate_rocket_mass_in_kg(parts)}kg"
         )
-        center_of_mass_without_motor = rocket_center_of_mass(parts)[2] / 1000.0
         self.rocket = Rocket(
             radius=config.diameter / 2.0,  # 127 / 2000,
             mass=rocket_mass_without_motor,  # 14.426,
