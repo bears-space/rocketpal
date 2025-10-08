@@ -224,7 +224,7 @@ def stargaze_airbrake_controller(
     TIME_FOR_FULL_EXTENSION = 0.8  # in seconds
 
     launched = any([state.z > 0.0 for state in state_history])
-    above_1500m = state_now.z >= 1500.0  # TODO reset 1500.0
+    above_1500m = state_now.z >= float(env.elevation) + 1500.0  # TODO reset 1500.0
     apogee_reached = any([state.z > state_now.z for state in state_history])
 
     # Decide on the airbrake deployment level to select
