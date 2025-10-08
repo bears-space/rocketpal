@@ -165,6 +165,9 @@ class FlightSimulation:
             center_of_mass_without_motor = (
                 config.override_parts_list_center_of_mass_in_m
             )
+            logging.info(
+                f"FlightSimulation: USING PARTS LIST OVERRIDE with mass_without_motor={rocket_mass_without_motor}kg and center_of_mass_without_motor={center_of_mass_without_motor}kg"
+            )
         else:
             rocket_mass_without_motor = calculate_rocket_mass_without_motor_in_kg(parts)
             center_of_mass_without_motor = rocket_center_of_mass(parts)[2] / 1000.0
