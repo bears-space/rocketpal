@@ -117,7 +117,6 @@ class FlightSimulation:
             wind_u=[(0, wind_east)],  # type: ignore
             wind_v=[(0, wind_north)],  # type: ignore
         )
-        # self.environment.set_atmospheric_model(type="Ensemble", file="GEFS")
         self.stochastic_environment = StochasticEnvironment(
             environment=self.environment,
             wind_velocity_x_factor=(
@@ -129,6 +128,12 @@ class FlightSimulation:
                 weather_config.wind_x_y_factor_standard_distribution,
             ),
         )
+        # self.environment.set_atmospheric_model(type="Ensemble", file="GEFS")
+        # self.environment.select_ensemble_member(3)
+        # self.stochastic_environment = StochasticEnvironment(
+        #     environment=self.environment,
+        #     ensemble_member=range(0, self.environment.num_ensemble_members)
+        # )
 
         # Setup motor
         self.motor = SolidMotor(
