@@ -536,3 +536,21 @@ class FlightSimulation:
                 origin_lat=self.environment.latitude,
                 origin_lon=self.environment.longitude,
             )
+
+        # Export more random stuff needed for Altimax calibration
+        with open(self.output_folder + "/altimax-calibration-data.txt", "w") as file:
+            # Apogee time
+            buffer = f"apogee_time: {self.flight.apogee_time}\n"
+
+            # Find time to 400m and 300m descent
+            found_400m = False
+            for t in range(int(self.flight.apogee_time), int(self.flight.t_final)):
+                if not found_400m:
+                    if self.flight.altitude(t) < 400:  # type: ignore
+                        buffer += f"time_to_400m_descent: {t}\n"
+                        found_400m = True
+                elif self.flight.altitude(t) < 300:  # type: ignore
+                    buffer += f"time_to_300m_descent: {t}\n"
+                    break
+
+            file.write(buffer)
