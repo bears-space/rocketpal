@@ -220,7 +220,7 @@ def stargaze_airbrake_controller(
     state_now = State(state_raw, offset=0)
     state_history = [State(state, offset=1) for state in state_history_raw]
 
-    TARGET_APOGEE = float(env.elevation) + 2750.0
+    TARGET_APOGEE = float(env.elevation) + 2850.0
     TIME_FOR_FULL_EXTENSION = 0.8  # in seconds
 
     launched = any([state.z > 0.0 for state in state_history])
