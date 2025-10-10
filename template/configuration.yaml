@@ -2,7 +2,7 @@
 ID: STARGAZE # ID used for simulation run and export
 # Input Options
 location: Campo Militar de Santa Margarida B # ID for location file at which simulation shall be executed
-weatherConfig: crosswind-144degrees # ID of weather config file to use
+weatherConfig: standard-atmosphere #crosswind-144degrees # ID of weather config file to use
 motor: Cesaroni_6800M3700-P # ID of used motor for simulation
 parachutes: [stargaze-main, stargaze-drogue] # IDs of parachutes to add to rocket
 airbrakes: [stargaze-airbrake] # IDs of airbrakes to add to rocket
