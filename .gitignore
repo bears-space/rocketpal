@@ -133,6 +133,7 @@ dmypy.json
 
 # Ignore output folder
 output
+output*
 
 # If a local rocketpy installation is linked, ignore it
 rocketpy
