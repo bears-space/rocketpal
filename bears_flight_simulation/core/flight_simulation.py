@@ -481,6 +481,7 @@ class FlightSimulation:
             )
         plot_altitude_over_time(
             self.flight,
+            self.environment,
             filename=self.output_folder + "/plots/results/altitude_over_time.png",
         )
         print("TRADITIONAL RESULTS GRAPHICS END")

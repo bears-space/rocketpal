@@ -3,12 +3,14 @@ import numpy as np
 from pathlib import Path
 import math
 
-from rocketpy import Flight
+from rocketpy import Flight, Environment
 
 TIME_STEP_SECONDS = 0.1
 
 
-def plot_altitude_over_time(flight: Flight, filename: str) -> None:
+def plot_altitude_over_time(
+    flight: Flight, environment: Environment, filename: str
+) -> None:
     # Before export, ensure the folder the file should go into exists
     Path(filename).parent.mkdir(parents=True, exist_ok=True)
 
@@ -28,7 +30,7 @@ def plot_altitude_over_time(flight: Flight, filename: str) -> None:
         endpoint=True,
     ):
         time_list.append(t)
-        altitude_list.append(flight.z.get_value(t))  # type: ignore
+        altitude_list.append(flight.z.get_value(t) - environment.elevation)  # type: ignore
         vx_list.append(flight.vx.get_value(t))  # type: ignore
         vy_list.append(flight.vy.get_value(t))  # type: ignore
         vz_list.append(flight.vz.get_value(t))  # type: ignore
@@ -53,8 +55,8 @@ def plot_altitude_over_time(flight: Flight, filename: str) -> None:
     ax.spines["bottom"].set_position("zero")
     plt.xlabel("time in s")
     plt.ylim(bottom=0.0)
-    plt.ylabel("altitude in m")
-    plt.title("Altitude over time")
+    plt.ylabel("altitude in m (AGL)")
+    plt.title("Altitude (AGL) over time")
 
     # Plot velocities over time
     plt.subplot(2, 1, 2)
