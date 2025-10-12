@@ -2,7 +2,7 @@
 ID: STARGAZE # ID used for simulation run and export
 # Input Options
 location: Campo Militar de Santa Margarida B # ID for location file at which simulation shall be executed
-weatherConfig: standard-atmosphere #crosswind-144degrees # ID of weather config file to use
+weatherConfig: manual-launch-day-weather # ID of weather config file to use
 motor: Cesaroni_6800M3700-P # ID of used motor for simulation
 parachutes: [stargaze-main, stargaze-drogue] # IDs of parachutes to add to rocket
 airbrakes: [stargaze-airbrake] # IDs of airbrakes to add to rocket
@@ -12,7 +12,7 @@ inclination: 84 # launch inclination from ground in degree
 heading: 144 # launch heading relative to north in degree
 dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
 dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
-launch_date: 2025-10-12_12-00-00
+launch_date: 2025-10-13_09-00-00
 
 # Parts list override settings
 override_parts_list: True
