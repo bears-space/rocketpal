@@ -5,7 +5,7 @@ import math
 
 
 GRAVITY_CONSTANT = 9.80665  # in m/s²
-PRINT_AIRBRAKE_STATUS = True  # False
+PRINT_AIRBRAKE_STATUS = True
 
 
 class State:
@@ -224,7 +224,8 @@ def stargaze_airbrake_controller(
     TIME_FOR_FULL_EXTENSION = 0.8  # in seconds
 
     launched = any([state.z > 0.0 for state in state_history])
-    above_1500m = state_now.z >= float(env.elevation) + 1500.0  # TODO reset 1500.0
+    above_1500m = state_now.z >= float(env.elevation) + 1500.0
+    above_2500m = state_now.z >= float(env.elevation) + 2500.0
     apogee_reached = any([state.z > state_now.z for state in state_history])
 
     # Decide on the airbrake deployment level to select
@@ -234,21 +235,28 @@ def stargaze_airbrake_controller(
         if PRINT_AIRBRAKE_STATUS:
             logging.info(f"AIRBRAKE: t={time}, z={state_now.z}")
     else:
-        # Estimate apogee
-        apogee_estimation: float = estimate_apogee_via_propagation(
-            env, air_brakes, rocket, state_now, time_step_seconds=1.0 / sampling_rate
-        )
-        if PRINT_AIRBRAKE_STATUS:
-            logging.info(
-                f"AIRBRAKE: t={time}, z={state_now.z}, vz={state_now.v_z}, apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
-            )
-
-        # Change selected deployment level accordingly
-        # TODO better control logic
-        if apogee_estimation > TARGET_APOGEE:
+        if above_2500m:
             selected_deployment = 1.0
         else:
-            selected_deployment = 0.0
+            # Estimate apogee
+            apogee_estimation: float = estimate_apogee_via_propagation(
+                env,
+                air_brakes,
+                rocket,
+                state_now,
+                time_step_seconds=1.0 / sampling_rate,
+            )
+            if PRINT_AIRBRAKE_STATUS:
+                logging.info(
+                    f"AIRBRAKE: t={time}, z={state_now.z}, vz={state_now.v_z}, apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
+                )
+
+            # Change selected deployment level accordingly
+            # TODO better control logic
+            if apogee_estimation > TARGET_APOGEE:
+                selected_deployment = 1.0
+            else:
+                selected_deployment = 0.0
 
     air_brakes.deployment_level = smooth_deployment_change(
         current_deployment=air_brakes.deployment_level,
