@@ -107,7 +107,6 @@ class FlightSimulation:
         self.environment.set_date(config.launch_date)
         if config.use_weather_forecast_instead_of_config:
             self.environment.set_atmospheric_model(type="Forecast", file="GFS")
-            self.environment.set_atmospheric_model(type="standard_atmosphere")
             if config.enable_monte_carlo_simulation:
                 logging.error(
                     "FlightSimulation: MonteCarlo simulation is not supported when using weather forecasts! Quitting..."
