@@ -5,7 +5,7 @@ import math
 
 
 GRAVITY_CONSTANT = 9.80665  # in m/s²
-PRINT_AIRBRAKE_STATUS = True
+PRINT_AIRBRAKE_STATUS = False
 
 
 class State:
