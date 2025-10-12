@@ -3,7 +3,7 @@ ID: STARGAZE # ID used for simulation run and export
 # Input Options
 location: Campo Militar de Santa Margarida B # ID for location file at which simulation shall be executed
 weatherConfig: manual-launch-day-weather # ID of weather config file to use
-useWeatherForecastInsteadOfConfig: False
+useWeatherForecastInsteadOfConfig: True
 motor: Cesaroni_6800M3700-P # ID of used motor for simulation
 parachutes: [stargaze-main, stargaze-drogue] # IDs of parachutes to add to rocket
 airbrakes: [stargaze-airbrake] # IDs of airbrakes to add to rocket

@@ -105,35 +105,43 @@ class FlightSimulation:
             elevation=launch_location.elevation,
         )
         self.environment.set_date(config.launch_date)
-        # self.environment.set_atmospheric_model(type="Forecast", file="GFS")
-        # self.environment.set_atmospheric_model(type="standard_atmosphere")
-        (wind_east, wind_north) = wind_speed_and_direction_to_east_and_north(
-            weather_config.wind_speed, weather_config.wind_direction
-        )
-        self.environment.set_atmospheric_model(
-            type="custom_atmosphere",
-            pressure=None,
-            temperature=None,
-            wind_u=[(0, wind_east)],  # type: ignore
-            wind_v=[(0, wind_north)],  # type: ignore
-        )
-        self.stochastic_environment = StochasticEnvironment(
-            environment=self.environment,
-            wind_velocity_x_factor=(
-                1.0,
-                weather_config.wind_x_y_factor_standard_distribution,
-            ),
-            wind_velocity_y_factor=(
-                1.0,
-                weather_config.wind_x_y_factor_standard_distribution,
-            ),
-        )
-        # self.environment.set_atmospheric_model(type="Ensemble", file="GEFS")
-        # self.environment.select_ensemble_member(3)
-        # self.stochastic_environment = StochasticEnvironment(
-        #     environment=self.environment,
-        #     ensemble_member=range(0, self.environment.num_ensemble_members)
-        # )
+        if config.use_weather_forecast_instead_of_config:
+            self.environment.set_atmospheric_model(type="Forecast", file="GFS")
+            self.environment.set_atmospheric_model(type="standard_atmosphere")
+            if config.enable_monte_carlo_simulation:
+                logging.error(
+                    "FlightSimulation: MonteCarlo simulation is not supported when using weather forecasts! Quitting..."
+                )
+                exit(1)
+            # self.environment.set_atmospheric_model(type="Ensemble", file="GEFS")
+            # self.environment.select_ensemble_member(3)
+            # self.stochastic_environment = StochasticEnvironment(
+            #    environment=self.environment,
+            #    ensemble_member=range(0, self.environment.num_ensemble_members)
+            # )
+        else:
+            (wind_east, wind_north) = wind_speed_and_direction_to_east_and_north(
+                weather_config.wind_speed, weather_config.wind_direction
+            )
+            self.environment.set_atmospheric_model(
+                type="custom_atmosphere",
+                pressure=None,
+                temperature=None,
+                wind_u=[(0, wind_east)],  # type: ignore
+                wind_v=[(0, wind_north)],  # type: ignore
+            )
+            if config.enable_monte_carlo_simulation:
+                self.stochastic_environment = StochasticEnvironment(
+                    environment=self.environment,
+                    wind_velocity_x_factor=(
+                        1.0,
+                        weather_config.wind_x_y_factor_standard_distribution,
+                    ),
+                    wind_velocity_y_factor=(
+                        1.0,
+                        weather_config.wind_x_y_factor_standard_distribution,
+                    ),
+                )
 
         # Setup motor
         self.motor = SolidMotor(
@@ -154,11 +162,12 @@ class FlightSimulation:
             throat_radius=motor_config.throat_radius,
             coordinate_system_orientation="nozzle_to_combustion_chamber",
         )
-        self.stochastic_motor = StochasticSolidMotor(
-            solid_motor=self.motor,
-            total_impulse=motor_config.total_impulse_standard_deviation_factor
-            * self.motor.total_impulse,
-        )
+        if config.enable_monte_carlo_simulation:
+            self.stochastic_motor = StochasticSolidMotor(
+                solid_motor=self.motor,
+                total_impulse=motor_config.total_impulse_standard_deviation_factor
+                * self.motor.total_impulse,
+            )
 
         # Create rocket
         rocket_mass_without_motor: float
@@ -201,26 +210,28 @@ class FlightSimulation:
             center_of_mass_without_motor=center_of_mass_without_motor,
             coordinate_system_orientation="tail_to_nose",
         )
-        self.stochastic_rocket = StochasticRocket(
-            rocket=self.rocket,
-            mass=self.config.mass_standard_deviation_factor * rocket_mass_without_motor,
-            center_of_mass_without_motor=self.config.center_of_mass_standard_deviation_factor
-            * center_of_mass_without_motor,
-            inertia_11=self.config.inertia_standard_deviation_factor
-            * self.config.inertia_11,
-            inertia_22=self.config.inertia_standard_deviation_factor
-            * self.config.inertia_22,
-            inertia_33=self.config.inertia_standard_deviation_factor
-            * self.config.inertia_33,
-            power_off_drag_factor=(
-                1.0,
-                self.config.power_off_drag_factor_standard_deviation,
-            ),
-            power_on_drag_factor=(
-                1.0,
-                self.config.power_on_drag_factor_standard_deviation,
-            ),
-        )
+        if config.enable_monte_carlo_simulation:
+            self.stochastic_rocket = StochasticRocket(
+                rocket=self.rocket,
+                mass=self.config.mass_standard_deviation_factor
+                * rocket_mass_without_motor,
+                center_of_mass_without_motor=self.config.center_of_mass_standard_deviation_factor
+                * center_of_mass_without_motor,
+                inertia_11=self.config.inertia_standard_deviation_factor
+                * self.config.inertia_11,
+                inertia_22=self.config.inertia_standard_deviation_factor
+                * self.config.inertia_22,
+                inertia_33=self.config.inertia_standard_deviation_factor
+                * self.config.inertia_33,
+                power_off_drag_factor=(
+                    1.0,
+                    self.config.power_off_drag_factor_standard_deviation,
+                ),
+                power_on_drag_factor=(
+                    1.0,
+                    self.config.power_on_drag_factor_standard_deviation,
+                ),
+            )
         logging.info(
             f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {rocket_center_of_mass(parts)}"
         )
@@ -230,7 +241,8 @@ class FlightSimulation:
 
         # Add motor to rocket
         self.rocket.add_motor(self.motor, position=get_motor_position(parts) / 1000.0)
-        self.stochastic_rocket.add_motor(self.stochastic_motor)
+        if config.enable_monte_carlo_simulation:
+            self.stochastic_rocket.add_motor(self.stochastic_motor)
 
         # Add rail guides
         self.rocket.set_rail_buttons(
@@ -282,15 +294,16 @@ class FlightSimulation:
                     parachute.noise_time_correlation_pascal,
                 ),
             )
-            stochastic_parachute = StochasticParachute(
-                parachute=parachute_object,
-                cd_s=parachute.drag_coefficient_times_reference_area_standard_deviation_factor
-                * parachute.drag_coefficient_times_reference_area,
-                lag=parachute.opening_lag_seconds_standard_deviation_factor
-                * parachute.opening_lag_seconds,
-            )
-            self.stochastic_parachutes.append(stochastic_parachute)
-            self.stochastic_rocket.add_parachute(stochastic_parachute)
+            if config.enable_monte_carlo_simulation:
+                stochastic_parachute = StochasticParachute(
+                    parachute=parachute_object,
+                    cd_s=parachute.drag_coefficient_times_reference_area_standard_deviation_factor
+                    * parachute.drag_coefficient_times_reference_area,
+                    lag=parachute.opening_lag_seconds_standard_deviation_factor
+                    * parachute.opening_lag_seconds,
+                )
+                self.stochastic_parachutes.append(stochastic_parachute)
+                self.stochastic_rocket.add_parachute(stochastic_parachute)
 
         # Add airbrakes
         self.stochastic_airbrakes = []
@@ -324,28 +337,30 @@ class FlightSimulation:
                 name=airbrake.id,
                 return_controller=True,
             )  # type: ignore
-            stochastic_airbrake = StochasticAirBrakes(
-                air_brakes=airbrake_object,
-                drag_coefficient_curve_factor=(
-                    1.0,
-                    airbrake.drag_curve_standard_deviation_factor,
-                ),
-            )
-            self.stochastic_airbrakes.append(stochastic_airbrake)
-            self.stochastic_rocket.add_air_brakes(stochastic_airbrake, controller)
+            if config.enable_monte_carlo_simulation:
+                stochastic_airbrake = StochasticAirBrakes(
+                    air_brakes=airbrake_object,
+                    drag_coefficient_curve_factor=(
+                        1.0,
+                        airbrake.drag_curve_standard_deviation_factor,
+                    ),
+                )
+                self.stochastic_airbrakes.append(stochastic_airbrake)
+                self.stochastic_rocket.add_air_brakes(stochastic_airbrake, controller)
 
         logging.info(
             f"FlightSimulation: calculated rocket mass (rocket.evaluate_dry_mass) is {self.rocket.evaluate_dry_mass()}kg"
         )
 
         # Print uncertainties of the stochastic classes
-        self.stochastic_environment.visualize_attributes()
-        self.stochastic_motor.visualize_attributes()
-        self.stochastic_rocket.visualize_attributes()
-        for stochastic_parachute in self.stochastic_parachutes:
-            stochastic_parachute.visualize_attributes()
-        for stochastic_airbrake in self.stochastic_airbrakes:
-            stochastic_airbrake.visualize_attributes()
+        if config.enable_monte_carlo_simulation:
+            self.stochastic_environment.visualize_attributes()
+            self.stochastic_motor.visualize_attributes()
+            self.stochastic_rocket.visualize_attributes()
+            for stochastic_parachute in self.stochastic_parachutes:
+                stochastic_parachute.visualize_attributes()
+            for stochastic_airbrake in self.stochastic_airbrakes:
+                stochastic_airbrake.visualize_attributes()
 
     def simulate(self) -> None:
         # Run the simulation
@@ -358,13 +373,14 @@ class FlightSimulation:
         )
 
         # Run the monte carlo (stochastic) simulation
-        self.stochastic_flight = StochasticFlight(
-            flight=self.flight,
-            inclination=1.0,
-            heading=2.0,
-        )
-        self.stochastic_flight.visualize_attributes()
         if self.config.enable_monte_carlo_simulation:
+            self.stochastic_flight = StochasticFlight(
+                flight=self.flight,
+                inclination=1.0,
+                heading=2.0,
+            )
+            self.stochastic_flight.visualize_attributes()
+
             # ensure subfolder exists
             Path(self.output_folder + "/monte_carlo_analysis").mkdir(
                 parents=True, exist_ok=True

@@ -1,0 +1,5 @@
+ID: stargaze-airbrake
+sampling_rate_hz: 10.0
+controller_function_name: stargaze_airbrake_controller
+drag_curve_file: stargaze_airbrake_drag_curve.csv
+drag_curve_standard_deviation_factor: 0.1

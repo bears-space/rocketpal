@@ -1,0 +1,5 @@
+# Nose cone kinds supported: "von karman", "conical", "ogive", "lvhaack", "powerseries"
+kind: "ogive"
+bluffness: 0.1618
+power_if_using_powerseries_kind: null
+base_radius: null

@@ -1,0 +1,9 @@
+n: 3
+root_chord: 0.236 # stardust was 0.2566
+tip_chord: 0.136 # stardust was 0.120
+span: 0.091 # stardust was 0.12525
+position: 0.246
+cant_angle: 0.0
+sweep_length: 0.0498 # stardust was 0.0683
+sweep_angle: null
+radius: null
