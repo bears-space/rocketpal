@@ -7,7 +7,7 @@ from pathlib import Path
 
 from bears_flight_simulation.simulation import load_configs_and_run_simulation
 
-CONFIG_FOLDER = Path(__file__).parent / "template"
+CONFIG_FOLDER = Path(__file__).parent / "template-euroc25-scenario-airbrake"
 OUTPUT_FOLDER = Path(__file__).parent / "output"
 
 # Set default logging level
