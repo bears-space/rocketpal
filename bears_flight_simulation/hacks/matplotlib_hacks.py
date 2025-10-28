@@ -42,6 +42,10 @@ def hack_override_matplotlib_show(filename: str | None = None) -> None:
     if filename is None:
         filename = f"output/unnamed/{random.randint(0, 1234567)}.png"
 
+    # Reset the redirect counter
+    global matplotlib_redirect_counter
+    matplotlib_redirect_counter = 0
+
     # Dynamically generate a function that has the same interface as matplotlib.show, but saves the plots to disk instead
     def fake_show_with_redirection_to_disk(*, block=None) -> None:
         global matplotlib_redirect_counter
