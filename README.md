@@ -1,8 +1,8 @@
-# stargaze-flight-simulation
+# bears-flight-simulation
 
-[![Ruff](https://github.com/bears-space/stargaze-flight-simulation/actions/workflows/ruff.yaml/badge.svg)](https://github.com/bears-space/stargaze-flight-simulation/actions/workflows/ruff.yaml)
+[![Ruff](https://github.com/bears-space/bears-flight-simulation/actions/workflows/ruff.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/ruff.yaml)
 
-This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight simulation for the STARGAZE rocket, built by [BEARS (Berlin Experimental Astronautics Research Student Team e.V.)](https://www.bears-space.de/).
+This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight simulation for BEARS rockets, built by [BEARS (Berlin Experimental Astronautics Research Student Team e.V.)](https://www.bears-space.de/).
 
 ## Usage
 

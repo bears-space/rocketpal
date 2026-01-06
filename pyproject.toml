@@ -1,5 +1,5 @@
 [project]
-name = "stargaze-flight-simulation"
+name = "bears-flight-simulation"
 version = "0.1.0"
 description = "RocketPy-based flight simulation for BEARS rockets"
 readme = "README.md"

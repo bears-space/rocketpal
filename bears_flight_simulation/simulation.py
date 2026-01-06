@@ -50,7 +50,7 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
         file_path = config_folder + filename
         if not os.path.isfile(file_path):
             logging.error(
-                "StargazeFlightSimulation: Missing file '"
+                "Missing file '"
                 + str(filename)
                 + "' in specified config folder! Aborting ..."
             )
@@ -67,7 +67,7 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
         file_path = config_folder + foldername
         if not os.path.isdir(file_path):
             logging.error(
-                "StargazeFlightSimulation: Missing folder '"
+                "Missing folder '"
                 + str(foldername)
                 + "' in specified config folder! Aborting ..."
             )
@@ -94,14 +94,12 @@ def _load_parachutes_from_library(
         parachute = parachute_library.get(id)
         if parachute is None:
             logging.warning(
-                f"StargazeFlightSimulation: The parachute with the id '{id}' does not exist in the parachute library. Skipping ..."
+                f"The parachute with the id '{id}' does not exist in the parachute library. Skipping ..."
             )
         else:
             assert isinstance(parachute, ParachuteConfig)
             parachutes.append(parachute)
-            logging.info(
-                f"StargazeFlightSimulation: Loaded ParachuteConfig with id '{parachute.id}'"
-            )
+            logging.info(f"Loaded ParachuteConfig with id '{parachute.id}'")
     return parachutes
 
 
@@ -116,21 +114,19 @@ def _load_airbrakes_from_library(
         airbrake = airbrake_library.get(id)
         if airbrake is None:
             logging.warning(
-                f"StargazeFlightSimulation: The airbrake with the id '{id}' does not exist in the airbrake library. Skipping ..."
+                f"The airbrake with the id '{id}' does not exist in the airbrake library. Skipping ..."
             )
         else:
             assert isinstance(airbrake, AirbrakeConfig)
             airbrakes.append(airbrake)
-            logging.info(
-                f"StargazeFlightSimulation: Loaded AirbrakeConfig with id '{airbrake.id}'"
-            )
+            logging.info(f"Loaded AirbrakeConfig with id '{airbrake.id}'")
     return airbrakes
 
 
 def _load_config(config_folder: str) -> Config:
     with open(config_folder + CONFIG_FILENAME, "r") as file:
         config = Config(file)
-        logging.info(f"StargazeFlightSimulation: Using Config with id '{config.id}'")
+        logging.info(f"Using Config with id '{config.id}'")
         return config
 
 
@@ -185,40 +181,34 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
     )
     if launch_location is None:
         logging.error(
-            f"StargazeFlightSimulation: The location with the id '{config.location_id}'"
+            f"The location with the id '{config.location_id}'"
             f" does not exist in the location library. Aborting ..."
         )
         exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(
-            f"StargazeFlightSimulation: Using Location with id '{launch_location.id}'"
-        )
+        logging.info(f"Using Location with id '{launch_location.id}'")
 
     weather_config = _load_weather_config_from_library(
         config_folder, config.weather_config_id
     )
     if weather_config is None:
         logging.error(
-            f"StargazeFlightSimulation: The weather config with the id '{config.weather_config_id}'"
+            f"The weather config with the id '{config.weather_config_id}'"
             f" does not exist in the weather config library. Aborting ..."
         )
         exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(
-            f"StargazeFlightSimulation: Using WeatherConfig with id '{weather_config.id}'"
-        )
+        logging.info(f"Using WeatherConfig with id '{weather_config.id}'")
 
     motor_config = _load_motor_from_library(config_folder, config.motor_id)
     if motor_config is None:
         logging.error(
-            f"StargazeFlightSimulation: The motor config with the id '{config.motor_id}'"
+            f"The motor config with the id '{config.motor_id}'"
             f" does not exist in the motor config library. Aborting ..."
         )
         exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(
-            f"StargazeFlightSimulation: Using MotorConfig with id '{motor_config.id}'"
-        )
+        logging.info(f"Using MotorConfig with id '{motor_config.id}'")
 
     parachutes = _load_parachutes_from_library(config_folder, config.parachute_ids)
 
