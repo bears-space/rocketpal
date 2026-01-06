@@ -131,6 +131,9 @@ dmypy.json
 # Ignore ruff cache
 .ruff_cache
 
+# Ignore uv lockfile (some projects track this via git but it could make merge conflicts more annoying, so we are ignoring it as of January 2026)
+uv.lock
+
 # Ignore output folder
 output
 output*
