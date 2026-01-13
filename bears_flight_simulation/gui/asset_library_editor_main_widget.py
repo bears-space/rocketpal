@@ -1,7 +1,16 @@
 # type: ignore
 
 import sys
-from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import QMargins
+from PySide6.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QSpacerItem,
+    QSizePolicy,
+    QApplication,
+    QPushButton,
+)
 
 from bears_flight_simulation.gui.location_library_editor_widget import (
     LocationLibraryEditorWidget,
@@ -12,55 +21,55 @@ from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindow
 class AssetLibraryEditorMainWidget(CloseableWindowWidget):
     location_library_editor_widget: LocationLibraryEditorWidget | None
 
-    def __init__(self, parent: QtWidgets.QWidget | None = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
 
         self.location_library_editor_widget = None
 
-        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout = QVBoxLayout(self)
 
-        _spacer_top = QtWidgets.QSpacerItem(
+        _spacer_top = QSpacerItem(
             20,
             40,
-            hData=QtWidgets.QSizePolicy.Policy.Preferred,
-            vData=QtWidgets.QSizePolicy.Policy.Expanding,
+            hData=QSizePolicy.Policy.Preferred,
+            vData=QSizePolicy.Policy.Expanding,
         )
         self.layout.addSpacerItem(_spacer_top)
 
-        self.horizontal_centering_widget = QtWidgets.QWidget()
-        _horizontal_centering_layout = QtWidgets.QHBoxLayout()
-        _horizontal_centering_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.horizontal_centering_widget = QWidget()
+        _horizontal_centering_layout = QHBoxLayout()
+        _horizontal_centering_layout.setContentsMargins(QMargins(0, 0, 0, 0))
         self.layout.addWidget(self.horizontal_centering_widget)
         self.horizontal_centering_widget.setLayout(_horizontal_centering_layout)
 
-        self.main_layout_widget = QtWidgets.QWidget()
-        _main_layout = QtWidgets.QVBoxLayout()
-        _main_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.main_layout_widget = QWidget()
+        _main_layout = QVBoxLayout()
+        _main_layout.setContentsMargins(QMargins(0, 0, 0, 0))
         self.main_layout_widget.setMaximumWidth(1024)
         _horizontal_centering_layout.addWidget(self.main_layout_widget)
         self.main_layout_widget.setLayout(_main_layout)
 
-        self.button_locations = QtWidgets.QPushButton(text="Location Library")
+        self.button_locations = QPushButton(text="Location Library")
         self.button_locations.clicked.connect(self._button_locations_pressed)
         _main_layout.addWidget(self.button_locations)
 
-        self.button_motors = QtWidgets.QPushButton(text="Motor Library")
+        self.button_motors = QPushButton(text="Motor Library")
         self.button_motors.clicked.connect(self._button_motors_pressed)
         _main_layout.addWidget(self.button_motors)
 
-        self.button_parachutes = QtWidgets.QPushButton(text="Parachute Library")
+        self.button_parachutes = QPushButton(text="Parachute Library")
         self.button_parachutes.clicked.connect(self._button_parachutes_pressed)
         _main_layout.addWidget(self.button_parachutes)
 
-        self.button_finish = QtWidgets.QPushButton(text="Finish")
+        self.button_finish = QPushButton(text="Finish")
         self.button_finish.clicked.connect(self._button_finish_pressed)
         _main_layout.addWidget(self.button_finish)
 
-        _spacer_bottom = QtWidgets.QSpacerItem(
+        _spacer_bottom = QSpacerItem(
             20,
             40,
-            hData=QtWidgets.QSizePolicy.Policy.Preferred,
-            vData=QtWidgets.QSizePolicy.Policy.Expanding,
+            hData=QSizePolicy.Policy.Preferred,
+            vData=QSizePolicy.Policy.Expanding,
         )
         self.layout.addSpacerItem(_spacer_bottom)
 
@@ -86,7 +95,7 @@ class AssetLibraryEditorMainWidget(CloseableWindowWidget):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
     widget = AssetLibraryEditorMainWidget()
     widget.show()
     sys.exit(app.exec())

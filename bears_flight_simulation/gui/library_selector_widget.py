@@ -2,43 +2,51 @@
 
 from collections.abc import Callable
 import sys
-from PySide6 import QtCore, QtWidgets
+from PySide6.QtWidgets import (
+    QListWidget,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QPushButton,
+    QApplication,
+)
+from PySide6.QtCore import Signal
 
 # from bears_flight_simulation.simulation.core.library import Library
 # from bears_flight_simulation.simulation.core.library_entry import LibraryEntry
 
 
-class LibrarySelectorWidget(QtWidgets.QWidget):
-    button_new_pressed = QtCore.Signal()
-    button_delete_pressed = QtCore.Signal()
-    selection_list_refreshed = QtCore.Signal(bool)
-    selection_list: QtWidgets.QListWidget
+class LibrarySelectorWidget(QWidget):
+    button_new_pressed = Signal()
+    button_delete_pressed = Signal()
+    selection_list_refreshed = Signal(bool)
+    selection_list: QListWidget
     get_selectable_config_folders: Callable[[], set[str]] | None
 
     def __init__(
         self,
-        parent: QtWidgets.QWidget | None = None,
+        parent: QWidget | None = None,
         get_selectable_config_folders: Callable[[], set[str]] | None = None,
     ):
         super().__init__(parent)
 
         self.get_selectable_config_folders = get_selectable_config_folders
 
-        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout = QVBoxLayout(self)
 
-        self.selection_list = QtWidgets.QListWidget()
+        self.selection_list = QListWidget()
         self.layout.addWidget(self.selection_list)
 
-        self.button_layout_widget = QtWidgets.QWidget()
-        _button_layout = QtWidgets.QHBoxLayout()
+        self.button_layout_widget = QWidget()
+        _button_layout = QHBoxLayout()
         self.button_layout_widget.setLayout(_button_layout)
         self.layout.addWidget(self.button_layout_widget)
 
-        self.button_delete = QtWidgets.QPushButton(text="Delete")
+        self.button_delete = QPushButton(text="Delete")
         self.button_delete.clicked.connect(self._button_delete_pressed)
         _button_layout.addWidget(self.button_delete)
 
-        self.button_new = QtWidgets.QPushButton(text="New")
+        self.button_new = QPushButton(text="New")
         self.button_new.clicked.connect(self._button_new_pressed)
         _button_layout.addWidget(self.button_new)
 
@@ -79,7 +87,7 @@ class LibrarySelectorWidget(QtWidgets.QWidget):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
     widget = LibrarySelectorWidget()
     widget.show()
     sys.exit(app.exec())

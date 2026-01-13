@@ -1,12 +1,13 @@
 import typing as t
-from PySide6 import QtCore, QtWidgets
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget
 
 
-class CloseableWindowWidget(QtWidgets.QWidget):
-    close_pressed = QtCore.Signal(t.Any)  # type: ignore
+class CloseableWindowWidget(QWidget):
+    close_pressed = Signal(t.Any)  # type: ignore
     _children_to_close: list["CloseableWindowWidget"]
 
-    def __init__(self, parent: QtWidgets.QWidget | None = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
         self._children_to_close = []
 

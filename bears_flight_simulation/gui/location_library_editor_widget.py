@@ -2,7 +2,14 @@
 
 import sys
 
-from PySide6 import QtWidgets
+from PySide6.QtWidgets import (
+    QWidget,
+    QHBoxLayout,
+    QFormLayout,
+    QLabel,
+    QDoubleSpinBox,
+    QApplication,
+)
 
 from bears_flight_simulation.common.common_paths import (
     get_location_config_folders,
@@ -12,10 +19,10 @@ from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindow
 
 
 class LocationLibraryEditorWidget(CloseableWindowWidget):
-    def __init__(self, parent: QtWidgets.QWidget | None = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
 
-        self.layout = QtWidgets.QHBoxLayout(self)
+        self.layout = QHBoxLayout(self)
 
         self.selector_widget = LibrarySelectorWidget(
             get_selectable_config_folders=get_location_config_folders
@@ -25,24 +32,24 @@ class LocationLibraryEditorWidget(CloseableWindowWidget):
         )
         self.layout.addWidget(self.selector_widget)
 
-        self.options_layout_widget = QtWidgets.QWidget()
-        _options_layout = QtWidgets.QFormLayout()
+        self.options_layout_widget = QWidget()
+        _options_layout = QFormLayout()
         self.options_layout_widget.setLayout(_options_layout)
         self.layout.addWidget(self.options_layout_widget)
 
-        self.label_latitude = QtWidgets.QLabel()
+        self.label_latitude = QLabel()
         self.label_latitude.setText("Latitude")
-        self.spinbox_latitude = QtWidgets.QDoubleSpinBox()
+        self.spinbox_latitude = QDoubleSpinBox()
         _options_layout.addRow(self.label_latitude, self.spinbox_latitude)
 
-        self.label_longitude = QtWidgets.QLabel()
+        self.label_longitude = QLabel()
         self.label_longitude.setText("Longitude")
-        self.spinbox_longitude = QtWidgets.QDoubleSpinBox()
+        self.spinbox_longitude = QDoubleSpinBox()
         _options_layout.addRow(self.label_longitude, self.spinbox_longitude)
 
-        self.label_height = QtWidgets.QLabel()
+        self.label_height = QLabel()
         self.label_height.setText("Height")
-        self.spinbox_height = QtWidgets.QDoubleSpinBox()
+        self.spinbox_height = QDoubleSpinBox()
         _options_layout.addRow(self.label_height, self.spinbox_height)
 
         self.selector_widget.force_refresh()  # NOTE: this is needed because the internal refresh happens before we connect
@@ -52,7 +59,7 @@ class LocationLibraryEditorWidget(CloseableWindowWidget):
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
     widget = LocationLibraryEditorWidget()
     widget.show()
     sys.exit(app.exec())

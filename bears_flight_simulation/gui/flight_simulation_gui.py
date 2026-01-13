@@ -1,7 +1,19 @@
 # type: ignore
 
 from shutil import copytree
-from PySide6 import QtCore, QtWidgets, QtSvgWidgets
+from PySide6.QtCore import QMargins, QUrl
+from PySide6.QtSvgWidgets import QSvgWidget
+from PySide6.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QSpacerItem,
+    QSizePolicy,
+    QPushButton,
+    QComboBox,
+    QInputDialog,
+)
+from PySide6.QtGui import QDesktopServices
 
 from bears_flight_simulation.common.common_paths import (
     SIMULATION_CONFIG_BASE_FOLDER,
@@ -23,84 +35,84 @@ class FlightSimulationGUI(CloseableWindowWidget):
     current_selection: str | None
     asset_library_editor_main_widget: AssetLibraryEditorMainWidget | None
 
-    def __init__(self, parent: QtWidgets.QWidget | None = None):
+    def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
 
         self.current_selection = None
         self.asset_library_editor_main_widget = None
 
-        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout = QVBoxLayout(self)
 
-        _spacer_top = QtWidgets.QSpacerItem(
+        _spacer_top = QSpacerItem(
             20,
             40,
-            hData=QtWidgets.QSizePolicy.Policy.Preferred,
-            vData=QtWidgets.QSizePolicy.Policy.Expanding,
+            hData=QSizePolicy.Policy.Preferred,
+            vData=QSizePolicy.Policy.Expanding,
         )
         self.layout.addSpacerItem(_spacer_top)
 
-        self.horizontal_centering_widget = QtWidgets.QWidget()
-        _horizontal_centering_layout = QtWidgets.QHBoxLayout()
-        _horizontal_centering_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.horizontal_centering_widget = QWidget()
+        _horizontal_centering_layout = QHBoxLayout()
+        _horizontal_centering_layout.setContentsMargins(QMargins(0, 0, 0, 0))
         self.layout.addWidget(self.horizontal_centering_widget)
         self.horizontal_centering_widget.setLayout(_horizontal_centering_layout)
 
-        self.main_layout_widget = QtWidgets.QWidget()
-        _main_layout = QtWidgets.QVBoxLayout()
-        _main_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.main_layout_widget = QWidget()
+        _main_layout = QVBoxLayout()
+        _main_layout.setContentsMargins(QMargins(0, 0, 0, 0))
         self.main_layout_widget.setMaximumWidth(1024)
         _horizontal_centering_layout.addWidget(self.main_layout_widget)
         self.main_layout_widget.setLayout(_main_layout)
 
-        self.logo_layout_widget = QtWidgets.QWidget()
-        _logo_layout = QtWidgets.QHBoxLayout()
-        _logo_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 32))
+        self.logo_layout_widget = QWidget()
+        _logo_layout = QHBoxLayout()
+        _logo_layout.setContentsMargins(QMargins(0, 0, 0, 32))
         _main_layout.addWidget(self.logo_layout_widget)
         self.logo_layout_widget.setLayout(_logo_layout)
 
-        self.logo_widget = QtSvgWidgets.QSvgWidget(LOGO_PATH)
+        self.logo_widget = QSvgWidget(LOGO_PATH)
         self.logo_widget.setFixedSize(576, 158)
         _logo_layout.addWidget(self.logo_widget)
 
-        self.library_editors_button = QtWidgets.QPushButton("Asset Library Editors")
+        self.library_editors_button = QPushButton("Asset Library Editors")
         self.library_editors_button.clicked.connect(
             self._library_editors_button_pressed
         )
         _main_layout.addWidget(self.library_editors_button)
 
-        self.selection_layout_widget = QtWidgets.QWidget()
-        _selection_layout = QtWidgets.QHBoxLayout()
-        _selection_layout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.selection_layout_widget = QWidget()
+        _selection_layout = QHBoxLayout()
+        _selection_layout.setContentsMargins(QMargins(0, 0, 0, 0))
         _main_layout.addWidget(self.selection_layout_widget)
         self.selection_layout_widget.setLayout(_selection_layout)
 
-        self.simulation_selector_dropdown = QtWidgets.QComboBox()
+        self.simulation_selector_dropdown = QComboBox()
         self.simulation_selector_dropdown.currentTextChanged.connect(
             self._simulation_selector_dropdown_changed
         )
         _selection_layout.addWidget(self.simulation_selector_dropdown)
 
-        self.selection_edit_button = QtWidgets.QPushButton("Edit")
+        self.selection_edit_button = QPushButton("Edit")
         self.selection_edit_button.clicked.connect(self._selection_edit_button_pressed)
         _selection_layout.addWidget(self.selection_edit_button)
 
-        self.selection_new_button = QtWidgets.QPushButton("New")
+        self.selection_new_button = QPushButton("New")
         self.selection_new_button.clicked.connect(self._selection_new_button_pressed)
         _selection_layout.addWidget(self.selection_new_button)
 
-        self.run_simulation_button = QtWidgets.QPushButton("Run Simulation")
+        self.run_simulation_button = QPushButton("Run Simulation")
         self.run_simulation_button.clicked.connect(self._run_simulation_button_pressed)
         _main_layout.addWidget(self.run_simulation_button)
 
-        self.show_results_button = QtWidgets.QPushButton("Show Results")
+        self.show_results_button = QPushButton("Show Results")
         self.show_results_button.clicked.connect(self._show_results_button_pressed)
         _main_layout.addWidget(self.show_results_button)
 
-        _spacer_bottom = QtWidgets.QSpacerItem(
+        _spacer_bottom = QSpacerItem(
             20,
             40,
-            hData=QtWidgets.QSizePolicy.Policy.Preferred,
-            vData=QtWidgets.QSizePolicy.Policy.Expanding,
+            hData=QSizePolicy.Policy.Preferred,
+            vData=QSizePolicy.Policy.Expanding,
         )
         self.layout.addSpacerItem(_spacer_bottom)
 
@@ -127,7 +139,7 @@ class FlightSimulationGUI(CloseableWindowWidget):
 
     def _selection_new_button_pressed(self):
         # Ask for name of new simulation from user
-        (new_simulation_name, dialog_accepted) = QtWidgets.QInputDialog.getText(
+        (new_simulation_name, dialog_accepted) = QInputDialog.getText(
             self,
             "New Simulation",
             "Enter name for new simulation (please DO NOT use special characters like '/'):",
@@ -150,7 +162,8 @@ class FlightSimulationGUI(CloseableWindowWidget):
         )
 
     def _show_results_button_pressed(self):
-        pass
+        # Show the output folder in a file explorer
+        QDesktopServices.openUrl(QUrl.fromLocalFile(OUTPUT_FOLDER))
 
     def _refresh_selectable_simulations(self):
         old_selection = self.simulation_selector_dropdown.currentText()
