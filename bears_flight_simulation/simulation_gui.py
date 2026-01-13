@@ -15,7 +15,7 @@ ICON_PATH = str(Path(__file__).parent.parent) + "/img/BEARS_Logo_white_circle.pn
 def start_and_hand_over_to_simulation_gui():
     # Prepare application
     app = QtWidgets.QApplication([])
-    app.setApplicationName("FSG - Flight Simulation GUI")
+    app.setApplicationName("BEARS Flight Simulation")
     app.setWindowIcon(QtGui.QIcon(ICON_PATH))
 
     # Hello world test
