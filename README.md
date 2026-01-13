@@ -44,14 +44,14 @@ If you just want to run the simulation with default parameters, you can use one 
 
 **On Windows**, run the following in a command prompt:
 
-```bat
-.\run-simulation.bat
+```ps
+powershell -ExecutionPolicy Bypass -file .\run-simulation.ps1
 ```
 
 **On Linux**, run the following in a terminal:
 
 ```sh
-./run-simulation.sh
+bash ./run-simulation.sh
 ```
 
 In both cases, the simulation uses the `./template` folder to read its configuration and the `./output` folder for output.
