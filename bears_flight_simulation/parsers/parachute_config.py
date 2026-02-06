@@ -4,7 +4,6 @@ from bears_flight_simulation.core.library_entry import LibraryEntry
 
 
 class ParachuteConfig(LibraryEntry):
-    id: str
     drag_coefficient_times_reference_area: float
     drag_coefficient_times_reference_area_standard_deviation_factor: float
     ejection_altitude: t.Union[str, float]  # in meters or "apogee"
@@ -19,7 +18,6 @@ class ParachuteConfig(LibraryEntry):
         super().__init__(data)
 
         # Load parachute data
-        self.id = str(data["ID"])
         self.drag_coefficient_times_reference_area = float(
             data["drag_coefficient_times_reference_area"]
         )
@@ -47,3 +45,25 @@ class ParachuteConfig(LibraryEntry):
             self.ejection_altitude = float(
                 data["ejection_altitude_meters_if_not_at_apogee"]
             )
+
+    def serialize(self) -> dict:
+        ejection_at_apogee = True
+        ejection_altitude_meters_if_not_at_apogee = 0
+        if self.ejection_altitude != "apogee":
+            ejection_at_apogee = True
+            assert not isinstance(self.ejection_altitude, str)
+            ejection_altitude_meters_if_not_at_apogee = float(self.ejection_altitude)
+
+        return {
+            "ID": self.id,
+            "drag_coefficient_times_reference_area": self.drag_coefficient_times_reference_area,
+            "drag_coefficient_times_reference_area_standard_deviation_factor": self.drag_coefficient_times_reference_area_standard_deviation_factor,
+            "ejection_sampling_rate_hertz": self.ejection_sampling_rate_hertz,
+            "opening_lag_seconds": self.opening_lag_seconds,
+            "opening_lag_seconds_standard_deviation_factor": self.opening_lag_seconds_standard_deviation_factor,
+            "noise_mean_pascal": self.noise_mean_pascal,
+            "noise_standard_deviation_pascal": self.noise_standard_deviation_pascal,
+            "noise_time_correlation_pascal": self.noise_time_correlation_pascal,
+            "ejection_at_apogee": ejection_at_apogee,
+            "ejection_altitude_meters_if_not_at_apogee": ejection_altitude_meters_if_not_at_apogee,
+        }

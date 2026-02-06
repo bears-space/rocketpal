@@ -70,3 +70,21 @@ class MotorConfig(LibraryEntry):
             self.grain_number, self.grain_initial_height, self.grain_separation
         )
         self.center_of_dry_mass_position = self.grains_center_of_mass_position
+
+    def serialize(self) -> dict:
+        return {
+            "ID": self.id,
+            "engine_filename": self.engine_filename,
+            "dry_mass": self.dry_mass,
+            "dry_inertia": self.dry_inertia,
+            "nozzle_radius": self.nozzle_radius * 1000.0,
+            "throat_radius": self.throat_radius * 1000.0,
+            "grain_number": self.grain_number,
+            "grain_OR": self.grain_outer_radius * 1000.0,
+            "grainIIR": self.grain_initial_inner_radius * 1000.0,
+            "grainIH": self.grain_initial_height * 1000.0,
+            "grainSep": self.grain_separation * 1000.0,
+            "burnT": self.burn_time,
+            "nozzlePos": self.nozzle_position,
+            "total_impulse_standard_deviation_factor": self.total_impulse_standard_deviation_factor,
+        }

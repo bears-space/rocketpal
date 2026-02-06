@@ -14,3 +14,11 @@ class WeatherConfig(LibraryEntry):
         self.wind_x_y_factor_standard_distribution = float(
             data["wind_x_y_factor_standard_deviation"]
         )
+
+    def serialize(self) -> dict:
+        return {
+            "ID": self.id,
+            "wind_speed_in_m_per_s": self.wind_speed,
+            "wind_direction_in_degrees": self.wind_direction,
+            "wind_x_y_factor_standard_deviation": self.wind_x_y_factor_standard_distribution,
+        }
