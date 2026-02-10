@@ -1,5 +1,3 @@
-import typing as t
-
 from bears_flight_simulation.core.library_entry import LibraryEntry
 
 
@@ -9,7 +7,7 @@ class Location(LibraryEntry):
     longitude: float
     elevation: float
 
-    def __init__(self, data: t.Dict) -> None:
+    def __init__(self, data: dict) -> None:
         super().__init__(data)
 
         # Load location data

@@ -1,13 +1,10 @@
-import typing as t
-
-
 from abc import ABC, abstractmethod
 
 
 class LibraryEntry(ABC):
     id: str
 
-    def __init__(self, data: t.Dict) -> None:
+    def __init__(self, data: dict) -> None:
         # Load identifier
         self.id = str(data["ID"])
 

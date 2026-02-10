@@ -17,7 +17,7 @@ class AirbrakeConfig(LibraryEntry):
     drag_curve_filepath: str
     drag_curve_standard_deviation_factor: float
 
-    def __init__(self, data: t.Dict, airbrake_folder: str) -> None:
+    def __init__(self, data: dict, airbrake_folder: str) -> None:
         super().__init__(data)
 
         self.sampling_rate_hz = float(data["sampling_rate_hz"])

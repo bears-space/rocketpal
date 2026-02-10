@@ -1,12 +1,10 @@
-import typing as t
-
 from bears_flight_simulation.core.library_entry import LibraryEntry
 
 
 class ParachuteConfig(LibraryEntry):
     drag_coefficient_times_reference_area: float
     drag_coefficient_times_reference_area_standard_deviation_factor: float
-    ejection_altitude: t.Union[str, float]  # in meters or "apogee"
+    ejection_altitude: str | float  # in meters or "apogee"
     ejection_sampling_rate_hertz: float
     opening_lag_seconds: float
     opening_lag_seconds_standard_deviation_factor: float
@@ -14,7 +12,7 @@ class ParachuteConfig(LibraryEntry):
     noise_standard_deviation_pascal: float
     noise_time_correlation_pascal: float
 
-    def __init__(self, data: t.Dict) -> None:
+    def __init__(self, data: dict) -> None:
         super().__init__(data)
 
         # Load parachute data

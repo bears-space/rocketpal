@@ -1,5 +1,3 @@
-import typing as t
-
 from bears_flight_simulation.utilities.config_calc import grainCom, grainDensity
 
 from bears_flight_simulation.core.library_entry import LibraryEntry
@@ -11,7 +9,7 @@ class MotorConfig(LibraryEntry):
 
     # Physical parameters
     dry_mass: float  # in kg
-    dry_inertia: t.List[float]  # in kg/m²
+    dry_inertia: list[float]  # in kg/m²
     nozzle_radius: float  # in m
     throat_radius: float  # in m
 
@@ -33,7 +31,7 @@ class MotorConfig(LibraryEntry):
     # Monte Carlo parameters
     total_impulse_standard_deviation_factor: float
 
-    def __init__(self, data: t.Dict) -> None:
+    def __init__(self, data: dict) -> None:
         super().__init__(data)
 
         # Parse filename of engine

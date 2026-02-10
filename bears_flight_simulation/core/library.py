@@ -1,6 +1,4 @@
 import os
-import typing as t
-
 import yaml
 
 from abc import ABC
@@ -9,7 +7,7 @@ from bears_flight_simulation.core.library_entry import LibraryEntry
 
 
 class Library(ABC):
-    entries: t.Dict[str, LibraryEntry]
+    entries: dict[str, LibraryEntry]
     library_folder: str
 
     def __init__(self, library_folder: str) -> None:
@@ -17,7 +15,7 @@ class Library(ABC):
         self.library_folder = library_folder
 
         # Load entries from folder
-        files: t.List[str] = os.listdir(library_folder)
+        files: list[str] = os.listdir(library_folder)
         files = [filename for filename in files if filename.find(".yaml") != -1]
         for filename in files:
             with open(library_folder + "/" + filename) as file:
@@ -25,7 +23,7 @@ class Library(ABC):
                 entry = self.load_entry(data)
                 self.entries[entry.id] = entry
 
-    def load_entry(self, data: t.Dict) -> LibraryEntry:
+    def load_entry(self, data: dict) -> LibraryEntry:
         raise NotImplementedError
 
     def get(self, id: str) -> LibraryEntry | None:

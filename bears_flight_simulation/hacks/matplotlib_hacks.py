@@ -1,7 +1,6 @@
 import logging
 from pathlib import Path
 import matplotlib.pyplot as plt
-import typing as t
 import random
 
 SAVEFIG_DPI = 300
@@ -10,7 +9,7 @@ matplotlib_show_original = plt.show
 matplotlib_redirect_counter = 0
 
 
-def get_matplotlib_supported_file_endings() -> t.List[str]:
+def get_matplotlib_supported_file_endings() -> list[str]:
     """Gets the file endings supported by matplotlib.
 
     Returns

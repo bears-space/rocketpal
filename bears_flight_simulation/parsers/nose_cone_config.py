@@ -6,8 +6,8 @@ import yaml
 class NoseConeConfig:
     kind: str
     bluffness: float
-    power_if_using_powerseries_kind: t.Union[float, None]
-    base_radius: t.Union[float, None]
+    power_if_using_powerseries_kind: float | None
+    base_radius: float | None
 
     def __init__(self, nose_cone_file: t.TextIO) -> None:
         # Load yaml file
