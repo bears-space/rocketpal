@@ -1,5 +1,6 @@
 # bears-flight-simulation
 
+[![pre-commit](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pre-commit.yaml)
 [![pytest](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pytest.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pytest.yaml)
 [![Ruff](https://github.com/bears-space/bears-flight-simulation/actions/workflows/ruff.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/ruff.yaml)
 
