@@ -3,19 +3,19 @@
 import sys
 
 from PySide6.QtWidgets import (
-    QWidget,
-    QHBoxLayout,
-    QFormLayout,
-    QLabel,
-    QDoubleSpinBox,
     QApplication,
+    QDoubleSpinBox,
+    QFormLayout,
+    QHBoxLayout,
+    QLabel,
+    QWidget,
 )
 
 from bears_flight_simulation.common.common_paths import (
     get_location_entries,
 )
-from bears_flight_simulation.gui.library_selector_widget import LibrarySelectorWidget
 from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindowWidget
+from bears_flight_simulation.gui.library_selector_widget import LibrarySelectorWidget
 
 
 class LocationLibraryEditorWidget(CloseableWindowWidget):

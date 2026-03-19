@@ -1,7 +1,8 @@
-import platformdirs
-from pathlib import Path
 import os
 import sys
+from pathlib import Path
+
+import platformdirs
 
 USER_BASE_FOLDER = Path(platformdirs.user_config_dir()) / "bears-flight-simulation"
 USER_SIMULATION_CONFIG_BASE_FOLDER = USER_BASE_FOLDER / "simulations"

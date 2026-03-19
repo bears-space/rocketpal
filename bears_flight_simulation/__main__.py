@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-import click
 import logging
 import os
 from pathlib import Path
+
+import click
 
 from bears_flight_simulation.simulation import load_configs_and_run_simulation
 from bears_flight_simulation.simulation_gui import start_and_hand_over_to_simulation_gui

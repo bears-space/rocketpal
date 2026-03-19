@@ -1,49 +1,49 @@
 import logging
-from pathlib import Path
 import math
+from pathlib import Path
 
+from rocketpy import AirBrakes, Environment, Flight, MonteCarlo, Rocket, SolidMotor
+from rocketpy.stochastic import (
+    StochasticAirBrakes,
+    StochasticEnvironment,
+    StochasticFlight,
+    StochasticParachute,
+    StochasticRocket,
+    StochasticSolidMotor,
+)
+
+from bears_flight_simulation.exporters.airbrake_export import (
+    plot_airbrake_deployment_over_time,
+)
+from bears_flight_simulation.exporters.altitude_plots import plot_altitude_over_time
+from bears_flight_simulation.exporters.flight_data_export import (
+    export_flight_data_to_csv,
+    export_flight_data_to_csv_in_simulated_sensor_module_format,
+)
+from bears_flight_simulation.hacks.matplotlib_hacks import (
+    hack_override_matplotlib_show,
+    hack_override_matplotlib_show_reset,
+)
+from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
 from bears_flight_simulation.parsers.config import Config
 from bears_flight_simulation.parsers.fins_config import FinsConfig
 from bears_flight_simulation.parsers.location import Location
 from bears_flight_simulation.parsers.motor_config import MotorConfig
 from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
 from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
-from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
-from bears_flight_simulation.parsers.weather_config import WeatherConfig
 from bears_flight_simulation.parsers.parts_list_parser import (
     Part,
-    get_nosecone_total_length,
-    get_nosecone_tip_position_plus_length,
     get_motor_position,
+    get_nosecone_tip_position_plus_length,
+    get_nosecone_total_length,
 )
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
-from bears_flight_simulation.hacks.matplotlib_hacks import (
-    hack_override_matplotlib_show,
-    hack_override_matplotlib_show_reset,
-)
-from rocketpy import Environment, Flight, Rocket, SolidMotor, AirBrakes, MonteCarlo
-from rocketpy.stochastic import (
-    StochasticEnvironment,
-    StochasticFlight,
-    StochasticParachute,
-    StochasticRocket,
-    StochasticSolidMotor,
-    StochasticAirBrakes,
-)
-
-from bears_flight_simulation.utilities.rocket_calculations import (
-    calculate_rocket_mass_without_motor_in_kg,
-    calculate_rocket_mass_in_kg,
-)
+from bears_flight_simulation.parsers.weather_config import WeatherConfig
 from bears_flight_simulation.utilities.config_calc import rocket_center_of_mass
-from bears_flight_simulation.exporters.flight_data_export import (
-    export_flight_data_to_csv,
-    export_flight_data_to_csv_in_simulated_sensor_module_format,
+from bears_flight_simulation.utilities.rocket_calculations import (
+    calculate_rocket_mass_in_kg,
+    calculate_rocket_mass_without_motor_in_kg,
 )
-from bears_flight_simulation.exporters.airbrake_export import (
-    plot_airbrake_deployment_over_time,
-)
-from bears_flight_simulation.exporters.altitude_plots import plot_altitude_over_time
 
 
 def wind_speed_and_direction_to_east_and_north(

@@ -1,8 +1,7 @@
-from rocketpy import AirBrakes, Environment, Rocket
-
 import logging
 import math
 
+from rocketpy import AirBrakes, Environment, Rocket
 
 GRAVITY_CONSTANT = 9.80665  # in m/s²
 PRINT_AIRBRAKE_STATUS = False

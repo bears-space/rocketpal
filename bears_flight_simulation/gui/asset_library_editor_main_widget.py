@@ -1,21 +1,22 @@
 # type: ignore
 
 import sys
+
 from PySide6.QtCore import QMargins
 from PySide6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QSpacerItem,
-    QSizePolicy,
     QApplication,
+    QHBoxLayout,
     QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QVBoxLayout,
+    QWidget,
 )
 
+from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindowWidget
 from bears_flight_simulation.gui.location_library_editor_widget import (
     LocationLibraryEditorWidget,
 )
-from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindowWidget
 
 
 class AssetLibraryEditorMainWidget(CloseableWindowWidget):

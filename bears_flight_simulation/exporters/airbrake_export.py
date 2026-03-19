@@ -1,7 +1,7 @@
-import matplotlib.pyplot as plt
-from pathlib import Path
 import math
+from pathlib import Path
 
+import matplotlib.pyplot as plt
 from rocketpy import Flight
 
 

@@ -2,12 +2,12 @@
 # type: ignore
 
 import logging
-
 import sys
-from PySide6 import QtWidgets, QtGui
 
-from bears_flight_simulation.gui.flight_simulation_gui import FlightSimulationGUI
+from PySide6 import QtGui, QtWidgets
+
 from bears_flight_simulation.common.common_paths import ICON_PATH
+from bears_flight_simulation.gui.flight_simulation_gui import FlightSimulationGUI
 
 
 def start_and_hand_over_to_simulation_gui():

@@ -1,8 +1,8 @@
 import os
-import yaml
-
 from abc import ABC
 from pathlib import Path
+
+import yaml
 
 from bears_flight_simulation.core.library_entry import LibraryEntry
 

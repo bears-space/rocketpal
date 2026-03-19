@@ -1,25 +1,26 @@
 # type: ignore
 
 from shutil import copytree
+
 from PySide6.QtCore import QMargins, QUrl
+from PySide6.QtGui import QDesktopServices
 from PySide6.QtSvgWidgets import QSvgWidget
 from PySide6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QSpacerItem,
-    QSizePolicy,
-    QPushButton,
     QComboBox,
+    QHBoxLayout,
     QInputDialog,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QVBoxLayout,
+    QWidget,
 )
-from PySide6.QtGui import QDesktopServices
 
 from bears_flight_simulation.common.common_paths import (
-    USER_SIMULATION_CONFIG_BASE_FOLDER,
+    LOGO_PATH,
     OUTPUT_FOLDER,
     TEMPLATE_FOLDER,
-    LOGO_PATH,
+    USER_SIMULATION_CONFIG_BASE_FOLDER,
     get_simulation_entries,
 )
 from bears_flight_simulation.gui.asset_library_editor_main_widget import (

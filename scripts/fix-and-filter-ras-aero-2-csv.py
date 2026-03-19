@@ -1,6 +1,7 @@
-import click
 import csv
 from pathlib import Path
+
+import click
 
 
 @click.command

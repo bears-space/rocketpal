@@ -17,8 +17,8 @@ repos:
   - id: remove-crlf
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.2
+  rev: v0.15.7
   hooks:
   - id: ruff
-    args: [ --fix ]
+    args: [ --select, I, --fix ]
   - id: ruff-format

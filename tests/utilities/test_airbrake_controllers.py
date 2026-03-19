@@ -1,8 +1,8 @@
-import pytest
-
 import math
 from pathlib import Path
-from rocketpy import Environment, AirBrakes, Rocket
+
+import pytest
+from rocketpy import AirBrakes, Environment, Rocket
 
 from bears_flight_simulation.utilities.airbrake_controllers import (
     State,

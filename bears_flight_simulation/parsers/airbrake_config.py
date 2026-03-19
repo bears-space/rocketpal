@@ -1,13 +1,12 @@
 import typing as t
-
 from pathlib import Path
 
 from bears_flight_simulation.core.library_entry import LibraryEntry
 from bears_flight_simulation.utilities.airbrake_controllers import (
     disabled_controller,
     enabled_controller,
-    stupid_full_extension_controller,
     stargaze_airbrake_controller,
+    stupid_full_extension_controller,
 )
 
 

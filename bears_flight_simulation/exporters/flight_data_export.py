@@ -1,8 +1,8 @@
 import csv
 from pathlib import Path
-import numpy as np
 
-from rocketpy import Flight, Environment
+import numpy as np
+from rocketpy import Environment, Flight
 
 
 def export_flight_data_to_csv(

@@ -1,17 +1,18 @@
 # type: ignore
 
-from collections.abc import Callable
 import sys
+from collections.abc import Callable
 from pathlib import Path
-from PySide6.QtWidgets import (
-    QListWidget,
-    QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QPushButton,
-    QApplication,
-)
+
 from PySide6.QtCore import Signal
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QListWidget,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 # from bears_flight_simulation.simulation.core.library import Library
 # from bears_flight_simulation.simulation.core.library_entry import LibraryEntry

@@ -1,9 +1,9 @@
+import math
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
-from pathlib import Path
-import math
-
-from rocketpy import Flight, Environment
+from rocketpy import Environment, Flight
 
 TIME_STEP_SECONDS = 0.1
 

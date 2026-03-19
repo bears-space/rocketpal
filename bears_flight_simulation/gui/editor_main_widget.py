@@ -1,16 +1,17 @@
 # type: ignore
 
 import sys
-from PySide6.QtWidgets import (
-    QVBoxLayout,
-    QHBoxLayout,
-    QSpacerItem,
-    QWidget,
-    QSizePolicy,
-    QPushButton,
-    QApplication,
-)
+
 from PySide6.QtCore import QMargins
+from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class EditorMainWidget(QWidget):

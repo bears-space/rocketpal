@@ -1,12 +1,11 @@
 import numpy as np
 
-
 from bears_flight_simulation.parsers.parts_list_parser import (
     Part,
-    part_is_motor,
-    part_is_in_motor_group,
     get_part_center_of_mass,
     is_segment_based_on_hierarchy,
+    part_is_in_motor_group,
+    part_is_motor,
 )
 
 
