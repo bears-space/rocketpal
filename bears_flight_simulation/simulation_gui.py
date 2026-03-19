@@ -3,20 +3,18 @@
 
 import logging
 
-from pathlib import Path
 import sys
 from PySide6 import QtWidgets, QtGui
 
 from bears_flight_simulation.gui.flight_simulation_gui import FlightSimulationGUI
-
-ICON_PATH = str(Path(__file__).parent.parent) + "/img/BEARS_Logo_white_circle.png"
+from bears_flight_simulation.common.common_paths import ICON_PATH
 
 
 def start_and_hand_over_to_simulation_gui():
     # Prepare application
     app = QtWidgets.QApplication([])
     app.setApplicationName("BEARS Flight Simulation")
-    app.setWindowIcon(QtGui.QIcon(ICON_PATH))
+    app.setWindowIcon(QtGui.QIcon(str(ICON_PATH)))
 
     # Hello world test
     widget = FlightSimulationGUI()
