@@ -16,11 +16,11 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QDesktopServices
 
 from bears_flight_simulation.common.common_paths import (
-    SIMULATION_CONFIG_BASE_FOLDER,
+    USER_SIMULATION_CONFIG_BASE_FOLDER,
     OUTPUT_FOLDER,
     TEMPLATE_FOLDER,
     LOGO_PATH,
-    get_simulation_config_folders,
+    get_simulation_entries,
 )
 from bears_flight_simulation.gui.asset_library_editor_main_widget import (
     AssetLibraryEditorMainWidget,
@@ -70,7 +70,7 @@ class FlightSimulationGUI(CloseableWindowWidget):
         _main_layout.addWidget(self.logo_layout_widget)
         self.logo_layout_widget.setLayout(_logo_layout)
 
-        self.logo_widget = QSvgWidget(LOGO_PATH)
+        self.logo_widget = QSvgWidget(str(LOGO_PATH))
         self.logo_widget.setFixedSize(576, 158)
         _logo_layout.addWidget(self.logo_widget)
 
@@ -150,14 +150,14 @@ class FlightSimulationGUI(CloseableWindowWidget):
             return
 
         # Create folder and copy template for new simulation
-        new_simulation_path = SIMULATION_CONFIG_BASE_FOLDER + "/" + new_simulation_name
+        new_simulation_path = USER_SIMULATION_CONFIG_BASE_FOLDER / new_simulation_name
         copytree(TEMPLATE_FOLDER, new_simulation_path, dirs_exist_ok=False)
 
         self._refresh_selectable_simulations()
 
     def _run_simulation_button_pressed(self):
         load_configs_and_run_simulation(
-            config_folder=SIMULATION_CONFIG_BASE_FOLDER + "/" + self.current_selection,
+            config_folder=USER_SIMULATION_CONFIG_BASE_FOLDER / self.current_selection,
             output_folder=OUTPUT_FOLDER,
         )
 
@@ -168,9 +168,11 @@ class FlightSimulationGUI(CloseableWindowWidget):
     def _refresh_selectable_simulations(self):
         old_selection = self.simulation_selector_dropdown.currentText()
 
-        simulation_config_folders = get_simulation_config_folders()
+        simulation_config_folders = get_simulation_entries()
         self.simulation_selector_dropdown.clear()
-        self.simulation_selector_dropdown.addItems(simulation_config_folders)
+        self.simulation_selector_dropdown.addItems(
+            [str(entry) for entry in simulation_config_folders]
+        )
 
         index_equal_to_old_selection = self.simulation_selector_dropdown.findText(
             old_selection

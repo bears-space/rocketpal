@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 )
 
 from bears_flight_simulation.common.common_paths import (
-    get_location_config_folders,
+    get_location_entries,
 )
 from bears_flight_simulation.gui.library_selector_widget import LibrarySelectorWidget
 from bears_flight_simulation.gui.cloeseable_window_widget import CloseableWindowWidget
@@ -25,7 +25,7 @@ class LocationLibraryEditorWidget(CloseableWindowWidget):
         self.layout = QHBoxLayout(self)
 
         self.selector_widget = LibrarySelectorWidget(
-            get_selectable_config_folders=get_location_config_folders
+            get_selectable_config_folders=get_location_entries
         )
         self.selector_widget.selection_list_refreshed.connect(
             self._selector_widget_refreshed

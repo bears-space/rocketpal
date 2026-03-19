@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 import sys
+from pathlib import Path
 from PySide6.QtWidgets import (
     QListWidget,
     QWidget,
@@ -21,12 +22,12 @@ class LibrarySelectorWidget(QWidget):
     button_delete_pressed = Signal()
     selection_list_refreshed = Signal(bool)
     selection_list: QListWidget
-    get_selectable_config_folders: Callable[[], set[str]] | None
+    get_selectable_config_folders: Callable[[], set[Path]] | None
 
     def __init__(
         self,
         parent: QWidget | None = None,
-        get_selectable_config_folders: Callable[[], set[str]] | None = None,
+        get_selectable_config_folders: Callable[[], set[Path]] | None = None,
     ):
         super().__init__(parent)
 
@@ -71,7 +72,7 @@ class LibrarySelectorWidget(QWidget):
 
         location_config_folders = self.get_selectable_config_folders()
         self.selection_list.clear()
-        self.selection_list.addItems(location_config_folders)
+        self.selection_list.addItems([str(entry) for entry in location_config_folders])
 
         if old_selection is not None:
             index_equal_to_old_selection = self.selection_list.findItems(
