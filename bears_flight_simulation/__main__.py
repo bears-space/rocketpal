@@ -3,6 +3,7 @@
 import click
 import logging
 import os
+from pathlib import Path
 
 from bears_flight_simulation.simulation import load_configs_and_run_simulation
 from bears_flight_simulation.simulation_gui import start_and_hand_over_to_simulation_gui
@@ -22,13 +23,13 @@ def cli():
 
 @cli.command()
 @click.argument(
-    "config_folder", type=click.Path(exists=True, file_okay=False, path_type=str)
+    "config_folder", type=click.Path(exists=True, file_okay=False, path_type=Path)
 )
 @click.option(
     "-o",
     "--output",
     default="./output",
-    type=click.Path(exists=False, file_okay=False, path_type=str),
+    type=click.Path(exists=False, file_okay=False, path_type=Path),
     help="The output folder, by default './output'",
 )
 def sim(config_folder, output):

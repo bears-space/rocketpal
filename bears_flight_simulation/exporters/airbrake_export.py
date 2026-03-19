@@ -5,9 +5,9 @@ import math
 from rocketpy import Flight
 
 
-def plot_airbrake_deployment_over_time(flight: Flight, filename: str) -> None:
+def plot_airbrake_deployment_over_time(flight: Flight, filepath: Path) -> None:
     # Before export, ensure the folder the file should go into exists
-    Path(filename).parent.mkdir(parents=True, exist_ok=True)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # Example code taken from https://docs.rocketpy.org/en/latest/user/airbrakes.html for getting the airbrake states over time
     (
@@ -63,5 +63,5 @@ def plot_airbrake_deployment_over_time(flight: Flight, filename: str) -> None:
 
     # Save plot to file
     fig.subplots_adjust(hspace=0.5)
-    plt.savefig(filename)
+    plt.savefig(filepath)
     plt.close()

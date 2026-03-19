@@ -2,15 +2,16 @@ import os
 import yaml
 
 from abc import ABC
+from pathlib import Path
 
 from bears_flight_simulation.core.library_entry import LibraryEntry
 
 
 class Library(ABC):
     entries: dict[str, LibraryEntry]
-    library_folder: str
+    library_folder: Path
 
-    def __init__(self, library_folder: str) -> None:
+    def __init__(self, library_folder: Path) -> None:
         self.entries = {}
         self.library_folder = library_folder
 
@@ -18,7 +19,7 @@ class Library(ABC):
         files: list[str] = os.listdir(library_folder)
         files = [filename for filename in files if filename.find(".yaml") != -1]
         for filename in files:
-            with open(library_folder + "/" + filename) as file:
+            with open(library_folder / filename) as file:
                 data = yaml.safe_load(file)
                 entry = self.load_entry(data)
                 self.entries[entry.id] = entry

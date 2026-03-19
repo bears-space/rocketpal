@@ -6,7 +6,7 @@ from rocketpy import Flight, Environment
 
 
 def export_flight_data_to_csv(
-    flight: Flight, filename: str, time_step_seconds: float = 1.0
+    flight: Flight, filepath: Path, time_step_seconds: float = 1.0
 ) -> None:
     """Export selected flight data in csv format, using a constant time step as specified in seconds.
 
@@ -14,17 +14,17 @@ def export_flight_data_to_csv(
     ----------
     flight : Flight
         The RocketPy flight simulation to extract the data from.
-    filename : str
+    filepath : Path
         The file to write the data into, in .csv format.
     time_step_seconds : float, optional
         The constant time step to use, by default 1.0
     """
 
     # Before export, ensure the folder the file should go into exists
-    Path(filename).parent.mkdir(parents=True, exist_ok=True)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # Open file and write content
-    with open(filename, "w") as file:
+    with open(filepath, "w") as file:
         # Prepare csv writer object
         writer = csv.writer(file, dialect="excel")
 
@@ -93,7 +93,7 @@ def export_flight_data_to_csv(
 
 def export_flight_data_to_csv_in_simulated_sensor_module_format(
     flight: Flight,
-    filename: str,
+    filepath: Path,
     environment: Environment,
     time_step_seconds: float = 1.0,
 ) -> None:
@@ -103,17 +103,17 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
     ----------
     flight : Flight
         The RocketPy flight simulation to extract the data from.
-    filename : str
+    filepath : Path
         The file to write the data into, in .csv format.
     time_step_seconds : float, optional
         The constant time step to use, by default 1.0
     """
 
     # Before export, ensure the folder the file should go into exists
-    Path(filename).parent.mkdir(parents=True, exist_ok=True)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # Open file and write content
-    with open(filename, "w") as file:
+    with open(filepath, "w") as file:
         # Prepare csv writer object
         writer = csv.writer(file, dialect="excel")
 

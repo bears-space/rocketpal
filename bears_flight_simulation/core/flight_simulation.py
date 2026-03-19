@@ -75,20 +75,20 @@ class FlightSimulation:
     stochastic_airbrakes: list[StochasticAirBrakes]
 
     # Folders
-    output_folder: str
+    output_folder: Path
 
     def __init__(
         self,
         config: Config,
-        output_folder: str,
-        motor_file_path: str,
+        output_folder: Path,
+        motor_file_path: Path,
         motor_config: MotorConfig,
         parachutes: list[ParachuteConfig],
         airbrakes: list[AirbrakeConfig],
         rail_button_config: RailButtonConfig,
         nose_cone_config: NoseConeConfig,
-        power_off_drag_curve_file_path: str,
-        power_on_drag_curve_file_path: str,
+        power_off_drag_curve_file_path: Path,
+        power_on_drag_curve_file_path: Path,
         fins_config: FinsConfig,
         launch_location: Location,
         parts: list[Part],
@@ -144,7 +144,7 @@ class FlightSimulation:
 
         # Setup motor
         self.motor = SolidMotor(
-            thrust_source=motor_file_path,
+            thrust_source=str(motor_file_path),
             dry_mass=motor_config.dry_mass,
             dry_inertia=motor_config.dry_inertia,
             nozzle_radius=motor_config.nozzle_radius,
@@ -204,8 +204,8 @@ class FlightSimulation:
                 self.config.inertia_22,
                 self.config.inertia_33,
             ),
-            power_off_drag=power_off_drag_curve_file_path,
-            power_on_drag=power_on_drag_curve_file_path,
+            power_off_drag=str(power_off_drag_curve_file_path),
+            power_on_drag=str(power_on_drag_curve_file_path),
             center_of_mass_without_motor=center_of_mass_without_motor,
             coordinate_system_orientation="tail_to_nose",
         )
@@ -381,11 +381,13 @@ class FlightSimulation:
             self.stochastic_flight.visualize_attributes()
 
             # ensure subfolder exists
-            Path(self.output_folder + "/monte_carlo_analysis").mkdir(
+            (self.output_folder / "monte_carlo_analysis").mkdir(
                 parents=True, exist_ok=True
             )
             self.monte_carlo_simulation = MonteCarlo(
-                filename=self.output_folder + "/monte_carlo_analysis/monte_carlo_class",
+                filename=str(
+                    self.output_folder / "monte_carlo_analysis" / "monte_carlo_class"
+                ),
                 environment=self.stochastic_environment,
                 rocket=self.stochastic_rocket,
                 flight=self.stochastic_flight,
@@ -411,7 +413,7 @@ class FlightSimulation:
         print("ENVIRONMENT INFO START")
         self.environment.prints.all()
         self.environment.plots.info(
-            filename=self.output_folder + "/plots/environment.png"
+            filename=str(self.output_folder / "plots" / "environment.png")
         )
         print("ENVIRONMENT INFO END")
 
@@ -419,15 +421,17 @@ class FlightSimulation:
         print("MOTOR INFO START")
         self.motor.prints.all()
         self.motor.plots.thrust(
-            filename=self.output_folder + "/plots/rocket/motor_thrust.png"
+            filename=str(self.output_folder / "plots" / "rocket" / "motor_thrust.png")
         )
         print("MOTOR INFO END")
 
         # Show graphics about the rocket
         self.rocket.plots.static_margin(
-            filename=self.output_folder + "/plots/rocket/static_margin.png"
+            filename=str(self.output_folder / "plots" / "rocket" / "static_margin.png")
         )
-        self.rocket.draw(filename=self.output_folder + "/plots/rocket/rocket.png")
+        self.rocket.draw(
+            filename=str(self.output_folder / "plots" / "rocket" / "rocket.png")
+        )
 
     def show_results(self) -> None:
         assert self.flight is not None
@@ -440,64 +444,93 @@ class FlightSimulation:
         # Show simulation results graphics
         print("TRADITIONAL RESULTS GRAPHICS START")
         self.flight.plots.trajectory_3d(
-            filename=self.output_folder + "/plots/results/trajectory_3d.png"
+            filename=str(self.output_folder / "plots" / "results" / "trajectory_3d.png")
         )
         self.flight.plots.linear_kinematics_data(
-            filename=self.output_folder + "/plots/results/linear_kinematics.png"
+            filename=str(
+                self.output_folder / "plots" / "results" / "linear_kinematics.png"
+            )
         )
         self.flight.plots.flight_path_angle_data(
-            filename=self.output_folder + "/plots/results/flight_path_angle_data.png"
+            filename=str(
+                self.output_folder / "plots" / "results" / "flight_path_angle_data.png"
+            )
         )
         self.flight.plots.attitude_data(
-            filename=self.output_folder + "/plots/results/attitude_data.png"
+            filename=str(self.output_folder / "plots" / "results" / "attitude_data.png")
         )
         self.flight.plots.angular_kinematics_data(
-            filename=self.output_folder + "/plots/results/angular_kinematics_data.png"
+            filename=str(
+                self.output_folder / "plots" / "results" / "angular_kinematics_data.png"
+            )
         )
         self.flight.plots.aerodynamic_forces(
-            filename=self.output_folder + "/plots/results/aerodynamic_forces.png"
+            filename=str(
+                self.output_folder / "plots" / "results" / "aerodynamic_forces.png"
+            )
         )
         self.flight.plots.rail_buttons_forces(
-            filename=self.output_folder + "/plots/results/rail_button_forces.png"
+            filename=str(
+                self.output_folder / "plots" / "results" / "rail_button_forces.png"
+            )
         )
         # NOTE: The energy data plot crashes when an airbrake is configured
         if len(self.config.airbrake_ids) == 0:
             self.flight.plots.energy_data(
-                filename=self.output_folder + "/plots/results/energy_data.png"
+                filename=str(
+                    self.output_folder / "plots" / "results" / "energy_data.png"
+                )
             )
         self.flight.plots.fluid_mechanics_data(
-            filename=self.output_folder + "/plots/results/fluid_mechanics_data.png"
+            filename=str(
+                self.output_folder / "plots" / "results" / "fluid_mechanics_data.png"
+            )
         )
         self.flight.plots.stability_and_control_data(
-            filename=self.output_folder
-            + "/plots/results/stability_and_control_data.png"
+            filename=str(
+                self.output_folder
+                / "plots"
+                / "results"
+                / "stability_and_control_data.png"
+            )
         )
         self.flight.plots.pressure_rocket_altitude(
-            filename=self.output_folder + "/plots/results/pressure_rocket_altitude.png"
+            filename=str(
+                self.output_folder
+                / "plots"
+                / "results"
+                / "pressure_rocket_altitude.png"
+            )
         )
         for parachute in self.flight.rocket.parachutes:
             assert parachute.name is not None and parachute.name != ""
-            foldername = (
-                self.output_folder + "/plots/results/parachutes/" + parachute.name + "/"
+            folder = (
+                self.output_folder / "plots" / "results" / "parachutes" / parachute.name
             )
             parachute.noise_signal_function(
-                filename=foldername + "noise_signal_function.png"
+                filename=str(folder / "noise_signal_function.png")
             )
             parachute.noisy_pressure_signal_function(
-                filename=foldername + "noisy_pressure_signal_function.png"
+                filename=str(folder / "noisy_pressure_signal_function.png")
             )
             parachute.clean_pressure_signal_function(
-                filename=foldername + "noisy_pressure_signal_function.png"
+                filename=str(folder / "noisy_pressure_signal_function.png")
             )
         if len(self.config.airbrake_ids) > 0:
             plot_airbrake_deployment_over_time(
                 self.flight,
-                filename=self.output_folder + "/plots/results/airbrake_deployment.png",
+                filepath=self.output_folder
+                / "plots"
+                / "results"
+                / "airbrake_deployment.png",
             )
         plot_altitude_over_time(
             self.flight,
             self.environment,
-            filename=self.output_folder + "/plots/results/altitude_over_time.png",
+            filepath=self.output_folder
+            / "plots"
+            / "results"
+            / "altitude_over_time.png",
         )
         print("TRADITIONAL RESULTS GRAPHICS END")
 
@@ -507,7 +540,9 @@ class FlightSimulation:
             self.monte_carlo_simulation.prints.all()
             self.monte_carlo_simulation.plots.ellipses(save=True)
             hack_override_matplotlib_show(
-                filename=self.output_folder + "/monte_carlo_analysis/histogram.png"
+                filename=str(
+                    self.output_folder / "monte_carlo_analysis" / "histogram.png"
+                )
             )
             self.monte_carlo_simulation.plots.all()
             hack_override_matplotlib_show_reset()
@@ -517,29 +552,29 @@ class FlightSimulation:
         assert self.flight is not None
 
         # Before export, ensure output folder exists
-        Path(self.output_folder).mkdir(parents=True, exist_ok=True)
+        self.output_folder.mkdir(parents=True, exist_ok=True)
 
         # Export raw flight data
-        self.flight.export_data(self.output_folder + "/raw_flight_data.csv")
+        self.flight.export_data(str(self.output_folder / "raw_flight_data.csv"))
 
         # Export flight data to csv
         export_flight_data_to_csv(
             self.flight,
-            self.output_folder + "/custom_flight_data.csv",
+            self.output_folder / "custom_flight_data.csv",
             self.config.export_flight_data_time_step_seconds,
         )
 
         # Export simulated sensor module data to csv
         export_flight_data_to_csv_in_simulated_sensor_module_format(
             self.flight,
-            self.output_folder + "/simulated_sensor_module_data.csv",
+            self.output_folder / "simulated_sensor_module_data.csv",
             self.environment,
             self.config.export_flight_data_time_step_seconds,
         )
 
         # Export trajectory for Google Earth visulization
         self.flight.export_kml(
-            file_name=self.output_folder + "/trajectory.kml",
+            file_name=str(self.output_folder / "trajectory.kml"),
             extrude=True,
             altitude_mode="relative_to_ground",
         )
@@ -547,14 +582,17 @@ class FlightSimulation:
         # Export monte carlo ellipses for Google Earth visualization
         if self.config.enable_monte_carlo_simulation:
             self.monte_carlo_simulation.export_ellipses_to_kml(
-                filename=self.output_folder
-                + "/monte_carlo_analysis/monte_carlo_ellipses.kml",
+                filename=str(
+                    self.output_folder
+                    / "monte_carlo_analysis"
+                    / "monte_carlo_ellipses.kml"
+                ),
                 origin_lat=self.environment.latitude,
                 origin_lon=self.environment.longitude,
             )
 
         # Export more random stuff needed for Altimax calibration
-        with open(self.output_folder + "/altimax-calibration-data.txt", "w") as file:
+        with open(self.output_folder / "altimax-calibration-data.txt", "w") as file:
             # Apogee time
             buffer = f"apogee_time: {self.flight.apogee_time}\n"
 

@@ -4,6 +4,7 @@ import logging
 import os
 from socket import gethostname
 from datetime import datetime, timezone
+from pathlib import Path
 
 from bears_flight_simulation.core.flight_simulation import FlightSimulation
 from bears_flight_simulation.core.location_library import LocationLibrary
@@ -22,21 +23,21 @@ from bears_flight_simulation.parsers.parts_list_parser import Part, parse_parts_
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
 from bears_flight_simulation.parsers.weather_config import WeatherConfig
 
-CONFIG_FILENAME = "/configuration.yaml"
-MOTOR_FOLDERNAME = "/motors"
-RAIL_BUTTONS_FILENAME = "/rail_buttons.yaml"
-NOSE_CONE_FILENAME = "/nose_cone.yaml"
-POWER_OFF_DRAG_CURVE_FILENAME = "/power_off_drag_curve.csv"
-POWER_ON_DRAG_CURVE_FILENAME = "/power_on_drag_curve.csv"
-FINS_CONFIG_FILENAME = "/fins.yaml"
-PARTS_LIST_FILENAME = "/parts_list.csv"
-LOCATION_FOLDERNAME = "/locations"
-WEATHER_FOLDERNAME = "/weathers"
-PARACHUTE_FOLDERNAME = "/parachutes"
-AIRBRAKE_FOLDERNAME = "/airbrakes"
+CONFIG_FILENAME = "configuration.yaml"
+MOTOR_FOLDERNAME = "motors"
+RAIL_BUTTONS_FILENAME = "rail_buttons.yaml"
+NOSE_CONE_FILENAME = "nose_cone.yaml"
+POWER_OFF_DRAG_CURVE_FILENAME = "power_off_drag_curve.csv"
+POWER_ON_DRAG_CURVE_FILENAME = "power_on_drag_curve.csv"
+FINS_CONFIG_FILENAME = "fins.yaml"
+PARTS_LIST_FILENAME = "parts_list.csv"
+LOCATION_FOLDERNAME = "locations"
+WEATHER_FOLDERNAME = "weathers"
+PARACHUTE_FOLDERNAME = "parachutes"
+AIRBRAKE_FOLDERNAME = "airbrakes"
 
 
-def _ensure_config_files_exist(config_folder: str) -> bool:
+def _ensure_config_files_exist(config_folder: Path) -> bool:
     # Check that all expected files are present in the config folder
     for filename in [
         CONFIG_FILENAME,
@@ -47,7 +48,7 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
         FINS_CONFIG_FILENAME,
         PARTS_LIST_FILENAME,
     ]:
-        file_path = config_folder + filename
+        file_path = config_folder / filename
         if not os.path.isfile(file_path):
             logging.error(
                 "Missing file '"
@@ -64,7 +65,7 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
         PARACHUTE_FOLDERNAME,
         AIRBRAKE_FOLDERNAME,
     ]:
-        file_path = config_folder + foldername
+        file_path = config_folder / foldername
         if not os.path.isdir(file_path):
             logging.error(
                 "Missing folder '"
@@ -76,18 +77,18 @@ def _ensure_config_files_exist(config_folder: str) -> bool:
     return True
 
 
-def _load_motor_from_library(config_folder: str, motor_id: str) -> MotorConfig | None:
-    motor_library: MotorLibrary = MotorLibrary(config_folder + MOTOR_FOLDERNAME)
+def _load_motor_from_library(config_folder: Path, motor_id: str) -> MotorConfig | None:
+    motor_library: MotorLibrary = MotorLibrary(config_folder / MOTOR_FOLDERNAME)
     motor = motor_library.get(motor_id)
     assert isinstance(motor, MotorConfig) or motor is None
     return motor
 
 
 def _load_parachutes_from_library(
-    config_folder: str, parachute_ids: list[str]
+    config_folder: Path, parachute_ids: list[str]
 ) -> list[ParachuteConfig]:
     parachute_library: ParachuteLibrary = ParachuteLibrary(
-        config_folder + PARACHUTE_FOLDERNAME
+        config_folder / PARACHUTE_FOLDERNAME
     )
     parachutes: list[ParachuteConfig] = []
     for id in parachute_ids:
@@ -104,10 +105,10 @@ def _load_parachutes_from_library(
 
 
 def _load_airbrakes_from_library(
-    config_folder: str, airbrake_ids: list[str]
+    config_folder: Path, airbrake_ids: list[str]
 ) -> list[AirbrakeConfig]:
     airbrake_library: AirbrakeLibrary = AirbrakeLibrary(
-        config_folder + AIRBRAKE_FOLDERNAME
+        config_folder / AIRBRAKE_FOLDERNAME
     )
     airbrakes: list[AirbrakeConfig] = []
     for id in airbrake_ids:
@@ -123,18 +124,18 @@ def _load_airbrakes_from_library(
     return airbrakes
 
 
-def _load_config(config_folder: str) -> Config:
-    with open(config_folder + CONFIG_FILENAME, "r") as file:
+def _load_config(config_folder: Path) -> Config:
+    with open(config_folder / CONFIG_FILENAME, "r") as file:
         config = Config(file)
         logging.info(f"Using Config with id '{config.id}'")
         return config
 
 
 def _load_launch_location_from_library(
-    config_folder: str, location_id: str
+    config_folder: Path, location_id: str
 ) -> Location | None:
     location_library: LocationLibrary = LocationLibrary(
-        config_folder + LOCATION_FOLDERNAME
+        config_folder / LOCATION_FOLDERNAME
     )
     library_entry = location_library.get(location_id)
     assert isinstance(library_entry, Location) or library_entry is None
@@ -142,30 +143,30 @@ def _load_launch_location_from_library(
 
 
 def _load_weather_config_from_library(
-    config_folder: str, weather_config_id: str
+    config_folder: Path, weather_config_id: str
 ) -> WeatherConfig | None:
-    weather_library: WeatherLibrary = WeatherLibrary(config_folder + WEATHER_FOLDERNAME)
+    weather_library: WeatherLibrary = WeatherLibrary(config_folder / WEATHER_FOLDERNAME)
     library_entry = weather_library.get(weather_config_id)
     assert isinstance(library_entry, WeatherConfig) or library_entry is None
     return library_entry
 
 
-def _load_rail_button_config(config_folder: str) -> RailButtonConfig:
-    with open(config_folder + RAIL_BUTTONS_FILENAME, "r") as file:
+def _load_rail_button_config(config_folder: Path) -> RailButtonConfig:
+    with open(config_folder / RAIL_BUTTONS_FILENAME, "r") as file:
         return RailButtonConfig(file)
 
 
-def _load_nose_cone_config(config_folder: str) -> NoseConeConfig:
-    with open(config_folder + NOSE_CONE_FILENAME, "r") as file:
+def _load_nose_cone_config(config_folder: Path) -> NoseConeConfig:
+    with open(config_folder / NOSE_CONE_FILENAME, "r") as file:
         return NoseConeConfig(file)
 
 
-def _load_fins_config(config_folder: str) -> FinsConfig:
-    with open(config_folder + FINS_CONFIG_FILENAME, "r") as file:
+def _load_fins_config(config_folder: Path) -> FinsConfig:
+    with open(config_folder / FINS_CONFIG_FILENAME, "r") as file:
         return FinsConfig(file)
 
 
-def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> None:
+def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) -> None:
     # Log current time and hostname for later reference
     logging.info(
         f"Running on {gethostname()} at {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} (UTC)"
@@ -222,7 +223,7 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
 
     # Parse parts list
     parts_list: list[Part]
-    with open(config_folder + PARTS_LIST_FILENAME, "r") as file:
+    with open(config_folder / PARTS_LIST_FILENAME, "r") as file:
         parts_list = parse_parts_list(file)
 
         # Initialize flight simulation
@@ -230,17 +231,16 @@ def load_configs_and_run_simulation(config_folder: str, output_folder: str) -> N
             config=config,
             output_folder=output_folder,
             motor_file_path=config_folder
-            + MOTOR_FOLDERNAME
-            + "/"
-            + motor_config.engine_filename,
+            / MOTOR_FOLDERNAME
+            / motor_config.engine_filename,
             motor_config=motor_config,
             parachutes=parachutes,
             airbrakes=airbrakes,
             rail_button_config=rail_button_config,
             nose_cone_config=nose_cone_config,
             power_off_drag_curve_file_path=config_folder
-            + POWER_OFF_DRAG_CURVE_FILENAME,
-            power_on_drag_curve_file_path=config_folder + POWER_ON_DRAG_CURVE_FILENAME,
+            / POWER_OFF_DRAG_CURVE_FILENAME,
+            power_on_drag_curve_file_path=config_folder / POWER_ON_DRAG_CURVE_FILENAME,
             fins_config=fins_config,
             launch_location=launch_location,
             parts=parts_list,

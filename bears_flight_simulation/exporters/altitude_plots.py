@@ -9,10 +9,10 @@ TIME_STEP_SECONDS = 0.1
 
 
 def plot_altitude_over_time(
-    flight: Flight, environment: Environment, filename: str
+    flight: Flight, environment: Environment, filepath: Path
 ) -> None:
     # Before export, ensure the folder the file should go into exists
-    Path(filename).parent.mkdir(parents=True, exist_ok=True)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
 
     time_list, altitude_list, vx_list, vy_list, vz_list, v_total_list = (
         [],
@@ -73,5 +73,5 @@ def plot_altitude_over_time(
     plt.title("Velocity over time")
 
     # Save plot to file
-    plt.savefig(filename)
+    plt.savefig(filepath)
     plt.close()

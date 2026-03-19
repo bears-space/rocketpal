@@ -1,5 +1,7 @@
 import typing as t
 
+from pathlib import Path
+
 from bears_flight_simulation.core.library_entry import LibraryEntry
 from bears_flight_simulation.utilities.airbrake_controllers import (
     disabled_controller,
@@ -17,7 +19,7 @@ class AirbrakeConfig(LibraryEntry):
     drag_curve_filepath: str
     drag_curve_standard_deviation_factor: float
 
-    def __init__(self, data: dict, airbrake_folder: str) -> None:
+    def __init__(self, data: dict, airbrake_folder: Path) -> None:
         super().__init__(data)
 
         self.sampling_rate_hz = float(data["sampling_rate_hz"])
@@ -37,7 +39,7 @@ class AirbrakeConfig(LibraryEntry):
                 raise NotImplementedError
 
         self.drag_curve_filename_without_folder = str(data["drag_curve_file"])
-        self.drag_curve_filepath = airbrake_folder + "/" + str(data["drag_curve_file"])
+        self.drag_curve_filepath = airbrake_folder / str(data["drag_curve_file"])
         self.drag_curve_standard_deviation_factor = float(
             data["drag_curve_standard_deviation_factor"]
         )
