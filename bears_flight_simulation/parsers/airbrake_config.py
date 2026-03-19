@@ -16,7 +16,7 @@ class AirbrakeConfig(LibraryEntry):
     controller_name: str
     controller_function: t.Callable
     drag_curve_filename_without_folder: str
-    drag_curve_filepath: str
+    drag_curve_filepath: Path
     drag_curve_standard_deviation_factor: float
 
     def __init__(self, data: dict, airbrake_folder: Path) -> None:
