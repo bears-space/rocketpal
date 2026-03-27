@@ -29,12 +29,17 @@ jobs:
       - name: Build one-file GUI executable
         shell: pwsh
         run: |
-          uv run --with pyinstaller pyinstaller `
+          uv run --with "pyinstaller>=6.16.0" pyinstaller `
             --noconfirm `
             --clean `
             --name bears-flight-simulation `
             --onefile `
             --windowed `
+            --collect-all PySide6 `
+            --collect-all shiboken6 `
+            --hidden-import PySide6.QtCore `
+            --hidden-import PySide6.QtGui `
+            --hidden-import PySide6.QtWidgets `
             --collect-all rocketpy `
             --add-data "template;template" `
             --add-data "img;img" `
