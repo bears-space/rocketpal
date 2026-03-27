@@ -43,6 +43,19 @@ class AirbrakeConfig(LibraryEntry):
             data["drag_curve_standard_deviation_factor"]
         )
 
+    @classmethod
+    def new_default(cls, id: str) -> "AirbrakeConfig":
+        return AirbrakeConfig(
+            {
+                "ID": id,
+                "sampling_rate_hz": 10.0,
+                "controller_function_name": "disabled_controller",
+                "drag_curve_file": "stargaze_airbrake_drag_curve.csv",
+                "drag_curve_standard_deviation_factor": 0.1,
+            },
+            airbrake_folder=Path(""),
+        )
+
     def serialize(self) -> dict:
         return {
             "ID": self.id,

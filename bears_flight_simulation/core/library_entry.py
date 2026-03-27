@@ -8,6 +8,11 @@ class LibraryEntry(ABC):
         # Load identifier
         self.id = str(data["ID"])
 
+    @classmethod
+    @abstractmethod
+    def new_default(cls, id: str) -> "LibraryEntry":
+        raise NotImplementedError
+
     @abstractmethod
     def serialize(self) -> dict:
         raise NotImplementedError

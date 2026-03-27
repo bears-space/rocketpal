@@ -15,6 +15,17 @@ class Location(LibraryEntry):
         self.longitude = float(data["longitude"])
         self.elevation = float(data["elevation"])
 
+    @classmethod
+    def new_default(cls, id: str) -> "Location":
+        return Location(
+            {
+                "ID": id,
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "elevation": 0.0,
+            }
+        )
+
     def serialize(self) -> dict:
         return {
             "ID": self.id,

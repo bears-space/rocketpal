@@ -68,16 +68,39 @@ class MotorConfig(LibraryEntry):
         )
         self.center_of_dry_mass_position = self.grains_center_of_mass_position
 
+    @classmethod
+    def new_default(cls, id: str) -> LibraryEntry:
+        return MotorConfig(
+            {
+                "ID": id,
+                "engFileName": "Cesaroni_6800M3700-P.eng",
+                "dryMass": 2.760,
+                "dryInertia": [0.0, 0.0, 0.0],
+                "nozzleR": 33.0,
+                "throatR": 11.0,
+                "propMass": 3.019,
+                "grainNumber": 6,
+                "grainOR": 33.0,
+                "grainIIR": 15.0,
+                "grainIH": 120.0,
+                "grainSep": 5.0,
+                "burnT": 1.83,
+                "nozzlePos": 0.0,
+                "total_impulse_standard_deviation_factor": 0.1,
+            }
+        )
+
     def serialize(self) -> dict:
         return {
             "ID": self.id,
-            "engine_filename": self.engine_filename,
-            "dry_mass": self.dry_mass,
-            "dry_inertia": self.dry_inertia,
-            "nozzle_radius": self.nozzle_radius * 1000.0,
-            "throat_radius": self.throat_radius * 1000.0,
-            "grain_number": self.grain_number,
-            "grain_OR": self.grain_outer_radius * 1000.0,
+            "engFileName": self.engine_filename,
+            "dryMass": self.dry_mass,
+            "dryInertia": self.dry_inertia,
+            "nozzleR": self.nozzle_radius * 1000.0,
+            "throatR": self.throat_radius * 1000.0,
+            "propMass": self.prop_mass,
+            "grainNumber": self.grain_number,
+            "grainOR": self.grain_outer_radius * 1000.0,
             "grainIIR": self.grain_initial_inner_radius * 1000.0,
             "grainIH": self.grain_initial_height * 1000.0,
             "grainSep": self.grain_separation * 1000.0,

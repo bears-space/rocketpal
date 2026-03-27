@@ -44,11 +44,29 @@ class ParachuteConfig(LibraryEntry):
                 data["ejection_altitude_meters_if_not_at_apogee"]
             )
 
+    @classmethod
+    def new_default(cls, id: str) -> "ParachuteConfig":
+        return ParachuteConfig(
+            {
+                "ID": id,
+                "drag_coefficient_times_reference_area": 3.936710905,
+                "drag_coefficient_times_reference_area_standard_deviation_factor": 0.1,
+                "ejection_at_apogee": False,
+                "ejection_altitude_meters_if_not_at_apogee": 300.0,
+                "ejection_sampling_rate_hertz": 100.0,
+                "opening_lag_seconds": 1.0,
+                "opening_lag_seconds_standard_deviation_factor": 0.1,
+                "noise_mean_pascal": 0.0,
+                "noise_standard_deviation_pascal": 0.0,
+                "noise_time_correlation_pascal": 0.0,
+            }
+        )
+
     def serialize(self) -> dict:
         ejection_at_apogee = True
         ejection_altitude_meters_if_not_at_apogee = 0
         if self.ejection_altitude != "apogee":
-            ejection_at_apogee = True
+            ejection_at_apogee = False
             assert not isinstance(self.ejection_altitude, str)
             ejection_altitude_meters_if_not_at_apogee = float(self.ejection_altitude)
 
@@ -56,12 +74,12 @@ class ParachuteConfig(LibraryEntry):
             "ID": self.id,
             "drag_coefficient_times_reference_area": self.drag_coefficient_times_reference_area,
             "drag_coefficient_times_reference_area_standard_deviation_factor": self.drag_coefficient_times_reference_area_standard_deviation_factor,
+            "ejection_at_apogee": ejection_at_apogee,
+            "ejection_altitude_meters_if_not_at_apogee": ejection_altitude_meters_if_not_at_apogee,
             "ejection_sampling_rate_hertz": self.ejection_sampling_rate_hertz,
             "opening_lag_seconds": self.opening_lag_seconds,
             "opening_lag_seconds_standard_deviation_factor": self.opening_lag_seconds_standard_deviation_factor,
             "noise_mean_pascal": self.noise_mean_pascal,
             "noise_standard_deviation_pascal": self.noise_standard_deviation_pascal,
             "noise_time_correlation_pascal": self.noise_time_correlation_pascal,
-            "ejection_at_apogee": ejection_at_apogee,
-            "ejection_altitude_meters_if_not_at_apogee": ejection_altitude_meters_if_not_at_apogee,
         }

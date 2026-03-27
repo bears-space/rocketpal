@@ -15,6 +15,17 @@ class WeatherConfig(LibraryEntry):
             data["wind_x_y_factor_standard_deviation"]
         )
 
+    @classmethod
+    def new_default(cls, id: str) -> LibraryEntry:
+        return WeatherConfig(
+            {
+                "ID": id,
+                "wind_speed_in_m_per_s": 0.0,
+                "wind_direction_in_degrees": 0.0,
+                "wind_x_y_factor_standard_deviation": 0.0,
+            }
+        )
+
     def serialize(self) -> dict:
         return {
             "ID": self.id,
