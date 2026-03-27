@@ -1,5 +1,4 @@
 import os
-import sys
 from pathlib import Path
 
 import platformdirs
@@ -11,7 +10,7 @@ USER_LOCATION_LIBRARY_FOLDER = USER_LIBRARY_CONFIG_BASE_FOLDER / "locations"
 USER_MOTOR_LIBRARY_FOLDER = USER_LIBRARY_CONFIG_BASE_FOLDER / "motors"
 USER_PARACHUTE_LIBRARY_FOLDER = USER_LIBRARY_CONFIG_BASE_FOLDER / "parachutes"
 
-OUTPUT_FOLDER = Path(os.path.realpath(sys.argv[0])).parent / "output"
+OUTPUT_FOLDER = Path.cwd() / "output"
 TEMPLATE_FOLDER = Path(__file__).parent.parent.parent / "template"
 
 LOGO_PATH = Path(__file__).parent.parent.parent / "img" / "BEARS_writing_with_motto.svg"
