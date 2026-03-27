@@ -3,6 +3,7 @@
 [![pre-commit](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pre-commit.yaml)
 [![pytest](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pytest.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pytest.yaml)
 [![Ruff](https://github.com/bears-space/bears-flight-simulation/actions/workflows/ruff.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/ruff.yaml)
+[![Windows EXE](https://github.com/bears-space/bears-flight-simulation/actions/workflows/windows-exe.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/windows-exe.yaml)
 
 This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight simulation for BEARS rockets, built by [BEARS (Berlin Experimental Astronautics Research Student Team e.V.)](https://www.bears-space.de/).
 
@@ -83,6 +84,16 @@ To run the provided unit tests, run this command from within the project root:
 ```sh
 uv run python -m pytest
 ```
+
+### Windows GUI executable (.exe)
+
+This repository contains an automated GitHub Actions workflow that builds a standalone Windows `.exe` for the GUI.
+
+- Workflow: `.github/workflows/windows-exe.yaml`
+- Output artifact: `bears-flight-simulation-windows-exe`
+- Executable filename: `bears-flight-simulation.exe`
+
+The build uses PyInstaller in one-file mode and bundles Python plus all required dependencies into a single portable executable.
 
 ### Configuration
 

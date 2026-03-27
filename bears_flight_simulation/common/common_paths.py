@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 import platformdirs
@@ -11,10 +12,21 @@ USER_MOTOR_LIBRARY_FOLDER = USER_LIBRARY_CONFIG_BASE_FOLDER / "motors"
 USER_PARACHUTE_LIBRARY_FOLDER = USER_LIBRARY_CONFIG_BASE_FOLDER / "parachutes"
 
 OUTPUT_FOLDER = Path.cwd() / "output"
-TEMPLATE_FOLDER = Path(__file__).parent.parent.parent / "template"
 
-LOGO_PATH = Path(__file__).parent.parent.parent / "img" / "BEARS_writing_with_motto.svg"
-ICON_PATH = Path(__file__).parent.parent.parent / "img" / "BEARS_Logo_white_circle.png"
+
+def _get_project_base_path() -> Path:
+    # PyInstaller one-file mode extracts bundled files to a temporary directory.
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS)
+
+    return Path(__file__).resolve().parents[2]
+
+
+PROJECT_BASE_PATH = _get_project_base_path()
+TEMPLATE_FOLDER = PROJECT_BASE_PATH / "template"
+
+LOGO_PATH = PROJECT_BASE_PATH / "img" / "BEARS_writing_with_motto.svg"
+ICON_PATH = PROJECT_BASE_PATH / "img" / "BEARS_Logo_white_circle.png"
 
 
 def _get_config_folders(base_folder: Path) -> set[Path]:

@@ -1,0 +1,48 @@
+name: Windows EXE
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python from .python-version
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build one-file GUI executable
+        shell: pwsh
+        run: |
+          uv run --with pyinstaller pyinstaller `
+            --noconfirm `
+            --clean `
+            --name bears-flight-simulation `
+            --onefile `
+            --windowed `
+            --collect-all rocketpy `
+            --add-data "template;template" `
+            --add-data "img;img" `
+            bears_flight_simulation/simulation_gui.py
+
+      - name: Upload executable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bears-flight-simulation-windows-exe
+          path: dist/bears-flight-simulation.exe
+          if-no-files-found: error
