@@ -35,8 +35,11 @@ jobs:
             --name bears-flight-simulation `
             --onefile `
             --windowed `
+            --runtime-hook scripts/pyinstaller_qt_runtime_hook.py `
             --collect-all PySide6 `
             --collect-all shiboken6 `
+            --collect-binaries PySide6 `
+            --collect-binaries shiboken6 `
             --hidden-import PySide6.QtCore `
             --hidden-import PySide6.QtGui `
             --hidden-import PySide6.QtWidgets `
