@@ -32,21 +32,7 @@ jobs:
           uv run --with "pyinstaller>=6.16.0" pyinstaller `
             --noconfirm `
             --clean `
-            --name bears-flight-simulation `
-            --onefile `
-            --windowed `
-            --runtime-hook scripts/pyinstaller_qt_runtime_hook.py `
-            --collect-all PySide6 `
-            --collect-all shiboken6 `
-            --collect-binaries PySide6 `
-            --collect-binaries shiboken6 `
-            --hidden-import PySide6.QtCore `
-            --hidden-import PySide6.QtGui `
-            --hidden-import PySide6.QtWidgets `
-            --collect-all rocketpy `
-            --add-data "template;template" `
-            --add-data "img;img" `
-            bears_flight_simulation/simulation_gui.py
+            bears-flight-simulation.spec
 
       - name: Upload executable artifact
         uses: actions/upload-artifact@v4
