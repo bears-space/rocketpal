@@ -14,14 +14,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Extract ruff version from .pre-commit-config.yaml
+        id: get-version
+        run: |
+          version=$(grep -A 2 'repo: https://github.com/astral-sh/ruff-pre-commit' .pre-commit-config.yaml | grep 'rev:' | sed 's/.*rev: v\?//')
+          echo "version=${version}" >> $GITHUB_OUTPUT
+
       - name: Check Ruff Linting
         uses: astral-sh/ruff-action@v3
         with:
-          version: "0.15.8"
+          version: ${{ steps.get-version.outputs.version }}
           args: "check --select I"
 
       - name: Check Ruff Formatting
         uses: astral-sh/ruff-action@v3
         with:
-          version: "0.15.8"
+          version: ${{ steps.get-version.outputs.version }}
           args: "format --check --diff"
