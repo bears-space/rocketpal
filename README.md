@@ -23,7 +23,7 @@ First, we need to install `uv`, a Python package manager.
 To install or update the dependencies of this project, run this command from within the project root:
 
 ```sh
-uv sync
+uv sync --dev
 ```
 
 The `uv` package manager also automatically manages a separate Python installation for the project, so you do not have to think about your system-wide Python installation and pip packages.
