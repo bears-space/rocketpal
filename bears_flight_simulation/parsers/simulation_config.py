@@ -4,7 +4,7 @@ from datetime import datetime
 import yaml
 
 
-class Config:
+class SimulationConfig:
     # Identifier
     id: str
 

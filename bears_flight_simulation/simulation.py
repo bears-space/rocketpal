@@ -13,7 +13,6 @@ from bears_flight_simulation.core.motor_library import MotorLibrary
 from bears_flight_simulation.core.parachute_library import ParachuteLibrary
 from bears_flight_simulation.core.weather_library import WeatherLibrary
 from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
-from bears_flight_simulation.parsers.config import Config
 from bears_flight_simulation.parsers.fins_config import FinsConfig
 from bears_flight_simulation.parsers.location import Location
 from bears_flight_simulation.parsers.motor_config import MotorConfig
@@ -21,6 +20,7 @@ from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
 from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
 from bears_flight_simulation.parsers.parts_list_parser import Part, parse_parts_list
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
+from bears_flight_simulation.parsers.simulation_config import SimulationConfig
 from bears_flight_simulation.parsers.weather_config import WeatherConfig
 
 CONFIG_FILENAME = "configuration.yaml"
@@ -124,9 +124,9 @@ def _load_airbrakes_from_library(
     return airbrakes
 
 
-def _load_config(config_folder: Path) -> Config:
+def _load_config(config_folder: Path) -> SimulationConfig:
     with open(config_folder / CONFIG_FILENAME, "r") as file:
-        config = Config(file)
+        config = SimulationConfig(file)
         logging.info(f"Using Config with id '{config.id}'")
         return config
 

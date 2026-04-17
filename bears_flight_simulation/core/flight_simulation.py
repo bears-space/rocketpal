@@ -25,7 +25,6 @@ from bears_flight_simulation.hacks.matplotlib_hacks import (
     hack_override_matplotlib_show_reset,
 )
 from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
-from bears_flight_simulation.parsers.config import Config
 from bears_flight_simulation.parsers.fins_config import FinsConfig
 from bears_flight_simulation.parsers.location import Location
 from bears_flight_simulation.parsers.motor_config import MotorConfig
@@ -38,6 +37,7 @@ from bears_flight_simulation.parsers.parts_list_parser import (
     get_nosecone_total_length,
 )
 from bears_flight_simulation.parsers.rail_button_config import RailButtonConfig
+from bears_flight_simulation.parsers.simulation_config import SimulationConfig
 from bears_flight_simulation.parsers.weather_config import WeatherConfig
 from bears_flight_simulation.utilities.config_calc import rocket_center_of_mass
 from bears_flight_simulation.utilities.rocket_calculations import (
@@ -60,7 +60,7 @@ def wind_speed_and_direction_to_east_and_north(
 
 class FlightSimulation:
     # Configs
-    config: Config
+    config: SimulationConfig
 
     # Simulation stuff
     rocket: Rocket
@@ -79,7 +79,7 @@ class FlightSimulation:
 
     def __init__(
         self,
-        config: Config,
+        config: SimulationConfig,
         output_folder: Path,
         motor_file_path: Path,
         motor_config: MotorConfig,
