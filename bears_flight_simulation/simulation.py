@@ -130,7 +130,7 @@ def _load_config(config_folder: Path) -> SimulationConfig:
     with open(config_folder / CONFIG_FILENAME, "r") as file:
         data = yaml.safe_load(file)
         config = SimulationConfig(data)
-        logging.info(f"Using Config with id '{config.id}'")
+        logging.info(f"Using Config with id '{config.id}'")  # type: ignore
         return config
 
 
@@ -184,42 +184,44 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
     config = _load_config(config_folder)
 
     launch_location = _load_launch_location_from_library(
-        config_folder, config.location_id
+        config_folder,
+        config.location_id,  # type: ignore
     )
     if launch_location is None:
         logging.error(
-            f"The location with the id '{config.location_id}'"
+            f"The location with the id '{config.location_id}'"  # type: ignore
             f" does not exist in the location library. Aborting ..."
         )
         exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(f"Using Location with id '{launch_location.id}'")
+        logging.info(f"Using Location with id '{launch_location.id}'")  # type: ignore
 
     weather_config = _load_weather_config_from_library(
-        config_folder, config.weather_config_id
+        config_folder,
+        config.weather_config_id,  # type: ignore
     )
     if weather_config is None:
         logging.error(
-            f"The weather config with the id '{config.weather_config_id}'"
+            f"The weather config with the id '{config.weather_config_id}'"  # type: ignore
             f" does not exist in the weather config library. Aborting ..."
         )
         exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(f"Using WeatherConfig with id '{weather_config.id}'")
+        logging.info(f"Using WeatherConfig with id '{weather_config.id}'")  # type: ignore
 
-    motor_config = _load_motor_from_library(config_folder, config.motor_id)
+    motor_config = _load_motor_from_library(config_folder, config.motor_id)  # type: ignore
     if motor_config is None:
         logging.error(
-            f"The motor config with the id '{config.motor_id}'"
+            f"The motor config with the id '{config.motor_id}'"  # type: ignore
             f" does not exist in the motor config library. Aborting ..."
         )
         exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(f"Using MotorConfig with id '{motor_config.id}'")
+        logging.info(f"Using MotorConfig with id '{motor_config.id}'")  # type: ignore
 
-    parachutes = _load_parachutes_from_library(config_folder, config.parachute_ids)
+    parachutes = _load_parachutes_from_library(config_folder, config.parachute_ids)  # type: ignore
 
-    airbrakes = _load_airbrakes_from_library(config_folder, config.airbrake_ids)
+    airbrakes = _load_airbrakes_from_library(config_folder, config.airbrake_ids)  # type: ignore
 
     rail_button_config = _load_rail_button_config(config_folder)
 
@@ -238,7 +240,7 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
             output_folder=output_folder,
             motor_file_path=config_folder
             / MOTOR_FOLDERNAME
-            / motor_config.engine_filename,
+            / motor_config.engine_filename,  # type: ignore
             motor_config=motor_config,
             parachutes=parachutes,
             airbrakes=airbrakes,
