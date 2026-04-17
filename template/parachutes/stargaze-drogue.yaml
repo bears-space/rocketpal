@@ -1,5 +1,5 @@
-ID: stargaze-drogue
-drag_coefficient_times_reference_area: 0.4377952619 # cd_s
+id: stargaze-drogue
+drag_coefficient_times_reference_area: 0.4377952619
 drag_coefficient_times_reference_area_standard_deviation_factor: 0.1
 ejection_at_apogee: True
 ejection_altitude_meters_if_not_at_apogee: null

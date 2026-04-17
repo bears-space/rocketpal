@@ -2,34 +2,47 @@ import typing as t
 
 import yaml
 
+from bears_flight_simulation.core.library_entry import LibraryEntry
 
-class FinsConfig:
-    n: int
-    root_chord: float
-    tip_chord: float
-    span: float
-    position: float
-    cant_angle: float
+
+class FinsConfig(LibraryEntry):
     sweep_length: t.Union[float, None]
     sweep_angle: t.Union[float, None]
     radius: t.Union[float, None]
 
-    def __init__(self, fins_config_file: t.TextIO) -> None:
-        # Load yaml file
-        data = yaml.safe_load(fins_config_file)
+    def __init__(self, data: dict) -> None:
+        self.extend_field_links(
+            [
+                ("n", int),
+                ("root_chord", float),
+                ("tip_chord", float),
+                ("span", float),
+                ("position", float),
+                ("cant_angle", float),
+            ]
+        )
+        super().__init__(data)
 
-        # Load fins data
-        self.n = int(data["n"])
-        self.root_chord = float(data["root_chord"])
-        self.tip_chord = float(data["tip_chord"])
-        self.span = float(data["span"])
-        self.position = float(data["position"])
-        self.cant_angle = float(data["cant_angle"])
         self.sweep_length = data["sweep_length"]
-        self.sweep_angle = data["sweep_angle"]
-        self.radius = data["radius"]
-
-        # Ensure types for multi-type attributes
         assert type(self.sweep_length) in [float, type(None)]
+        self.sweep_angle = data["sweep_angle"]
         assert type(self.sweep_angle) in [float, type(None)]
+        self.radius = data["radius"]
         assert type(self.radius) in [float, type(None)]
+
+    @classmethod
+    def new_default(cls, id: str) -> LibraryEntry:
+        return FinsConfig(
+            {
+                "id": id,
+                "n": 3,
+                "root_chord": 0.236,
+                "tip_chord": 0.136,
+                "span": 0.091,
+                "position": 0.246,
+                "cant_angle": 0.0,
+                "sweep_length": 0.0498,
+                "sweep_angle": None,
+                "radius": None,
+            }
+        )

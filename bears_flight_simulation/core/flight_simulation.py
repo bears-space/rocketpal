@@ -26,7 +26,7 @@ from bears_flight_simulation.hacks.matplotlib_hacks import (
 )
 from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
 from bears_flight_simulation.parsers.fins_config import FinsConfig
-from bears_flight_simulation.parsers.location import Location
+from bears_flight_simulation.parsers.location_config import LocationConfig
 from bears_flight_simulation.parsers.motor_config import MotorConfig
 from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
 from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
@@ -90,7 +90,7 @@ class FlightSimulation:
         power_off_drag_curve_file_path: Path,
         power_on_drag_curve_file_path: Path,
         fins_config: FinsConfig,
-        launch_location: Location,
+        launch_location: LocationConfig,
         parts: list[Part],
         weather_config: WeatherConfig,
     ) -> None:
@@ -100,14 +100,14 @@ class FlightSimulation:
 
         # Setup environment
         self.environment = Environment(
-            latitude=launch_location.latitude,
-            longitude=launch_location.longitude,
-            elevation=launch_location.elevation,
+            latitude=launch_location.latitude,  # type: ignore
+            longitude=launch_location.longitude,  # type: ignore
+            elevation=launch_location.elevation,  # type: ignore
         )
         self.environment.set_date(config.launch_date)
-        if config.use_weather_forecast_instead_of_config:
+        if config.use_weather_forecast_instead_of_config:  # type: ignore
             self.environment.set_atmospheric_model(type="Forecast", file="GFS")
-            if config.enable_monte_carlo_simulation:
+            if config.enable_monte_carlo_simulation:  # type: ignore
                 logging.error(
                     "FlightSimulation: MonteCarlo simulation is not supported when using weather forecasts! Quitting..."
                 )
@@ -120,7 +120,8 @@ class FlightSimulation:
             # )
         else:
             (wind_east, wind_north) = wind_speed_and_direction_to_east_and_north(
-                weather_config.wind_speed, weather_config.wind_direction
+                weather_config.wind_speed_in_m_per_s,  # type: ignore
+                weather_config.wind_direction_in_degrees,  # type: ignore
             )
             self.environment.set_atmospheric_model(
                 type="custom_atmosphere",
@@ -129,39 +130,39 @@ class FlightSimulation:
                 wind_u=[(0, wind_east)],  # type: ignore
                 wind_v=[(0, wind_north)],  # type: ignore
             )
-            if config.enable_monte_carlo_simulation:
+            if config.enable_monte_carlo_simulation:  # type: ignore
                 self.stochastic_environment = StochasticEnvironment(
                     environment=self.environment,
                     wind_velocity_x_factor=(
                         1.0,
-                        weather_config.wind_x_y_factor_standard_distribution,
+                        weather_config.wind_x_y_factor_standard_deviation,  # type: ignore
                     ),
                     wind_velocity_y_factor=(
                         1.0,
-                        weather_config.wind_x_y_factor_standard_distribution,
+                        weather_config.wind_x_y_factor_standard_deviation,  # type: ignore
                     ),
                 )
 
         # Setup motor
         self.motor = SolidMotor(
             thrust_source=str(motor_file_path),
-            dry_mass=motor_config.dry_mass,
-            dry_inertia=motor_config.dry_inertia,
-            nozzle_radius=motor_config.nozzle_radius,
-            grain_number=motor_config.grain_number,
+            dry_mass=motor_config.dry_mass,  # type: ignore
+            dry_inertia=motor_config.dry_inertia,  # type: ignore
+            nozzle_radius=motor_config.nozzle_radius,  # type: ignore
+            grain_number=motor_config.grain_number,  # type: ignore
             grain_density=motor_config.grain_density,
-            grain_outer_radius=motor_config.grain_outer_radius,
-            grain_initial_inner_radius=motor_config.grain_initial_inner_radius,
-            grain_initial_height=motor_config.grain_initial_height,
-            grain_separation=motor_config.grain_separation,
+            grain_outer_radius=motor_config.grain_outer_radius,  # type: ignore
+            grain_initial_inner_radius=motor_config.grain_initial_inner_radius,  # type: ignore
+            grain_initial_height=motor_config.grain_initial_height,  # type: ignore
+            grain_separation=motor_config.grain_separation,  # type: ignore
             grains_center_of_mass_position=motor_config.grains_center_of_mass_position,
             center_of_dry_mass_position=motor_config.center_of_dry_mass_position,
             nozzle_position=motor_config.nozzle_position,
-            burn_time=motor_config.burn_time,
-            throat_radius=motor_config.throat_radius,
+            burn_time=motor_config.burn_time,  # type: ignore
+            throat_radius=motor_config.throat_radius,  # type: ignore
             coordinate_system_orientation="nozzle_to_combustion_chamber",
         )
-        if config.enable_monte_carlo_simulation:
+        if config.enable_monte_carlo_simulation:  # type: ignore
             self.stochastic_motor = StochasticSolidMotor(
                 solid_motor=self.motor,
                 total_impulse=motor_config.total_impulse_standard_deviation_factor
@@ -171,12 +172,12 @@ class FlightSimulation:
         # Create rocket
         rocket_mass_without_motor: float
         center_of_mass_without_motor: float
-        if config.override_parts_list:
+        if config.override_parts_list:  # type: ignore
             rocket_mass_without_motor = (
-                config.override_parts_list_mass_without_motor_in_g / 1000.0
+                config.override_parts_list_mass_without_motor_in_g / 1000.0  # type: ignore
             )
             center_of_mass_without_motor = (
-                config.override_parts_list_center_of_mass_in_m
+                config.override_parts_list_center_of_mass_in_m  # type: ignore
             )
             logging.info(
                 f"FlightSimulation: USING PARTS LIST OVERRIDE with mass_without_motor={rocket_mass_without_motor}kg and center_of_mass_without_motor={center_of_mass_without_motor}m"
@@ -188,47 +189,47 @@ class FlightSimulation:
             f"FlightSimulation: calculated rocket mass (without motor) is {rocket_mass_without_motor}kg"
         )
         logging.info(
-            f"FlightSimulation: calculated rocket mass (without motor + motor drymass) is {rocket_mass_without_motor + motor_config.dry_mass}kg"
+            f"FlightSimulation: calculated rocket mass (without motor + motor drymass) is {rocket_mass_without_motor + motor_config.dry_mass}kg"  # type: ignore
         )
         logging.info(
-            f"FlightSimulation: calculated rocket mass (without motor + motor drymass + motor propmass) is {rocket_mass_without_motor + motor_config.dry_mass + motor_config.prop_mass}kg"
+            f"FlightSimulation: calculated rocket mass (without motor + motor drymass + motor propmass) is {rocket_mass_without_motor + motor_config.dry_mass + motor_config.prop_mass}kg"  # type: ignore
         )
         logging.info(
             f"FlightSimulation: calculated rocket mass (complete parts list) is {calculate_rocket_mass_in_kg(parts)}kg"
         )
         self.rocket = Rocket(
-            radius=config.diameter / 2.0,  # 127 / 2000,
-            mass=rocket_mass_without_motor,  # 14.426,
+            radius=config.diameter_in_m / 2.0,  # type: ignore
+            mass=rocket_mass_without_motor,
             inertia=(
-                self.config.inertia_11,
-                self.config.inertia_22,
-                self.config.inertia_33,
+                self.config.inertia_11,  # type: ignore
+                self.config.inertia_22,  # type: ignore
+                self.config.inertia_33,  # type: ignore
             ),
             power_off_drag=str(power_off_drag_curve_file_path),
             power_on_drag=str(power_on_drag_curve_file_path),
             center_of_mass_without_motor=center_of_mass_without_motor,
             coordinate_system_orientation="tail_to_nose",
         )
-        if config.enable_monte_carlo_simulation:
+        if config.enable_monte_carlo_simulation:  # type: ignore
             self.stochastic_rocket = StochasticRocket(
                 rocket=self.rocket,
-                mass=self.config.mass_standard_deviation_factor
+                mass=self.config.mass_standard_deviation_factor  # type: ignore
                 * rocket_mass_without_motor,
-                center_of_mass_without_motor=self.config.center_of_mass_standard_deviation_factor
+                center_of_mass_without_motor=self.config.center_of_mass_standard_deviation_factor  # type: ignore
                 * center_of_mass_without_motor,
-                inertia_11=self.config.inertia_standard_deviation_factor
-                * self.config.inertia_11,
-                inertia_22=self.config.inertia_standard_deviation_factor
-                * self.config.inertia_22,
-                inertia_33=self.config.inertia_standard_deviation_factor
-                * self.config.inertia_33,
+                inertia_11=self.config.inertia_standard_deviation_factor  # type: ignore
+                * self.config.inertia_11,  # type: ignore
+                inertia_22=self.config.inertia_standard_deviation_factor  # type: ignore
+                * self.config.inertia_22,  # type: ignore
+                inertia_33=self.config.inertia_standard_deviation_factor  # type: ignore
+                * self.config.inertia_33,  # type: ignore
                 power_off_drag_factor=(
                     1.0,
-                    self.config.power_off_drag_factor_standard_deviation,
+                    self.config.power_off_drag_factor_standard_deviation,  # type: ignore
                 ),
                 power_on_drag_factor=(
                     1.0,
-                    self.config.power_on_drag_factor_standard_deviation,
+                    self.config.power_on_drag_factor_standard_deviation,  # type: ignore
                 ),
             )
         logging.info(
@@ -240,13 +241,13 @@ class FlightSimulation:
 
         # Add motor to rocket
         self.rocket.add_motor(self.motor, position=get_motor_position(parts) / 1000.0)
-        if config.enable_monte_carlo_simulation:
+        if config.enable_monte_carlo_simulation:  # type: ignore
             self.stochastic_rocket.add_motor(self.stochastic_motor)
 
         # Add rail guides
         self.rocket.set_rail_buttons(
-            upper_button_position=rail_button_config.upper_button_position,
-            lower_button_position=rail_button_config.lower_button_position,
+            upper_button_position=rail_button_config.upper_button_position,  # type: ignore
+            lower_button_position=rail_button_config.lower_button_position,  # type: ignore
             angular_position=rail_button_config.angular_position,  # type: ignore
         )
 
@@ -260,19 +261,19 @@ class FlightSimulation:
         )
         self.rocket.add_nose(
             length=nosecone_length,
-            kind=nose_cone_config.kind,
+            kind=nose_cone_config.kind,  # type: ignore
             position=nosecone_tip_upper_limit_position,
             bluffness=nose_cone_config.bluffness,  # type: ignore
             power=nose_cone_config.power_if_using_powerseries_kind,
             base_radius=nose_cone_config.base_radius,
         )
         self.rocket.add_trapezoidal_fins(
-            n=fins_config.n,
-            root_chord=fins_config.root_chord,
-            tip_chord=fins_config.tip_chord,
-            span=fins_config.span,
-            position=fins_config.position,
-            cant_angle=fins_config.cant_angle,
+            n=fins_config.n,  # type: ignore
+            root_chord=fins_config.root_chord,  # type: ignore
+            tip_chord=fins_config.tip_chord,  # type: ignore
+            span=fins_config.span,  # type: ignore
+            position=fins_config.position,  # type: ignore
+            cant_angle=fins_config.cant_angle,  # type: ignore
             sweep_length=fins_config.sweep_length,
             sweep_angle=fins_config.sweep_angle,
             radius=fins_config.radius,
@@ -282,24 +283,24 @@ class FlightSimulation:
         self.stochastic_parachutes = []
         for parachute in parachutes:
             parachute_object = self.rocket.add_parachute(
-                name=parachute.id,
-                cd_s=parachute.drag_coefficient_times_reference_area,
+                name=parachute.id,  # type: ignore
+                cd_s=parachute.drag_coefficient_times_reference_area,  # type: ignore
                 trigger=parachute.ejection_altitude,
                 sampling_rate=parachute.ejection_sampling_rate_hertz,  # type: ignore
                 lag=parachute.opening_lag_seconds,  # type: ignore
                 noise=(
-                    parachute.noise_mean_pascal,
-                    parachute.noise_standard_deviation_pascal,
-                    parachute.noise_time_correlation_pascal,
+                    parachute.noise_mean_pascal,  # type: ignore
+                    parachute.noise_standard_deviation_pascal,  # type: ignore
+                    parachute.noise_time_correlation_pascal,  # type: ignore
                 ),
             )
-            if config.enable_monte_carlo_simulation:
+            if config.enable_monte_carlo_simulation:  # type: ignore
                 stochastic_parachute = StochasticParachute(
                     parachute=parachute_object,
-                    cd_s=parachute.drag_coefficient_times_reference_area_standard_deviation_factor
-                    * parachute.drag_coefficient_times_reference_area,
-                    lag=parachute.opening_lag_seconds_standard_deviation_factor
-                    * parachute.opening_lag_seconds,
+                    cd_s=parachute.drag_coefficient_times_reference_area_standard_deviation_factor  # type: ignore
+                    * parachute.drag_coefficient_times_reference_area,  # type: ignore
+                    lag=parachute.opening_lag_seconds_standard_deviation_factor  # type: ignore
+                    * parachute.opening_lag_seconds,  # type: ignore
                 )
                 self.stochastic_parachutes.append(stochastic_parachute)
                 self.stochastic_rocket.add_parachute(stochastic_parachute)
@@ -329,19 +330,19 @@ class FlightSimulation:
 
             # Actually add the controller function
             airbrake_object, controller = self.rocket.add_air_brakes(
-                drag_coefficient_curve=airbrake.drag_curve_filepath,
+                drag_coefficient_curve=str(airbrake.drag_curve_filepath),
                 controller_function=airbrake_controller_function,
-                sampling_rate=airbrake.sampling_rate_hz,
+                sampling_rate=airbrake.sampling_rate_hz,  # type: ignore
                 clamp=True,
-                name=airbrake.id,
+                name=airbrake.id,  # type: ignore
                 return_controller=True,
             )  # type: ignore
-            if config.enable_monte_carlo_simulation:
+            if config.enable_monte_carlo_simulation:  # type: ignore
                 stochastic_airbrake = StochasticAirBrakes(
                     air_brakes=airbrake_object,
                     drag_coefficient_curve_factor=(
                         1.0,
-                        airbrake.drag_curve_standard_deviation_factor,
+                        airbrake.drag_curve_standard_deviation_factor,  # type: ignore
                     ),
                 )
                 self.stochastic_airbrakes.append(stochastic_airbrake)
@@ -352,7 +353,7 @@ class FlightSimulation:
         )
 
         # Print uncertainties of the stochastic classes
-        if config.enable_monte_carlo_simulation:
+        if config.enable_monte_carlo_simulation:  # type: ignore
             self.stochastic_environment.visualize_attributes()
             self.stochastic_motor.visualize_attributes()
             self.stochastic_rocket.visualize_attributes()
@@ -366,13 +367,13 @@ class FlightSimulation:
         self.flight = Flight(
             rocket=self.rocket,
             environment=self.environment,
-            rail_length=self.config.launch_rail_length,  # rail length in meters
-            inclination=self.config.inclination,  # inclination to ground in degrees
-            heading=self.config.heading,  # launch heading relative to north in degrees
+            rail_length=self.config.rail_length_in_m,  # type: ignore
+            inclination=self.config.inclination,  # type: ignore
+            heading=self.config.heading,  # type: ignore
         )
 
         # Run the monte carlo (stochastic) simulation
-        if self.config.enable_monte_carlo_simulation:
+        if self.config.enable_monte_carlo_simulation:  # type: ignore
             self.stochastic_flight = StochasticFlight(
                 flight=self.flight,
                 inclination=1.0,
@@ -393,11 +394,11 @@ class FlightSimulation:
                 flight=self.stochastic_flight,
             )
             self.monte_carlo_simulation.simulate(
-                number_of_simulations=self.config.number_of_simulations,
+                number_of_simulations=self.config.number_of_simulations,  # type: ignore
                 append=False,
                 include_function_data=False,
-                parallel=self.config.parallel,
-                n_workers=self.config.n_workers,
+                parallel=self.config.parallel,  # type: ignore
+                n_workers=self.config.n_workers,  # type: ignore
             )
         else:
             logging.info(
@@ -475,7 +476,7 @@ class FlightSimulation:
             )
         )
         # NOTE: The energy data plot crashes when an airbrake is configured
-        if len(self.config.airbrake_ids) == 0:
+        if len(self.config.airbrake_ids) == 0:  # type: ignore
             self.flight.plots.energy_data(
                 filename=str(
                     self.output_folder / "plots" / "results" / "energy_data.png"
@@ -516,7 +517,7 @@ class FlightSimulation:
             parachute.clean_pressure_signal_function(
                 filename=str(folder / "noisy_pressure_signal_function.png")
             )
-        if len(self.config.airbrake_ids) > 0:
+        if len(self.config.airbrake_ids) > 0:  # type: ignore
             plot_airbrake_deployment_over_time(
                 self.flight,
                 filepath=self.output_folder
@@ -534,7 +535,7 @@ class FlightSimulation:
         )
         print("TRADITIONAL RESULTS GRAPHICS END")
 
-        if self.config.enable_monte_carlo_simulation:
+        if self.config.enable_monte_carlo_simulation:  # type: ignore
             print("MONTECARLO RESULTS START")
             print(f"number of loaded sims: {self.monte_carlo_simulation}")
             self.monte_carlo_simulation.prints.all()
@@ -561,7 +562,7 @@ class FlightSimulation:
         export_flight_data_to_csv(
             self.flight,
             self.output_folder / "custom_flight_data.csv",
-            self.config.export_flight_data_time_step_seconds,
+            self.config.export_flight_data_time_step_seconds,  # type: ignore
         )
 
         # Export simulated sensor module data to csv
@@ -569,7 +570,7 @@ class FlightSimulation:
             self.flight,
             self.output_folder / "simulated_sensor_module_data.csv",
             self.environment,
-            self.config.export_flight_data_time_step_seconds,
+            self.config.export_flight_data_time_step_seconds,  # type: ignore
         )
 
         # Export trajectory for Google Earth visulization
@@ -580,7 +581,7 @@ class FlightSimulation:
         )
 
         # Export monte carlo ellipses for Google Earth visualization
-        if self.config.enable_monte_carlo_simulation:
+        if self.config.enable_monte_carlo_simulation:  # type: ignore
             self.monte_carlo_simulation.export_ellipses_to_kml(
                 filename=str(
                     self.output_folder

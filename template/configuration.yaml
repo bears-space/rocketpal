@@ -1,42 +1,30 @@
-# Identificator for Simulation/Export
-ID: STARGAZE # ID used for simulation run and export
-# Input Options
-location: Campo Militar de Santa Margarida B # ID for location file at which simulation shall be executed
-weatherConfig: manual-launch-day-weather # ID of weather config file to use
-useWeatherForecastInsteadOfConfig: False
-motor: Cesaroni_6800M3700-P # ID of used motor for simulation
-parachutes: [stargaze-main, stargaze-drogue] # IDs of parachutes to add to rocket
-airbrakes: [stargaze-airbrake] # IDs of airbrakes to add to rocket
-railL: 12 # launch rail length in meter
-inclination: 84 # launch inclination from ground in degree
-heading: 144 # launch heading relative to north in degree
-dragCurvePowerOnFile: None # optional!; name of file with drag curve for rocket with power on
-dragCurvePowerOffFile: None # optional!; name of file with drag curve for rocket with power off
+id: STARGAZE
+location_id: Campo Militar de Santa Margarida B
+weather_config_id: manual-launch-day-weather
+use_weather_forecast_instead_of_config: False
+motor_id: Cesaroni_6800M3700-P
+parachute_ids: [stargaze-main, stargaze-drogue]
+airbrake_ids: [stargaze-airbrake]
+rail_length_in_m: 12
+inclination: 84
+heading: 144
+drag_curve_power_on_file: None
+drag_curve_power_off_file: None
 launch_date_utc: 2025-10-13_08-00-00
-
-# Parts list override settings
 override_parts_list: True
 override_parts_list_mass_without_motor_in_g: 14788
 override_parts_list_center_of_mass_in_m: 1.44
-
-# Rocket settings
 diameter_in_m: 0.1236
 inertia_11: 6.321
 inertia_22: 6.321
 inertia_33: 0.034
-
-# Monte Carlo Parameters
 mass_standard_deviation_factor: 0.05
 center_of_mass_standard_deviation_factor: 0.05
 inertia_standard_deviation_factor: 0.1
 power_off_drag_factor_standard_deviation: 0.1
 power_on_drag_factor_standard_deviation: 0.1
-
-# Monte Carlo Simulation Options
-enable_monte_carlo_simulation: False #True
+enable_monte_carlo_simulation: False
 number_of_simulations: 100
 parallel: True
 n_workers: 8
-
-# Export Options
-exportFlightDataTimeStepSeconds: 0.01
+export_flight_data_time_step_seconds: 0.01

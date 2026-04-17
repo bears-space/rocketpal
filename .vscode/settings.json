@@ -7,7 +7,7 @@
         "**/.pytest_cache": true,
         "**/.mypy_cache": true
     },
-    "python.analysis.typeCheckingMode": "standard",
+    "python.analysis.typeCheckingMode": "basic",
     "python.testing.pytestArgs": [
         "tests"
     ],

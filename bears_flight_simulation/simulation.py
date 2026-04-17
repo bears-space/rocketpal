@@ -6,6 +6,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from socket import gethostname
 
+import yaml
+
 from bears_flight_simulation.core.airbrake_library import AirbrakeLibrary
 from bears_flight_simulation.core.flight_simulation import FlightSimulation
 from bears_flight_simulation.core.location_library import LocationLibrary
@@ -14,7 +16,7 @@ from bears_flight_simulation.core.parachute_library import ParachuteLibrary
 from bears_flight_simulation.core.weather_library import WeatherLibrary
 from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
 from bears_flight_simulation.parsers.fins_config import FinsConfig
-from bears_flight_simulation.parsers.location import Location
+from bears_flight_simulation.parsers.location_config import LocationConfig
 from bears_flight_simulation.parsers.motor_config import MotorConfig
 from bears_flight_simulation.parsers.nose_cone_config import NoseConeConfig
 from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
@@ -100,7 +102,7 @@ def _load_parachutes_from_library(
         else:
             assert isinstance(parachute, ParachuteConfig)
             parachutes.append(parachute)
-            logging.info(f"Loaded ParachuteConfig with id '{parachute.id}'")
+            logging.info(f"Loaded ParachuteConfig with id '{parachute.id}'")  # type: ignore
     return parachutes
 
 
@@ -120,25 +122,26 @@ def _load_airbrakes_from_library(
         else:
             assert isinstance(airbrake, AirbrakeConfig)
             airbrakes.append(airbrake)
-            logging.info(f"Loaded AirbrakeConfig with id '{airbrake.id}'")
+            logging.info(f"Loaded AirbrakeConfig with id '{airbrake.id}'")  # type: ignore
     return airbrakes
 
 
 def _load_config(config_folder: Path) -> SimulationConfig:
     with open(config_folder / CONFIG_FILENAME, "r") as file:
-        config = SimulationConfig(file)
+        data = yaml.safe_load(file)
+        config = SimulationConfig(data)
         logging.info(f"Using Config with id '{config.id}'")
         return config
 
 
 def _load_launch_location_from_library(
     config_folder: Path, location_id: str
-) -> Location | None:
+) -> LocationConfig | None:
     location_library: LocationLibrary = LocationLibrary(
         config_folder / LOCATION_FOLDERNAME
     )
     library_entry = location_library.get(location_id)
-    assert isinstance(library_entry, Location) or library_entry is None
+    assert isinstance(library_entry, LocationConfig) or library_entry is None
     return library_entry
 
 
@@ -153,17 +156,20 @@ def _load_weather_config_from_library(
 
 def _load_rail_button_config(config_folder: Path) -> RailButtonConfig:
     with open(config_folder / RAIL_BUTTONS_FILENAME, "r") as file:
-        return RailButtonConfig(file)
+        data = yaml.safe_load(file)
+        return RailButtonConfig(data)
 
 
 def _load_nose_cone_config(config_folder: Path) -> NoseConeConfig:
     with open(config_folder / NOSE_CONE_FILENAME, "r") as file:
-        return NoseConeConfig(file)
+        data = yaml.safe_load(file)
+        return NoseConeConfig(data)
 
 
 def _load_fins_config(config_folder: Path) -> FinsConfig:
     with open(config_folder / FINS_CONFIG_FILENAME, "r") as file:
-        return FinsConfig(file)
+        data = yaml.safe_load(file)
+        return FinsConfig(data)
 
 
 def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) -> None:

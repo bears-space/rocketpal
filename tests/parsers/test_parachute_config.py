@@ -3,7 +3,7 @@ from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
 
 def test_serialize():
     serialized = {
-        "ID": "example",
+        "id": "example",
         "drag_coefficient_times_reference_area": 3.936710905,
         "drag_coefficient_times_reference_area_standard_deviation_factor": 0.1,
         "ejection_at_apogee": False,
