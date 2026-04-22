@@ -3,6 +3,7 @@ import math
 from pathlib import Path
 
 from rocketpy import AirBrakes, Environment, Flight, MonteCarlo, Rocket, SolidMotor
+from rocketpy.simulation.flight_data_exporter import FlightDataExporter
 from rocketpy.stochastic import (
     StochasticAirBrakes,
     StochasticEnvironment,
@@ -556,7 +557,10 @@ class FlightSimulation:
         self.output_folder.mkdir(parents=True, exist_ok=True)
 
         # Export raw flight data
-        self.flight.export_data(str(self.output_folder / "raw_flight_data.csv"))
+        flight_data_exporter = FlightDataExporter(self.flight)
+        flight_data_exporter.export_data(
+            str(self.output_folder / "raw_flight_data.csv")
+        )
 
         # Export flight data to csv
         export_flight_data_to_csv(
@@ -574,7 +578,7 @@ class FlightSimulation:
         )
 
         # Export trajectory for Google Earth visulization
-        self.flight.export_kml(
+        flight_data_exporter.export_kml(
             file_name=str(self.output_folder / "trajectory.kml"),
             extrude=True,
             altitude_mode="relative_to_ground",
