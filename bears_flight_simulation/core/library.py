@@ -26,7 +26,7 @@ class Library(ABC):
             with open(self.library_folder / filename) as file:
                 data = yaml.safe_load(file)
                 entry = self.load_entry(data)
-                self.entries[entry.id] = entry
+                self.entries[entry.id] = entry  # type: ignore
 
     @abstractmethod
     def load_entry(self, data: dict) -> LibraryEntry:
@@ -41,5 +41,5 @@ class Library(ABC):
 
     def save(self) -> None:
         for id, entry in self.entries.items():
-            with open(self.library_folder / id / ".yaml", "w") as file:
+            with open(self.library_folder / (id + ".yaml"), "w") as file:
                 file.write(yaml.dump(entry.serialize()))
