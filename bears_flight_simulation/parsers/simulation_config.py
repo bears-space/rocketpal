@@ -94,8 +94,8 @@ class SimulationConfig(LibraryEntry):
                 "weather_config_id": "manual-launch-day-weather",
                 "use_weather_forecast_instead_of_config": False,
                 "motor_id": "Cesaroni_6800M3700-P",
-                "parachutes": ["stargaze-main", "stargaze-drogue"],
-                "airbrakes": ["stargaze-airbrake"],
+                "parachute_ids": ["stargaze-main", "stargaze-drogue"],
+                "airbrake_ids": ["stargaze-airbrake"],
                 "rail_length_in_m": 12,
                 "inclination": 84,
                 "heading": 144,
@@ -118,6 +118,6 @@ class SimulationConfig(LibraryEntry):
                 "number_of_simulations": 100,
                 "parallel": True,
                 "n_workers": 8,
-                "exportFlightDataTimeStepSeconds": 0.01,
+                "export_flight_data_time_step_seconds": 0.01,
             }
         )
