@@ -193,7 +193,7 @@ def estimate_apogee_via_propagation(
             / mass_burnout
         )
 
-        elevation_angle_radians = math.atan(vz / v_horizontal)
+        elevation_angle_radians = math.atan2(vz, v_horizontal)
 
         a_horizontal = -a_drag * math.cos(elevation_angle_radians)
         v_horizontal += a_horizontal * time_step_seconds
