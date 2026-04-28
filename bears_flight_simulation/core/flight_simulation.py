@@ -411,6 +411,11 @@ class FlightSimulation:
         assert self.motor is not None
         assert self.rocket is not None
 
+        plots_dir = self.output_folder / "plots"
+        rocket_plots_dir = plots_dir / "rocket"
+        plots_dir.mkdir(parents=True, exist_ok=True)
+        rocket_plots_dir.mkdir(parents=True, exist_ok=True)
+
         # Print environment info
         print("ENVIRONMENT INFO START")
         self.environment.prints.all()
@@ -437,6 +442,11 @@ class FlightSimulation:
 
     def show_results(self) -> None:
         assert self.flight is not None
+
+        results_dir = self.output_folder / "plots" / "results"
+        parachutes_dir = results_dir / "parachutes"
+        results_dir.mkdir(parents=True, exist_ok=True)
+        parachutes_dir.mkdir(parents=True, exist_ok=True)
 
         # Print simulation results
         print("TRADITIONAL RESULTS INFO START")
@@ -506,9 +516,8 @@ class FlightSimulation:
         )
         for parachute in self.flight.rocket.parachutes:
             assert parachute.name is not None and parachute.name != ""
-            folder = (
-                self.output_folder / "plots" / "results" / "parachutes" / parachute.name
-            )
+            folder = parachutes_dir / parachute.name
+            folder.mkdir(parents=True, exist_ok=True)
             parachute.noise_signal_function(
                 filename=str(folder / "noise_signal_function.png")
             )
