@@ -516,7 +516,7 @@ class FlightSimulation:
                 filename=str(folder / "noisy_pressure_signal_function.png")
             )
             parachute.clean_pressure_signal_function(
-                filename=str(folder / "noisy_pressure_signal_function.png")
+                filename=str(folder / "clean_pressure_signal_function.png")
             )
         if len(self.config.airbrake_ids) > 0:  # type: ignore
             plot_airbrake_deployment_over_time(
