@@ -242,7 +242,9 @@ def parse_parts_list(parts_list_csv_file: t.TextIO) -> list[Part]:
 
         mass: float
         if row[7] == "":
-            f"parse_parts_list: {ci_number_and_norm} has empty mass, defaulting to 0.0!"
+            logging.warning(
+                f"parse_parts_list: {ci_number_and_norm} has empty mass, defaulting to 0.0!"
+            )
             mass = 0.0
         else:
             mass = float(row[7])
