@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# Copyright (C) 2023-2026  BEARS e.V. and contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 import logging
 import os
 from pathlib import Path

@@ -1,3 +1,7 @@
+# Copyright (C) 2023-2026  BEARS e.V. and contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+
 class Config:
     def __init__(self, data: dict) -> None:
         self.extend_field_links([])
