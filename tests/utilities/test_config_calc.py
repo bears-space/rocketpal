@@ -3,8 +3,8 @@
 
 import pytest
 
-from bears_flight_simulation.parsers.parts_list_parser import Part
-from bears_flight_simulation.utilities.config_calc import rocket_center_of_mass
+from rocketpal.parsers.parts_list_parser import Part
+from rocketpal.utilities.config_calc import rocket_center_of_mass
 
 
 def test_rocket_center_of_mass__empty():

@@ -1,7 +1,7 @@
 # Copyright (C) 2023-2026  BEARS e.V. and contributors
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-from bears_flight_simulation.parsers.parachute_config import ParachuteConfig
+from rocketpal.parsers.parachute_config import ParachuteConfig
 
 
 def test_serialize():

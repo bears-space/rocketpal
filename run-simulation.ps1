@@ -8,4 +8,4 @@ if (-not (Test-Path $outputDir)) {
 }
 
 # Run simulation and redirect output to ./output/log.txt
-uv run python -m bears_flight_simulation sim .\template --output $outputDir 2>&1 | Tee-Object -FilePath (Join-Path $outputDir "log.txt")
+uv run python -m rocketpal sim .\template --output $outputDir 2>&1 | Tee-Object -FilePath (Join-Path $outputDir "log.txt")

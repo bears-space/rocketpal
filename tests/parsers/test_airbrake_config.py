@@ -3,7 +3,7 @@
 
 from pathlib import Path
 
-from bears_flight_simulation.parsers.airbrake_config import AirbrakeConfig
+from rocketpal.parsers.airbrake_config import AirbrakeConfig
 
 
 def test_serialize():

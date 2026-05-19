@@ -1,8 +1,8 @@
-# bears-flight-simulation
+# RocketPal
 
-[![pre-commit](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pre-commit.yaml)
-[![pytest](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pytest.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/pytest.yaml)
-[![Ruff](https://github.com/bears-space/bears-flight-simulation/actions/workflows/ruff.yaml/badge.svg)](https://github.com/bears-space/bears-flight-simulation/actions/workflows/ruff.yaml)
+[![pre-commit](https://github.com/bears-space/rocketpal/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/bears-space/rocketpal/actions/workflows/pre-commit.yaml)
+[![pytest](https://github.com/bears-space/rocketpal/actions/workflows/pytest.yaml/badge.svg)](https://github.com/bears-space/rocketpal/actions/workflows/pytest.yaml)
+[![Ruff](https://github.com/bears-space/rocketpal/actions/workflows/ruff.yaml/badge.svg)](https://github.com/bears-space/rocketpal/actions/workflows/ruff.yaml)
 
 This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight simulation for BEARS rockets, built by [BEARS (Berlin Experimental Astronautics Research Student Team e.V.)](https://www.bears-space.de/).
 
@@ -65,15 +65,15 @@ The package contains two commands: The simulation (`sim`) and the GUI (`gui`).
 You can run the simulation from a terminal as follows:
 
 ```sh
-uv run python -m bears_flight_simulation sim ./input --output ./output
+uv run python -m rocketpal sim ./input --output ./output
 ```
 
 To see the available command line parameters, run one of the following (depending on what info you need):
 
 ```sh
-uv run python -m bears_flight_simulation --help
-uv run python -m bears_flight_simulation sim --help
-uv run python -m bears_flight_simulation gui --help
+uv run python -m rocketpal --help
+uv run python -m rocketpal sim --help
+uv run python -m rocketpal gui --help
 ```
 
 ### Run unit tests

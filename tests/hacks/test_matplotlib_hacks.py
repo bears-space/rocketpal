@@ -5,7 +5,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 
-from bears_flight_simulation.hacks.matplotlib_hacks import (
+from rocketpal.hacks.matplotlib_hacks import (
     get_matplotlib_supported_file_endings,
     hack_override_matplotlib_show,
     hack_override_matplotlib_show_reset,

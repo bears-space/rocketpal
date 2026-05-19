@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 [project]
-name = "bears-flight-simulation"
+name = "rocketpal"
 version = "0.1.0"
-description = "RocketPy-based flight simulation for BEARS rockets"
+description = "Flight simulation framework based on RocketPy"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

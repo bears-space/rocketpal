@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from rocketpy import AirBrakes, Environment, Rocket
 
-from bears_flight_simulation.utilities.airbrake_controllers import (
+from rocketpal.utilities.airbrake_controllers import (
     State,
     stupid_full_extension_controller,
 )
