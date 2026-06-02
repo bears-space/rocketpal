@@ -15,6 +15,9 @@
 - Avoid launching subagents for simple tasks that can be completed directly.
 - Keep responses concise and implementation-oriented unless detailed explanations are explicitly requested.
 
+## Git Commit Attribution
+- When AI assistance is used for a commit, include an `assisted-by:` trailer tag in the commit message.
+
 ## Architecture
 - Main package: `rocketpal/`.
 - CLI entrypoint is in `rocketpal/__main__.py` and exposes `sim` and `gui` commands.
