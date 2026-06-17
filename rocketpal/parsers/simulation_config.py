@@ -89,19 +89,18 @@ class SimulationConfig(LibraryEntry):
 
     @classmethod
     def new_default(cls, id: str) -> LibraryEntry:
-        # TODO think of some sensible defaults
         return SimulationConfig(
             {
                 "id": id,
-                "location_id": "Campo Militar de Santa Margarida B",
+                "location_id": "Ernst-Reuter-Platz",
                 "weather_config_id": "manual-launch-day-weather",
                 "use_weather_forecast_instead_of_config": False,
                 "motor_id": "Cesaroni_6800M3700-P",
-                "parachute_ids": ["stargaze-main", "stargaze-drogue"],
-                "airbrake_ids": ["stargaze-airbrake"],
+                "parachute_ids": ["demo-main", "demo-drogue"],
+                "airbrake_ids": [""],
                 "rail_length_in_m": 12,
                 "inclination": 84,
-                "heading": 144,
+                "heading": 133,
                 "drag_curve_power_on_file": None,
                 "drag_curve_power_off_file": None,
                 "launch_date_utc": "2025-10-13_08-00-00",
@@ -118,7 +117,7 @@ class SimulationConfig(LibraryEntry):
                 "power_off_drag_factor_standard_deviation": 0.1,
                 "power_on_drag_factor_standard_deviation": 0.1,
                 "enable_monte_carlo_simulation": False,
-                "number_of_simulations": 100,
+                "number_of_simulations": 10,
                 "parallel": True,
                 "n_workers": 8,
                 "export_flight_data_time_step_seconds": 0.01,
