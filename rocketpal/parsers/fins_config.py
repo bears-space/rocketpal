@@ -3,8 +3,6 @@
 
 import typing as t
 
-import yaml
-
 from rocketpal.core.library_entry import LibraryEntry
 
 
