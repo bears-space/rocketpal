@@ -4,7 +4,7 @@
 from rocketpal.core.library_entry import LibraryEntry
 
 
-class NoseConeConfig(LibraryEntry):
+class NoseconeConfig(LibraryEntry):
     power_if_using_powerseries_kind: float | None
     base_radius: float | None
 
@@ -13,6 +13,8 @@ class NoseConeConfig(LibraryEntry):
             [
                 ("kind", str),
                 ("bluffness", float),
+                ("length", float),
+                ("position", float),
             ]
         )
         super().__init__(data)
@@ -25,11 +27,13 @@ class NoseConeConfig(LibraryEntry):
 
     @classmethod
     def new_default(cls, id: str) -> LibraryEntry:
-        return NoseConeConfig(
+        return NoseconeConfig(
             {
                 "id": id,
                 "kind": "ogive",
                 "bluffness": 0.1618,
+                "length": 0.3,
+                "position": 0.0,
                 "power_if_using_powerseries_kind": None,
                 "base_radius": None,
             }

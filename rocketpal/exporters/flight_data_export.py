@@ -66,30 +66,30 @@ def export_flight_data_to_csv(
             row.append(t)
 
             # position x/y/z
-            row.append(flight.x.get_value(t))
-            row.append(flight.y.get_value(t))
-            row.append(flight.z.get_value(t))
+            row.append(flight.x.get_value(t))  # type: ignore
+            row.append(flight.y.get_value(t))  # type: ignore
+            row.append(flight.z.get_value(t))  # type: ignore
 
             # velocity x/y/z
-            row.append(flight.vx.get_value(t))
-            row.append(flight.vy.get_value(t))
-            row.append(flight.vz.get_value(t))
+            row.append(flight.vx.get_value(t))  # type: ignore
+            row.append(flight.vy.get_value(t))  # type: ignore
+            row.append(flight.vz.get_value(t))  # type: ignore
 
             # angular_velocity x/y/z
-            row.append(flight.w1.get_value(t))
-            row.append(flight.w2.get_value(t))
-            row.append(flight.w3.get_value(t))
+            row.append(flight.w1.get_value(t))  # type: ignore
+            row.append(flight.w2.get_value(t))  # type: ignore
+            row.append(flight.w3.get_value(t))  # type: ignore
 
             # acceleration x/y/z
-            row.append(flight.ax.get_value(t))
-            row.append(flight.ay.get_value(t))
-            row.append(flight.az.get_value(t))
+            row.append(flight.ax.get_value(t))  # type: ignore
+            row.append(flight.ay.get_value(t))  # type: ignore
+            row.append(flight.az.get_value(t))  # type: ignore
 
             # acceleration
-            row.append(flight.acceleration.get_value(t))
+            row.append(flight.acceleration.get_value(t))  # type: ignore
 
             # pressure
-            row.append(flight.pressure.get_value(t))
+            row.append(flight.pressure.get_value(t))  # type: ignore
 
             writer.writerow(row)
 
@@ -155,30 +155,30 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
             row.append(t)
 
             # gps_longitude, gps_latitude, gps_altitude, gps_time
-            row.append(flight.longitude.get_value(t))
-            row.append(flight.latitude.get_value(t))
-            row.append(flight.altitude.get_value(t))
+            row.append(flight.longitude.get_value(t))  # type: ignore
+            row.append(flight.latitude.get_value(t))  # type: ignore
+            row.append(flight.altitude.get_value(t))  # type: ignore
             row.append("placeholder")
 
             # temperature
             row.append(21.0)
 
             # pressure
-            row.append(flight.pressure.get_value(t))
+            row.append(flight.pressure.get_value(t))  # type: ignore
 
-            # low_g_accel_x, low_g_accel_y, low_g_accel_z
-            g_in_ms2 = environment.gravity(0)  # at 0 m above sea
+            # low_g_accel_x, low_g_accel_y, low_g_accel_z at 0m above sea level
+            g_in_ms2 = float(environment.gravity(0))  # type: ignore
             (
                 converted_acceleration_x,
                 converted_acceleration_y,
                 converted_acceleration_z,
             ) = _convert_acceleration_from_ground_reference_frame_to_rocket_reference_frame(
-                flight.ax.get_value(t),
-                flight.ay.get_value(t),
-                flight.az.get_value(t),
-                flight.phi.get_value(t),
-                flight.theta.get_value(t),
-                flight.psi.get_value(t),
+                flight.ax.get_value(t),  # type: ignore
+                flight.ay.get_value(t),  # type: ignore
+                flight.az.get_value(t),  # type: ignore
+                flight.phi.get_value(t),  # type: ignore
+                flight.theta.get_value(t),  # type: ignore
+                flight.psi.get_value(t),  # type: ignore
             )
             row.append(
                 _clamp_acceleration_to_multiple_of_g(
@@ -197,9 +197,9 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
             )
 
             # angular_velocity x/y/z
-            row.append(flight.w1.get_value(t))
-            row.append(flight.w2.get_value(t))
-            row.append(flight.w3.get_value(t))
+            row.append(flight.w1.get_value(t))  # type: ignore
+            row.append(flight.w2.get_value(t))  # type: ignore
+            row.append(flight.w3.get_value(t))  # type: ignore
 
             # high_g_accel_x, high_g_accel_y, high_g_accel_z
             row.append(converted_acceleration_x)

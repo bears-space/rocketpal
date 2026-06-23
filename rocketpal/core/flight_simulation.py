@@ -16,6 +16,7 @@ from rocketpy.stochastic import (
     StochasticSolidMotor,
 )
 
+from rocketpal.core.part import Part
 from rocketpal.exporters.airbrake_export import (
     plot_airbrake_deployment_over_time,
 )
@@ -32,22 +33,12 @@ from rocketpal.parsers.airbrake_config import AirbrakeConfig
 from rocketpal.parsers.fins_config import FinsConfig
 from rocketpal.parsers.location_config import LocationConfig
 from rocketpal.parsers.motor_config import MotorConfig
-from rocketpal.parsers.nose_cone_config import NoseConeConfig
+from rocketpal.parsers.nosecone_config import NoseconeConfig
 from rocketpal.parsers.parachute_config import ParachuteConfig
-from rocketpal.parsers.parts_list_parser import (
-    Part,
-    get_motor_position,
-    get_nosecone_tip_position_plus_length,
-    get_nosecone_total_length,
-)
 from rocketpal.parsers.rail_button_config import RailButtonConfig
 from rocketpal.parsers.simulation_config import SimulationConfig
 from rocketpal.parsers.weather_config import WeatherConfig
-from rocketpal.utilities.config_calc import rocket_center_of_mass
-from rocketpal.utilities.rocket_calculations import (
-    calculate_rocket_mass_in_kg,
-    calculate_rocket_mass_without_motor_in_kg,
-)
+from rocketpal.utilities.config_calc import calculate_center_of_mass
 
 
 def wind_speed_and_direction_to_east_and_north(
@@ -90,12 +81,11 @@ class FlightSimulation:
         parachutes: list[ParachuteConfig],
         airbrakes: list[AirbrakeConfig],
         rail_button_config: RailButtonConfig,
-        nose_cone_config: NoseConeConfig,
+        nosecone_config: NoseconeConfig,
         power_off_drag_curve_file_path: Path,
         power_on_drag_curve_file_path: Path,
         fins_config: FinsConfig,
         launch_location: LocationConfig,
-        parts: list[Part],
         weather_config: WeatherConfig,
     ) -> None:
         # Store configs / folders
@@ -176,30 +166,23 @@ class FlightSimulation:
         # Create rocket
         rocket_mass_without_motor: float
         center_of_mass_without_motor: float
-        if config.override_parts_list:  # type: ignore
-            rocket_mass_without_motor = (
-                config.override_parts_list_mass_without_motor_in_g / 1000.0  # type: ignore
-            )
-            center_of_mass_without_motor = (
-                config.override_parts_list_center_of_mass_in_m  # type: ignore
-            )
-            logging.info(
-                f"FlightSimulation: USING PARTS LIST OVERRIDE with mass_without_motor={rocket_mass_without_motor}kg and center_of_mass_without_motor={center_of_mass_without_motor}m"
-            )
-        else:
-            rocket_mass_without_motor = calculate_rocket_mass_without_motor_in_kg(parts)
-            center_of_mass_without_motor = rocket_center_of_mass(parts)[2] / 1000.0
-        logging.info(
-            f"FlightSimulation: calculated rocket mass (without motor) is {rocket_mass_without_motor}kg"
+        rocket_mass_without_motor = (
+            config.mass_without_motor_in_g / 1000.0  # type: ignore
+        )
+        center_of_mass_without_motor = (
+            config.center_of_mass_in_m  # type: ignore
         )
         logging.info(
-            f"FlightSimulation: calculated rocket mass (without motor + motor drymass) is {rocket_mass_without_motor + motor_config.dry_mass}kg"  # type: ignore
+            f"FlightSimulation: configured to use mass_without_motor={rocket_mass_without_motor}kg and center_of_mass_without_motor={center_of_mass_without_motor}m"
         )
         logging.info(
-            f"FlightSimulation: calculated rocket mass (without motor + motor drymass + motor propmass) is {rocket_mass_without_motor + motor_config.dry_mass + motor_config.prop_mass}kg"  # type: ignore
+            f"FlightSimulation: rocket mass (without motor) is {rocket_mass_without_motor}kg"
         )
         logging.info(
-            f"FlightSimulation: calculated rocket mass (complete parts list) is {calculate_rocket_mass_in_kg(parts)}kg"
+            f"FlightSimulation: rocket mass (without motor + motor drymass) is {rocket_mass_without_motor + motor_config.dry_mass}kg"  # type: ignore
+        )
+        logging.info(
+            f"FlightSimulation: rocket mass (without motor + motor drymass + motor propmass) is {rocket_mass_without_motor + motor_config.dry_mass + motor_config.prop_mass}kg"  # type: ignore
         )
         self.rocket = Rocket(
             radius=config.diameter_in_m / 2.0,  # type: ignore
@@ -237,14 +220,21 @@ class FlightSimulation:
                 ),
             )
         logging.info(
-            f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {rocket_center_of_mass(parts)}"
+            f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {center_of_mass_without_motor}"
         )
-        logging.info(
-            f"FlightSimulation: ROCKET COM WITH MOTOR is {rocket_center_of_mass(parts, ignore_motor=False)}"
+        center_of_mass = calculate_center_of_mass(
+            parts=[
+                Part(
+                    name="rocket_without_motor",
+                    mass=rocket_mass_without_motor,
+                    center_of_mass=center_of_mass_without_motor,
+                )
+            ]
         )
+        logging.info(f"FlightSimulation: ROCKET COM WITH MOTOR is {center_of_mass}")
 
         # Add motor to rocket
-        self.rocket.add_motor(self.motor, position=get_motor_position(parts) / 1000.0)
+        self.rocket.add_motor(self.motor, position=self.config.motor_position)  # type: ignore
         if config.enable_monte_carlo_simulation:  # type: ignore
             self.stochastic_rocket.add_motor(self.stochastic_motor)
 
@@ -256,20 +246,20 @@ class FlightSimulation:
         )
 
         # Add aerodynamic components
-        nosecone_length = get_nosecone_total_length(parts) / 1000.0
+        nosecone_length = nosecone_config.length  # type: ignore
         nosecone_tip_upper_limit_position = (
-            get_nosecone_tip_position_plus_length(parts) / 1000.0
+            nosecone_config.position + nosecone_length  # type: ignore
         )
         logging.info(
             f"FlightSimulation: Configured nosecone with length={nosecone_length}m, upper_position_limit={nosecone_tip_upper_limit_position}m based on parts list"
         )
         self.rocket.add_nose(
             length=nosecone_length,
-            kind=nose_cone_config.kind,  # type: ignore
+            kind=nosecone_config.kind,  # type: ignore
             position=nosecone_tip_upper_limit_position,
-            bluffness=nose_cone_config.bluffness,  # type: ignore
-            power=nose_cone_config.power_if_using_powerseries_kind,
-            base_radius=nose_cone_config.base_radius,
+            bluffness=nosecone_config.bluffness,  # type: ignore
+            power=nosecone_config.power_if_using_powerseries_kind,
+            base_radius=nosecone_config.base_radius,
         )
         self.rocket.add_trapezoidal_fins(
             n=fins_config.n,  # type: ignore

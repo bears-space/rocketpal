@@ -21,9 +21,8 @@ from rocketpal.parsers.airbrake_config import AirbrakeConfig
 from rocketpal.parsers.fins_config import FinsConfig
 from rocketpal.parsers.location_config import LocationConfig
 from rocketpal.parsers.motor_config import MotorConfig
-from rocketpal.parsers.nose_cone_config import NoseConeConfig
+from rocketpal.parsers.nosecone_config import NoseconeConfig
 from rocketpal.parsers.parachute_config import ParachuteConfig
-from rocketpal.parsers.parts_list_parser import Part, parse_parts_list
 from rocketpal.parsers.rail_button_config import RailButtonConfig
 from rocketpal.parsers.simulation_config import SimulationConfig
 from rocketpal.parsers.weather_config import WeatherConfig
@@ -35,7 +34,6 @@ NOSE_CONE_FILENAME = "nose_cone.yaml"
 POWER_OFF_DRAG_CURVE_FILENAME = "power_off_drag_curve.csv"
 POWER_ON_DRAG_CURVE_FILENAME = "power_on_drag_curve.csv"
 FINS_CONFIG_FILENAME = "fins.yaml"
-PARTS_LIST_FILENAME = "parts_list.csv"
 LOCATION_FOLDERNAME = "locations"
 WEATHER_FOLDERNAME = "weathers"
 PARACHUTE_FOLDERNAME = "parachutes"
@@ -51,7 +49,6 @@ def _ensure_config_files_exist(config_folder: Path) -> bool:
         POWER_OFF_DRAG_CURVE_FILENAME,
         POWER_ON_DRAG_CURVE_FILENAME,
         FINS_CONFIG_FILENAME,
-        PARTS_LIST_FILENAME,
     ]:
         file_path = config_folder / filename
         if not os.path.isfile(file_path):
@@ -163,10 +160,10 @@ def _load_rail_button_config(config_folder: Path) -> RailButtonConfig:
         return RailButtonConfig(data)
 
 
-def _load_nose_cone_config(config_folder: Path) -> NoseConeConfig:
+def _load_nose_cone_config(config_folder: Path) -> NoseconeConfig:
     with open(config_folder / NOSE_CONE_FILENAME, "r") as file:
         data = yaml.safe_load(file)
-        return NoseConeConfig(data)
+        return NoseconeConfig(data)
 
 
 def _load_fins_config(config_folder: Path) -> FinsConfig:
@@ -232,38 +229,29 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
 
     fins_config = _load_fins_config(config_folder)
 
-    # Parse parts list
-    parts_list: list[Part]
-    with open(config_folder / PARTS_LIST_FILENAME, "r") as file:
-        parts_list = parse_parts_list(file)
+    # Initialize flight simulation
+    sim: FlightSimulation = FlightSimulation(
+        config=config,
+        output_folder=output_folder,
+        motor_file_path=config_folder / MOTOR_FOLDERNAME / motor_config.engine_filename,  # type: ignore
+        motor_config=motor_config,
+        parachutes=parachutes,
+        airbrakes=airbrakes,
+        rail_button_config=rail_button_config,
+        nosecone_config=nose_cone_config,
+        power_off_drag_curve_file_path=config_folder / POWER_OFF_DRAG_CURVE_FILENAME,
+        power_on_drag_curve_file_path=config_folder / POWER_ON_DRAG_CURVE_FILENAME,
+        fins_config=fins_config,
+        launch_location=launch_location,
+        weather_config=weather_config,
+    )
 
-        # Initialize flight simulation
-        sim: FlightSimulation = FlightSimulation(
-            config=config,
-            output_folder=output_folder,
-            motor_file_path=config_folder
-            / MOTOR_FOLDERNAME
-            / motor_config.engine_filename,  # type: ignore
-            motor_config=motor_config,
-            parachutes=parachutes,
-            airbrakes=airbrakes,
-            rail_button_config=rail_button_config,
-            nose_cone_config=nose_cone_config,
-            power_off_drag_curve_file_path=config_folder
-            / POWER_OFF_DRAG_CURVE_FILENAME,
-            power_on_drag_curve_file_path=config_folder / POWER_ON_DRAG_CURVE_FILENAME,
-            fins_config=fins_config,
-            launch_location=launch_location,
-            parts=parts_list,
-            weather_config=weather_config,
-        )
+    # Show infos about configured flight
+    sim.show_input_info()
 
-        # Show infos about configured flight
-        sim.show_input_info()
+    # Run simulation
+    sim.simulate()
 
-        # Run simulation
-        sim.simulate()
-
-        # Show and save results
-        sim.show_results()
-        sim.export_results()
+    # Show and save results
+    sim.show_results()
+    sim.export_results()

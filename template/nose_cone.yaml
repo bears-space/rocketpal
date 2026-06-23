@@ -1,5 +1,7 @@
 id: default
 kind: ogive
 bluffness: 0.1618
+length: 0.3
+position: 2.5
 power_if_using_powerseries_kind: null
 base_radius: null

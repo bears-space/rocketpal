@@ -3,13 +3,7 @@
 
 import numpy as np
 
-from rocketpal.parsers.parts_list_parser import (
-    Part,
-    get_part_center_of_mass,
-    is_segment_based_on_hierarchy,
-    part_is_in_motor_group,
-    part_is_motor,
-)
+from rocketpal.core.part import Part
 
 
 def grainDensity(
@@ -90,10 +84,22 @@ def rocket_cog(
     return (rocketCOG[0], rocketCOG[1], rocketCOG[2])
 
 
-def rocket_center_of_mass(
+def calculate_center_of_mass(
     parts: list[Part],
-    ignore_motor: bool = True,
 ) -> tuple[float, float, float]:
+    """Calculate the center of mass of a list of parts
+
+    Parameters
+    ----------
+    parts : list[Part]
+        List of parts
+
+    Returns
+    -------
+    tuple[float, float, float]
+        The center of mass of the parts in the format (x, y, z)
+    """
+
     # Return early if parts is empty
     if len(parts) == 0:
         return (0.0, 0.0, 0.0)
@@ -101,16 +107,6 @@ def rocket_center_of_mass(
     center_of_mass = np.array([0.0, 0.0, 0.0])
     mass_total = 0.0
     for part in parts:
-        # Ignore motor
-        if ignore_motor and (
-            part_is_motor(part) or part_is_in_motor_group(part, parts)
-        ):
-            continue
-
-        # Ignore groups
-        if is_segment_based_on_hierarchy(part.hierarchy):
-            continue
-
         mass_total += part.mass
         center_of_mass[0] += (
             part.mass
@@ -122,7 +118,12 @@ def rocket_center_of_mass(
             * part.radial_distance_to_midline
             * np.sin(np.deg2rad(part.radial_direction))
         )
-        center_of_mass[2] += part.mass * get_part_center_of_mass(part, parts)
+        center_of_mass[2] += part.mass * part.center_of_mass
+
+    # Return early if total mass is zero to avoid division by zero
+    if mass_total == 0:
+        return (0.0, 0.0, 0.0)
+
     center_of_mass /= mass_total
     return (center_of_mass[0], center_of_mass[1], center_of_mass[2])
 
