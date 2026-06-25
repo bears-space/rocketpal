@@ -12,4 +12,4 @@ if (-not (Test-Path $OutputDir)) {
 }
 
 # Run simulation and redirect output to ./output/log.txt
-uv run python -m rocketpal sim $ConfigDir --output $OutputDir 2>&1 | Tee-Object -FilePath (Join-Path $OutputDir "log.txt")
+uv run -m rocketpal sim $ConfigDir --output $OutputDir

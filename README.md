@@ -65,15 +65,15 @@ The package contains two commands: The simulation (`sim`) and the GUI (`gui`).
 You can run the simulation from a terminal as follows:
 
 ```sh
-uv run python -m rocketpal sim ./input --output ./output
+uv run -m rocketpal sim ./input --output ./output
 ```
 
 To see the available command line parameters, run one of the following (depending on what info you need):
 
 ```sh
-uv run python -m rocketpal --help
-uv run python -m rocketpal sim --help
-uv run python -m rocketpal gui --help
+uv run -m rocketpal --help
+uv run -m rocketpal sim --help
+uv run -m rocketpal gui --help
 ```
 
 ### Run unit tests
@@ -81,7 +81,7 @@ uv run python -m rocketpal gui --help
 To run the provided unit tests, run this command from within the project root:
 
 ```sh
-uv run python -m pytest
+uv run -m pytest
 ```
 
 ### Configuration

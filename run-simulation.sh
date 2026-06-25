@@ -9,5 +9,5 @@ outputDir="${2:-./output}"
 # Ensure the output folder exists
 mkdir -p "$outputDir"
 
-# Run simulation and redirect terminal output to ./output/log.txt
-uv run python -m rocketpal sim "$configDir" --output "$outputDir" 2>&1 | tee "$outputDir/log.txt"
+# Run simulation
+uv run -m rocketpal sim "$configDir" --output "$outputDir"

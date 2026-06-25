@@ -4,7 +4,6 @@
 
 # type: ignore
 
-import logging
 import sys
 
 from PySide6 import QtGui, QtWidgets
@@ -29,8 +28,4 @@ def start_and_hand_over_to_simulation_gui():
 
 
 if __name__ == "__main__":
-    # Set default logging level
-    logging.basicConfig()
-    logging.getLogger().setLevel(logging.INFO)
-
     start_and_hand_over_to_simulation_gui()

@@ -3,8 +3,10 @@
 # Copyright (C) 2023-2026  BEARS e.V. and contributors
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+import atexit
 import logging
 import os
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from socket import gethostname
@@ -172,7 +174,89 @@ def _load_fins_config(config_folder: Path) -> FinsConfig:
         return FinsConfig(data)
 
 
+def configure_logging_to_disk(logfile_path: Path):
+    """Configure all terminal output to be logged to disk in addition to the console.
+
+    Parameters
+    ----------
+    logfile_path : Path
+        The path to the log file.
+    """
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+
+    # Clear existing handlers
+    for h in list(root.handlers):
+        root.removeHandler(h)
+
+    fmt = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
+
+    # Console handler
+    sh = logging.StreamHandler(sys.stdout)
+    sh.setFormatter(fmt)
+    root.addHandler(sh)
+
+    # File handler
+    fh = logging.FileHandler(logfile_path, encoding="utf-8")
+    fh.setFormatter(fmt)
+    root.addHandler(fh)
+
+    # Also mirror stdout/stderr to the same logfile (to emulate `tee` behavior)
+    logfile = open(logfile_path, "w", encoding="utf-8")
+
+    class _Tee:
+        def __init__(self, orig, file):
+            self.orig = orig
+            self.file = file
+
+        def write(self, data):
+            try:
+                self.orig.write(data)
+            except Exception:
+                pass
+            try:
+                self.file.write(data)
+            except Exception:
+                pass
+
+        def flush(self):
+            try:
+                self.orig.flush()
+            except Exception:
+                pass
+            try:
+                self.file.flush()
+            except Exception:
+                pass
+
+        def isatty(self):
+            return getattr(self.orig, "isatty", lambda: False)()
+
+    stdout_orig = sys.stdout
+    stderr_orig = sys.stderr
+    sys.stdout = _Tee(stdout_orig, logfile)
+    sys.stderr = _Tee(stderr_orig, logfile)
+
+    def _restore():
+        try:
+            sys.stdout = stdout_orig
+            sys.stderr = stderr_orig
+        finally:
+            try:
+                logfile.close()
+            except Exception:
+                pass
+
+    atexit.register(_restore)
+
+
 def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) -> None:
+    # Ensure output folder exists
+    output_folder.mkdir(parents=True, exist_ok=True)
+
+    logfile_path = output_folder / "log.txt"
+    configure_logging_to_disk(logfile_path)
+
     # Log current time and hostname for later reference
     logging.info(
         f"Running on {gethostname()} at {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} (UTC)"

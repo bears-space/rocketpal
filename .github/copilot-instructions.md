@@ -1,8 +1,8 @@
 # RocketPal Guidelines
 
 ## Build and Test
-- Install and update dependencies with `uv sync` from the repository root.
-- Run tests with `uv run python -m pytest`.
+- Install and update dependencies with `uv sync --dev` from the repository root.
+- Run tests with `uv run -m pytest`.
 - Run lint and formatting checks with `pre-commit run --all-files`.
 - Run the CLI simulation with `uv run python -m rocketpal sim ./input --output ./output`.
 - Run the GUI with `uv run python -m rocketpal gui`.
@@ -41,6 +41,7 @@
 - RocketPy plotting behavior is patched via `rocketpal/hacks/matplotlib_hacks.py`; preserve this flow when changing plotting or export behavior.
 - Simulation startup requires a strict configuration folder layout enforced by `_ensure_config_files_exist` in `rocketpal/simulation.py`.
 - Motor files are expected in `.eng` (RASP) format.
+- The simulation writes `log.txt` from the Python CLI; keep `run-simulation.sh` and `run-simulation.ps1` as thin wrappers.
 
 ## References
 - Setup, usage, and operational workflows: `README.md`.

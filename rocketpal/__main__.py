@@ -38,10 +38,6 @@ def cli():
 )
 def sim(config_folder, output):
     """Run RocketPal using the given config_folder."""
-    # Set default logging level
-    logging.basicConfig()
-    logging.getLogger().setLevel(logging.INFO)
-
     load_configs_and_run_simulation(config_folder, output)
 
 
