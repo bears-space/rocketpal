@@ -197,13 +197,12 @@ def configure_logging_to_disk(logfile_path: Path):
     root.addHandler(sh)
 
     # File handler
-    fh = logging.FileHandler(logfile_path, encoding="utf-8")
+    logfile = open(logfile_path, "w", encoding="utf-8", buffering=1)
+    fh = logging.StreamHandler(logfile)
     fh.setFormatter(fmt)
     root.addHandler(fh)
 
     # Also mirror stdout/stderr to the same logfile (to emulate `tee` behavior)
-    logfile = open(logfile_path, "w", encoding="utf-8")
-
     class _Tee:
         def __init__(self, orig, file):
             self.orig = orig
@@ -216,8 +215,10 @@ def configure_logging_to_disk(logfile_path: Path):
                 pass
             try:
                 self.file.write(data)
+                self.file.flush()
             except Exception:
                 pass
+            return len(data)
 
         def flush(self):
             try:
