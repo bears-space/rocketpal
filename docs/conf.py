@@ -1,12 +1,14 @@
+# Copyright (C) 2023-2026  BEARS e.V. and contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 from __future__ import annotations
 
-from datetime import date
 import os
 import subprocess
-from pathlib import Path
-import tomllib
 import sys
-
+import tomllib
+from datetime import date
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -33,7 +35,7 @@ def _read_commit_hash() -> str:
             capture_output=True,
             text=True,
         )
-    except (FileNotFoundError, subprocess.CalledProcessError):
+    except FileNotFoundError, subprocess.CalledProcessError:
         return "unknown"
 
     return result.stdout.strip() or "unknown"
