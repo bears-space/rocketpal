@@ -87,7 +87,7 @@ uv run -m pytest
 
 ### API documentation
 
-The generated API documentation is published to GitHub Pages after each push to `main`.
+The generated API documentation is published to the `gh-pages` branch after each push to `main`.
 You can find it at <https://bears-space.de/rocketpal/>.
 
 ### Configuration
