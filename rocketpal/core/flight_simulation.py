@@ -220,16 +220,25 @@ class FlightSimulation:
                 ),
             )
         logging.info(
-            f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {center_of_mass_without_motor}"
+            f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {(0.0, 0.0, float(center_of_mass_without_motor))}"
         )
-        center_of_mass = calculate_center_of_mass(
-            parts=[
-                Part(
-                    name="rocket_without_motor",
-                    mass=rocket_mass_without_motor,
-                    center_of_mass=center_of_mass_without_motor,
-                )
-            ]
+        center_of_mass = tuple(
+            float(component)
+            for component in calculate_center_of_mass(
+                parts=[
+                    Part(
+                        name="rocket_without_motor",
+                        mass=rocket_mass_without_motor,
+                        center_of_mass=center_of_mass_without_motor,
+                    ),
+                    Part(
+                        name="motor",
+                        mass=motor_config.dry_mass + motor_config.prop_mass,  # type: ignore
+                        center_of_mass=self.config.motor_position  # type: ignore
+                        + motor_config.center_of_dry_mass_position,  # type: ignore
+                    ),
+                ]
+            )
         )
         logging.info(f"FlightSimulation: ROCKET COM WITH MOTOR is {center_of_mass}")
 
