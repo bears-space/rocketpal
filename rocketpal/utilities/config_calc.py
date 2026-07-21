@@ -138,25 +138,10 @@ def inertia_component(
     mass: float,
 ):
     """
-    For calculation of inertia of rocket, this function needs to be used for inertia for the corresponding component.
-    Then all the resulting inertias need to be summed up to get the inertia of the rocket!
+    Calculate the inertia tensor contribution of one rocket component.
 
-    refPoint: tuple or list of center of dry mass of rocket in m
-              (x-axis in direction of radial direction = 0°; y-axis perpendicular;
-              z-axis is rocket's rotational axis)
-    aftEndComp: distance of aft end of component to reference point of refPoint definition
-                (z component of position)
-    radialDis: radial distance to rocket's rotational axis in m
-    radialDir: radial direction in degree (=0°: direction of x-axis of reference point)
-    diam: diameter of component in m
-    len: length/height of component in m
-    mass: components mass in kg
-
-    inertia: tuple of inertia tensor of rocket without motor in kg*m^2
-             (this is recommended to be measured by RocketPy developers)
-             FORMAT: (I_11,I_22,I_33,I_12,I_13,I_23)
-
-    It is assummed that I_12=I_13=I_23=0 for the component with local coordinate system (full cylindrical(uniform density and not hollow)).
+    The returned values are the six unique elements of the inertia tensor in
+    the order ``(I_11, I_22, I_33, I_12, I_13, I_23)``.
     """
     radius = diam / 2
     # calculating cylindrical inertia w.r.t. local center of mass (assumend uniform density)

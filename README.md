@@ -84,6 +84,11 @@ To run the provided unit tests, run this command from within the project root:
 uv run -m pytest
 ```
 
+### API documentation
+
+The generated API documentation is published to GitHub Pages after each push to `main`.
+You can find it at <https://bears-space.de/rocketpal/>.
+
 ### Configuration
 
 A file for the motor has to be provided in `.eng` format. On at least one website offering compatible files, this format has been referred to as "RASP" format. It is documented here: <https://www.thrustcurve.org/info/raspformat.html>

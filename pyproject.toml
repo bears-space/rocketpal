@@ -21,3 +21,7 @@ dev = [
     "pre-commit>=4.5.1",
     "pytest>=9.0.2",
 ]
+docs = [
+    "furo>=2024.8.6",
+    "sphinx>=8.1.3",
+]
