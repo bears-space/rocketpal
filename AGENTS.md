@@ -4,8 +4,8 @@
 - Install and update dependencies with `uv sync --dev` from the repository root.
 - Run tests with `uv run -m pytest`.
 - Run lint and formatting checks with `pre-commit run --all-files`.
-- Run the CLI simulation with `uv run python -m rocketpal sim ./input --output ./output`.
-- Run the GUI with `uv run python -m rocketpal gui`.
+- Run the CLI simulation with `uv run -m rocketpal sim ./template --output ./output`.
+- Run the GUI with `uv run -m rocketpal gui`.
 
 ## Resource Efficiency
 - Prefer targeted file reads and searches over full-repo scans unless a task explicitly requires broad discovery.
