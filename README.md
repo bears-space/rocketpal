@@ -3,6 +3,7 @@
 [![pre-commit](https://github.com/bears-space/rocketpal/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/bears-space/rocketpal/actions/workflows/pre-commit.yaml)
 [![pytest](https://github.com/bears-space/rocketpal/actions/workflows/pytest.yaml/badge.svg)](https://github.com/bears-space/rocketpal/actions/workflows/pytest.yaml)
 [![Ruff](https://github.com/bears-space/rocketpal/actions/workflows/ruff.yaml/badge.svg)](https://github.com/bears-space/rocketpal/actions/workflows/ruff.yaml)
+[![docs](https://github.com/bears-space/rocketpal/actions/workflows/docs.yaml/badge.svg)](https://github.com/bears-space/rocketpal/actions/workflows/docs.yaml)
 
 This is the [RocketPy](https://github.com/RocketPy-Team/RocketPy/)-based flight simulation for BEARS rockets, built by [BEARS (Berlin Experimental Astronautics Research Student Team e.V.)](https://www.bears-space.de/).
 
