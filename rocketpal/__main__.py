@@ -10,7 +10,6 @@ from pathlib import Path
 import click
 
 from rocketpal.simulation import load_configs_and_run_simulation
-from rocketpal.simulation_gui import start_and_hand_over_to_simulation_gui
 
 
 def dir_path(path_to_dir: str) -> str:
@@ -47,6 +46,9 @@ def gui():
     # Set default logging level
     logging.basicConfig()
     logging.getLogger().setLevel(logging.INFO)
+
+    # Import GUI module only when GUI command is invoked
+    from rocketpal.simulation_gui import start_and_hand_over_to_simulation_gui
 
     start_and_hand_over_to_simulation_gui()
 
