@@ -1,0 +1,7 @@
+rocketpal.parsers.fins\_config module
+=====================================
+
+.. automodule:: rocketpal.parsers.fins_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

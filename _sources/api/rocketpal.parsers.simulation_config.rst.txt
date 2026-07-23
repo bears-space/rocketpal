@@ -1,0 +1,7 @@
+rocketpal.parsers.simulation\_config module
+===========================================
+
+.. automodule:: rocketpal.parsers.simulation_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+rocketpal.gui.location\_library\_editor\_widget module
+======================================================
+
+.. automodule:: rocketpal.gui.location_library_editor_widget
+   :members:
+   :show-inheritance:
+   :undoc-members:

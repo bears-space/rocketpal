@@ -1,0 +1,7 @@
+rocketpal.parsers.weather\_config module
+========================================
+
+.. automodule:: rocketpal.parsers.weather_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

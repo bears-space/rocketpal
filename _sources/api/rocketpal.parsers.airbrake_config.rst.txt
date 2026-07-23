@@ -1,0 +1,7 @@
+rocketpal.parsers.airbrake\_config module
+=========================================
+
+.. automodule:: rocketpal.parsers.airbrake_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

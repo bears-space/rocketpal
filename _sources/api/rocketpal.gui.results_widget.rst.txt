@@ -1,0 +1,7 @@
+rocketpal.gui.results\_widget module
+====================================
+
+.. automodule:: rocketpal.gui.results_widget
+   :members:
+   :show-inheritance:
+   :undoc-members:

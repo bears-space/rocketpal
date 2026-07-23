@@ -1,0 +1,7 @@
+rocketpal.exporters.airbrake\_export module
+===========================================
+
+.. automodule:: rocketpal.exporters.airbrake_export
+   :members:
+   :show-inheritance:
+   :undoc-members:
