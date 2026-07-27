@@ -225,10 +225,12 @@ def stargaze_airbrake_controller(
     TARGET_APOGEE = float(env.elevation) + 3000.0
     TIME_FOR_FULL_EXTENSION = 0.8  # in seconds
 
-    launched = any([state.z > 0.0 for state in state_history])
-    above_1500m = state_now.z >= float(env.elevation) + 1500.0
-    above_2500m = state_now.z >= float(env.elevation) + 2500.0
-    apogee_reached = any([state.z > state_now.z for state in state_history])
+    start_elevation = state_now.z  # ground elevation of the launch site
+
+    launched = any(state.z > start_elevation for state in state_history)
+    above_1500m = state_now.z >= float(env.elevation) + 1500.0 + start_elevation
+    above_2500m = state_now.z >= float(env.elevation) + 2500.0 + start_elevation
+    apogee_reached = any(state.z > state_now.z for state in state_history)
 
     # Decide on the airbrake deployment level to select
     selected_deployment: float
