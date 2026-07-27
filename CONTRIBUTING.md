@@ -19,3 +19,8 @@ Before contributing to the project, please read and acknowledge the community [C
 - Make sure your code passes all unit tests (`uv run python -m pytest`).
 - Make sure you have applied all pending pre-commit changes (`pre-commit run`).
 - Please add yourself to the `AUTHORS` file. Ideally, your git contribution email (`git config user.email`) should match what you add to the file.
+
+## AI usage
+
+- If you use AI assistance (or any LLMs in general) for your contribution, please add an `assisted-by` tag to your commit. This recommendation is based on <https://docs.kernel.org/process/coding-assistants.html#attribution>.
+- **You (the author) are responsible for the code you commit, whether AI-generated or not.** It is therefore your responsibility to validate and clean any AI output. Don't blindly trust what is generated, or you *will* break things, make a mess of the codebase, and make the project unmaintainable.
