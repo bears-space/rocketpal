@@ -4,9 +4,10 @@
 import logging
 import math
 import sys
+from functools import partial
 from pathlib import Path
 
-from rocketpy import AirBrakes, Environment, Flight, MonteCarlo, Rocket, SolidMotor
+from rocketpy import Environment, Flight, MonteCarlo, Rocket, SolidMotor
 from rocketpy.simulation.flight_data_exporter import FlightDataExporter
 from rocketpy.stochastic import (
     StochasticAirBrakes,
@@ -315,25 +316,11 @@ class FlightSimulation:
         self.stochastic_airbrakes = []
         for airbrake in airbrakes:
             # Create an airbrake controller function where the environment is pre-filled
-            def airbrake_controller_function(
-                time: float,
-                sampling_rate: float,
-                state_raw: list,
-                state_history_raw: list,
-                observed_variables: list,
-                air_brakes: AirBrakes,
-                airbrake_config: AirbrakeConfig = airbrake,
-            ):
-                return airbrake_config.controller_function(
-                    self.environment,
-                    self.rocket,
-                    time,
-                    sampling_rate,
-                    state_raw,
-                    state_history_raw,
-                    observed_variables,
-                    air_brakes,
-                )
+            airbrake_controller_function = partial(
+                airbrake.controller_function,
+                self.environment,
+                self.rocket,
+            )
 
             # Actually add the controller function
             airbrake_object, controller = self.rocket.add_air_brakes(
