@@ -7,7 +7,7 @@ import os
 import subprocess
 import sys
 import tomllib
-from datetime import date
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -43,7 +43,7 @@ def _read_commit_hash() -> str:
 
 project = "RocketPal"
 author = "BEARS e.V. and contributors"
-copyright = f"2023-{date.today().year}, BEARS e.V. and contributors"
+copyright = f"2023-{datetime.now(tz=UTC).year}, BEARS e.V. and contributors"
 version = _read_project_version()
 release = version
 commit_hash = _read_commit_hash()

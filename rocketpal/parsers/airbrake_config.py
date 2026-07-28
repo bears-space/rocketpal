@@ -43,7 +43,7 @@ class AirbrakeConfig(LibraryEntry):
         self.drag_curve_filepath = airbrake_folder / str(data["drag_curve_file"])
 
     @classmethod
-    def new_default(cls, id: str) -> "AirbrakeConfig":
+    def new_default(cls, id: str) -> AirbrakeConfig:
         return AirbrakeConfig(
             {
                 "id": id,

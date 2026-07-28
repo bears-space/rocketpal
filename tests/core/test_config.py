@@ -1,6 +1,8 @@
 # Copyright (C) 2023-2026  BEARS e.V. and contributors
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+from typing import ClassVar
+
 from rocketpal.core.config import Config
 
 
@@ -11,7 +13,7 @@ def test_init__empty():
 
 def test_init__one_field():
     class OneFieldConfig(Config):
-        field_links = [("field1", int)]
+        field_links: ClassVar = [("field1", int)]
 
     config = OneFieldConfig({"field1": "42"})
     assert config.__dict__.get("field1") == 42
@@ -19,7 +21,7 @@ def test_init__one_field():
 
 def test_init__multiple_fields():
     class MultipleFieldsConfig(Config):
-        field_links = [
+        field_links: ClassVar = [
             ("field1", int),
             ("field2", float),
             ("field3", str),
@@ -33,7 +35,7 @@ def test_init__multiple_fields():
 
 def test_serialize__multiple_fields():
     class MultipleFieldsConfig(Config):
-        field_links = [
+        field_links: ClassVar = [
             ("field1", int),
             ("field2", float),
             ("field3", str),

@@ -16,7 +16,7 @@ matplotlib_show_original = plt.show
 
 def test_get_matplotlib_supported_file_endings():
     result = get_matplotlib_supported_file_endings()
-    for filetype in plt.gcf().canvas.get_supported_filetypes().keys():
+    for filetype in plt.gcf().canvas.get_supported_filetypes():
         assert f".{filetype}" in result
 
 

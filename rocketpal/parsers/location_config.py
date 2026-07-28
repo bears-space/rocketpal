@@ -16,7 +16,7 @@ class LocationConfig(LibraryEntry):
         super().__init__(data)
 
     @classmethod
-    def new_default(cls, id: str) -> "LocationConfig":
+    def new_default(cls, id: str) -> LocationConfig:
         return LocationConfig(
             {
                 "id": id,
