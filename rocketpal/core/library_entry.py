@@ -13,5 +13,5 @@ class LibraryEntry(ABC, Config):
 
     @classmethod
     @abstractmethod
-    def new_default(cls, id: str) -> "LibraryEntry":
+    def new_default(cls, id: str) -> LibraryEntry:
         raise NotImplementedError

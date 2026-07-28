@@ -1,15 +1,13 @@
 # Copyright (C) 2023-2026  BEARS e.V. and contributors
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-import typing as t
-
 from rocketpal.core.library_entry import LibraryEntry
 
 
 class FinsConfig(LibraryEntry):
-    sweep_length: t.Union[float, None]
-    sweep_angle: t.Union[float, None]
-    radius: t.Union[float, None]
+    sweep_length: float | None
+    sweep_angle: float | None
+    radius: float | None
 
     def __init__(self, data: dict) -> None:
         self.extend_field_links(

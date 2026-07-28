@@ -9,7 +9,7 @@ from PySide6.QtWidgets import QWidget
 
 class CloseableWindowWidget(QWidget):
     close_pressed = Signal(t.Any)  # type: ignore
-    _children_to_close: list["CloseableWindowWidget"]
+    _children_to_close: list[CloseableWindowWidget]
 
     def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
@@ -26,7 +26,7 @@ class CloseableWindowWidget(QWidget):
         # Close this window
         event.accept()
 
-    def add_child_to_close(self, child: "CloseableWindowWidget"):
+    def add_child_to_close(self, child: CloseableWindowWidget):
         self._children_to_close.append(child)
         child.close_pressed.connect(self._child_close_pressed)
         self.setDisabled(True)

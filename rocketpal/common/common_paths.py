@@ -24,7 +24,7 @@ def _get_config_folders(base_folder: Path) -> set[Path]:
     # Create the specified base config folder if it doesn't exist yet
     base_folder.mkdir(parents=True, exist_ok=True)
 
-    return set(Path(entry) for entry in os.listdir(base_folder))
+    return {Path(entry) for entry in os.listdir(base_folder)}
 
 
 def get_simulation_entries() -> set[Path]:

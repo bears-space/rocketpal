@@ -4,10 +4,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 import atexit
+import contextlib
 import logging
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from socket import gethostname
 
@@ -28,6 +29,8 @@ from rocketpal.parsers.parachute_config import ParachuteConfig
 from rocketpal.parsers.rail_button_config import RailButtonConfig
 from rocketpal.parsers.simulation_config import SimulationConfig
 from rocketpal.parsers.weather_config import WeatherConfig
+
+logger = logging.getLogger(__name__)
 
 CONFIG_FILENAME = "configuration.yaml"
 MOTOR_FOLDERNAME = "motors"
@@ -54,7 +57,7 @@ def _ensure_config_files_exist(config_folder: Path) -> bool:
     ]:
         file_path = config_folder / filename
         if not os.path.isfile(file_path):
-            logging.error(
+            logger.error(
                 "Missing file '"
                 + str(filename)
                 + "' in specified config folder! Aborting ..."
@@ -71,7 +74,7 @@ def _ensure_config_files_exist(config_folder: Path) -> bool:
     ]:
         file_path = config_folder / foldername
         if not os.path.isdir(file_path):
-            logging.error(
+            logger.error(
                 "Missing folder '"
                 + str(foldername)
                 + "' in specified config folder! Aborting ..."
@@ -98,13 +101,13 @@ def _load_parachutes_from_library(
     for id in parachute_ids:
         parachute = parachute_library.get(id)
         if parachute is None:
-            logging.warning(
+            logger.warning(
                 f"The parachute with the id '{id}' does not exist in the parachute library. Skipping ..."
             )
         else:
             assert isinstance(parachute, ParachuteConfig)
             parachutes.append(parachute)
-            logging.info(f"Loaded ParachuteConfig with id '{parachute.id}'")  # type: ignore
+            logger.info(f"Loaded ParachuteConfig with id '{parachute.id}'")  # type: ignore
     return parachutes
 
 
@@ -118,13 +121,13 @@ def _load_airbrakes_from_library(
     for id in airbrake_ids:
         airbrake = airbrake_library.get(id)
         if airbrake is None:
-            logging.warning(
+            logger.warning(
                 f"The airbrake with the id '{id}' does not exist in the airbrake library. Skipping ..."
             )
         else:
             assert isinstance(airbrake, AirbrakeConfig)
             airbrakes.append(airbrake)
-            logging.info(f"Loaded AirbrakeConfig with id '{airbrake.id}'")  # type: ignore
+            logger.info(f"Loaded AirbrakeConfig with id '{airbrake.id}'")  # type: ignore
     return airbrakes
 
 
@@ -132,7 +135,7 @@ def _load_config(config_folder: Path) -> SimulationConfig:
     with open(config_folder / CONFIG_FILENAME, "r") as file:
         data = yaml.safe_load(file)
         config = SimulationConfig(data)
-        logging.info(f"Using Config with id '{config.id}'")  # type: ignore
+        logger.info(f"Using Config with id '{config.id}'")  # type: ignore
         return config
 
 
@@ -182,25 +185,28 @@ def configure_logging_to_disk(logfile_path: Path):
     logfile_path : Path
         The path to the log file.
     """
-    root = logging.getLogger()
-    root.setLevel(logging.INFO)
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
 
     # Clear existing handlers
-    for h in list(root.handlers):
-        root.removeHandler(h)
+    for h in list(root_logger.handlers):
+        root_logger.removeHandler(h)
 
     fmt = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
 
     # Console handler
     sh = logging.StreamHandler(sys.stdout)
     sh.setFormatter(fmt)
-    root.addHandler(sh)
+    root_logger.addHandler(sh)
 
     # File handler
-    logfile = open(logfile_path, "w", encoding="utf-8", buffering=1)
+    exit_stack = contextlib.ExitStack()
+    logfile = exit_stack.enter_context(
+        logfile_path.open("w", encoding="utf-8", buffering=1)
+    )
     fh = logging.StreamHandler(logfile)
     fh.setFormatter(fmt)
-    root.addHandler(fh)
+    root_logger.addHandler(fh)
 
     # Also mirror stdout/stderr to the same logfile (to emulate `tee` behavior)
     class _Tee:
@@ -209,26 +215,18 @@ def configure_logging_to_disk(logfile_path: Path):
             self.file = file
 
         def write(self, data):
-            try:
+            with contextlib.suppress(Exception):
                 self.orig.write(data)
-            except Exception:
-                pass
-            try:
+            with contextlib.suppress(Exception):
                 self.file.write(data)
                 self.file.flush()
-            except Exception:
-                pass
             return len(data)
 
         def flush(self):
-            try:
+            with contextlib.suppress(Exception):
                 self.orig.flush()
-            except Exception:
-                pass
-            try:
+            with contextlib.suppress(Exception):
                 self.file.flush()
-            except Exception:
-                pass
 
         def isatty(self):
             return getattr(self.orig, "isatty", lambda: False)()
@@ -243,10 +241,7 @@ def configure_logging_to_disk(logfile_path: Path):
             sys.stdout = stdout_orig
             sys.stderr = stderr_orig
         finally:
-            try:
-                logfile.close()
-            except Exception:
-                pass
+            exit_stack.close()
 
     atexit.register(_restore)
 
@@ -259,12 +254,12 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
     configure_logging_to_disk(logfile_path)
 
     # Log current time and hostname for later reference
-    logging.info(
-        f"Running on {gethostname()} at {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} (UTC)"
+    logger.info(
+        f"Running on {gethostname()} at {datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S')} (UTC)"
     )
 
     if not _ensure_config_files_exist(config_folder):
-        exit(2)  # 2 means "No such file or directory"
+        sys.exit(2)  # 2 means "No such file or directory"
 
     config = _load_config(config_folder)
 
@@ -273,36 +268,36 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
         config.location_id,  # type: ignore
     )
     if launch_location is None:
-        logging.error(
+        logger.error(
             f"The location with the id '{config.location_id}'"  # type: ignore
             f" does not exist in the location library. Aborting ..."
         )
-        exit(2)  # 2 means "No such file or directory"
+        sys.exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(f"Using Location with id '{launch_location.id}'")  # type: ignore
+        logger.info(f"Using Location with id '{launch_location.id}'")  # type: ignore
 
     weather_config = _load_weather_config_from_library(
         config_folder,
         config.weather_config_id,  # type: ignore
     )
     if weather_config is None:
-        logging.error(
+        logger.error(
             f"The weather config with the id '{config.weather_config_id}'"  # type: ignore
             f" does not exist in the weather config library. Aborting ..."
         )
-        exit(2)  # 2 means "No such file or directory"
+        sys.exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(f"Using WeatherConfig with id '{weather_config.id}'")  # type: ignore
+        logger.info(f"Using WeatherConfig with id '{weather_config.id}'")  # type: ignore
 
     motor_config = _load_motor_from_library(config_folder, config.motor_id)  # type: ignore
     if motor_config is None:
-        logging.error(
+        logger.error(
             f"The motor config with the id '{config.motor_id}'"  # type: ignore
             f" does not exist in the motor config library. Aborting ..."
         )
-        exit(2)  # 2 means "No such file or directory"
+        sys.exit(2)  # 2 means "No such file or directory"
     else:
-        logging.info(f"Using MotorConfig with id '{motor_config.id}'")  # type: ignore
+        logger.info(f"Using MotorConfig with id '{motor_config.id}'")  # type: ignore
 
     parachutes = _load_parachutes_from_library(config_folder, config.parachute_ids)  # type: ignore
 

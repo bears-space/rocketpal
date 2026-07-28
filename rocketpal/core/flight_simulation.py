@@ -3,6 +3,7 @@
 
 import logging
 import math
+import sys
 from pathlib import Path
 
 from rocketpy import AirBrakes, Environment, Flight, MonteCarlo, Rocket, SolidMotor
@@ -39,6 +40,8 @@ from rocketpal.parsers.rail_button_config import RailButtonConfig
 from rocketpal.parsers.simulation_config import SimulationConfig
 from rocketpal.parsers.weather_config import WeatherConfig
 from rocketpal.utilities.config_calc import calculate_center_of_mass
+
+logger = logging.getLogger(__name__)
 
 
 def wind_speed_and_direction_to_east_and_north(
@@ -102,10 +105,10 @@ class FlightSimulation:
         if config.use_weather_forecast_instead_of_config:  # type: ignore
             self.environment.set_atmospheric_model(type="Forecast", file="GFS")
             if config.enable_monte_carlo_simulation:  # type: ignore
-                logging.error(
+                logger.error(
                     "FlightSimulation: MonteCarlo simulation is not supported when using weather forecasts! Quitting..."
                 )
-                exit(1)
+                sys.exit(1)
             # self.environment.set_atmospheric_model(type="Ensemble", file="GEFS")
             # self.environment.select_ensemble_member(3)
             # self.stochastic_environment = StochasticEnvironment(
@@ -172,16 +175,16 @@ class FlightSimulation:
         center_of_mass_without_motor = (
             config.center_of_mass_in_m  # type: ignore
         )
-        logging.info(
+        logger.info(
             f"FlightSimulation: configured to use mass_without_motor={rocket_mass_without_motor}kg and center_of_mass_without_motor={center_of_mass_without_motor}m"
         )
-        logging.info(
+        logger.info(
             f"FlightSimulation: rocket mass (without motor) is {rocket_mass_without_motor}kg"
         )
-        logging.info(
+        logger.info(
             f"FlightSimulation: rocket mass (without motor + motor drymass) is {rocket_mass_without_motor + motor_config.dry_mass}kg"  # type: ignore
         )
-        logging.info(
+        logger.info(
             f"FlightSimulation: rocket mass (without motor + motor drymass + motor propmass) is {rocket_mass_without_motor + motor_config.dry_mass + motor_config.prop_mass}kg"  # type: ignore
         )
         self.rocket = Rocket(
@@ -219,7 +222,7 @@ class FlightSimulation:
                     self.config.power_on_drag_factor_standard_deviation,  # type: ignore
                 ),
             )
-        logging.info(
+        logger.info(
             f"FlightSimulation: ROCKET COM WITHOUT MOTOR is {(0.0, 0.0, float(center_of_mass_without_motor))}"
         )
         center_of_mass = tuple(
@@ -240,7 +243,7 @@ class FlightSimulation:
                 ]
             )
         )
-        logging.info(f"FlightSimulation: ROCKET COM WITH MOTOR is {center_of_mass}")
+        logger.info(f"FlightSimulation: ROCKET COM WITH MOTOR is {center_of_mass}")
 
         # Add motor to rocket
         self.rocket.add_motor(self.motor, position=self.config.motor_position)  # type: ignore
@@ -259,7 +262,7 @@ class FlightSimulation:
         nosecone_tip_upper_limit_position = (
             nosecone_config.position + nosecone_length  # type: ignore
         )
-        logging.info(
+        logger.info(
             f"FlightSimulation: Configured nosecone with length={nosecone_length}m, upper_position_limit={nosecone_tip_upper_limit_position}m based on parts list"
         )
         self.rocket.add_nose(
@@ -319,8 +322,9 @@ class FlightSimulation:
                 state_history_raw: list,
                 observed_variables: list,
                 air_brakes: AirBrakes,
+                airbrake_config: AirbrakeConfig = airbrake,
             ):
-                return airbrake.controller_function(
+                return airbrake_config.controller_function(
                     self.environment,
                     self.rocket,
                     time,
@@ -351,7 +355,7 @@ class FlightSimulation:
                 self.stochastic_airbrakes.append(stochastic_airbrake)
                 self.stochastic_rocket.add_air_brakes(stochastic_airbrake, controller)
 
-        logging.info(
+        logger.info(
             f"FlightSimulation: calculated rocket mass (rocket.evaluate_dry_mass) is {self.rocket.evaluate_dry_mass()}kg"
         )
 
@@ -404,7 +408,7 @@ class FlightSimulation:
                 n_workers=self.config.n_workers,  # type: ignore
             )
         else:
-            logging.info(
+            logger.info(
                 "FlightSimulation: Monte Carlo simulation is disabled, skipping ..."
             )
 

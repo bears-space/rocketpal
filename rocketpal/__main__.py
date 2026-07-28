@@ -44,8 +44,7 @@ def sim(config_folder, output):
 def gui():
     """Run the RocketPal GUI."""
     # Set default logging level
-    logging.basicConfig()
-    logging.getLogger().setLevel(logging.INFO)
+    logging.basicConfig(level=logging.INFO)
 
     # Import GUI module only when GUI command is invoked
     from rocketpal.simulation_gui import start_and_hand_over_to_simulation_gui

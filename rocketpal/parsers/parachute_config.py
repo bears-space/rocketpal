@@ -35,7 +35,7 @@ class ParachuteConfig(LibraryEntry):
             )
 
     @classmethod
-    def new_default(cls, id: str) -> "ParachuteConfig":
+    def new_default(cls, id: str) -> ParachuteConfig:
         return ParachuteConfig(
             {
                 "id": id,

@@ -8,6 +8,7 @@ from rocketpy import AirBrakes, Environment, Rocket
 
 GRAVITY_CONSTANT = 9.80665  # in m/s²
 PRINT_AIRBRAKE_STATUS = False
+logger = logging.getLogger(__name__)
 
 
 class State:
@@ -165,7 +166,7 @@ def estimate_apogee_via_propagation(
     while True:
         z += vz * time_step_seconds
 
-        density = env.density(z)
+        density = float(env.density(z))  # type: ignore
         adjusted_state = State(
             [
                 state_now.x,
@@ -237,7 +238,7 @@ def stargaze_airbrake_controller(
     if not launched or not above_1500m or apogee_reached:
         selected_deployment = 0.0
         if PRINT_AIRBRAKE_STATUS:
-            logging.info(f"AIRBRAKE: t={time}, z={state_now.z}")
+            logger.info(f"AIRBRAKE: t={time}, z={state_now.z}")
     else:
         if above_2500m:
             selected_deployment = 1.0
@@ -251,7 +252,7 @@ def stargaze_airbrake_controller(
                 time_step_seconds=1.0 / sampling_rate,
             )
             if PRINT_AIRBRAKE_STATUS:
-                logging.info(
+                logger.info(
                     f"AIRBRAKE: t={time}, z={state_now.z}, vz={state_now.v_z}, apogee_estimation={apogee_estimation}, deployment={air_brakes.deployment_level}"
                 )
 

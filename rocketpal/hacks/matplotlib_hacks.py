@@ -8,6 +8,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 SAVEFIG_DPI = 300
+logger = logging.getLogger(__name__)
 
 matplotlib_show_original = plt.show
 matplotlib_redirect_counter = 0
@@ -56,7 +57,7 @@ def hack_override_matplotlib_show(filename: str | None = None) -> None:
         # Warn if file ending is not supported
         file_ending = Path(filename).suffix
         if file_ending not in get_matplotlib_supported_file_endings():
-            logging.warning(
+            logger.warning(
                 f"Unsupported file ending '{file_ending}' for matplotlib show to save redirection!"
             )
 

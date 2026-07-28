@@ -1,7 +1,7 @@
 # Copyright (C) 2023-2026  BEARS e.V. and contributors
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from rocketpal.core.library_entry import LibraryEntry
 
@@ -82,7 +82,7 @@ class SimulationConfig(LibraryEntry):
 
         self.launch_date = datetime.strptime(
             str(data["launch_date_utc"]), "%Y-%m-%d_%H-%M-%S"
-        )
+        ).replace(tzinfo=UTC)
 
     @classmethod
     def new_default(cls, id: str) -> LibraryEntry:
@@ -92,7 +92,7 @@ class SimulationConfig(LibraryEntry):
                 "location_id": "Ernst-Reuter-Platz",
                 "weather_config_id": "manual-launch-day-weather",
                 "use_weather_forecast_instead_of_config": False,
-                "motor_id": "Cesaroni_6800M3700-P",  #
+                "motor_id": "Cesaroni_6800M3700-P",
                 "motor_position": 0.0225,
                 "parachute_ids": ["demo-main", "demo-drogue"],
                 "airbrake_ids": [""],
