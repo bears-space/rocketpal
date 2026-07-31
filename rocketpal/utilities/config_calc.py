@@ -9,8 +9,7 @@ from rocketpal.core.part import Part
 def grainDensity(
     propWeight: float, grain_num: int, grain_h: float, grain_or: float, grain_ir: float
 ) -> float:
-    """
-    Calculates the density of the grain based on its dimensions and propellant weight.
+    """Calculates the density of the grain based on its dimensions and propellant weight.
 
     Parameters
     ----------
@@ -40,8 +39,7 @@ def grainDensity(
 
 
 def grainCom(grain_num: int, grain_h: float, grain_sep: float) -> float:
-    """
-    Calculates the center of mass of the grains in the motor.
+    """Calculates the center of mass of the grains in the motor.
 
     Parameters
     ----------
@@ -75,9 +73,7 @@ def rocket_cog(
     len_comps: list[float],
     mass_comps: list[float],
 ) -> tuple[float, float, float]:
-    """
-    Calculates the center of gravity of the rocket in reference to the aft end of the rocket.
-    Depending on the chosen coordinate system, this position must be shifted.
+    """Calculates the center of gravity of the rocket in reference to the aft end of the rocket. Depending on the chosen coordinate system, this position must be shifted.
 
     Parameters
     ----------
@@ -167,8 +163,7 @@ def inertia_component(
     len: float,
     mass: float,
 ) -> tuple[float, float, float, float, float, float]:
-    """
-    Calculate the inertia tensor contribution of one rocket component.
+    """Calculate the inertia tensor contribution of one rocket component.
 
     Parameters
     ----------

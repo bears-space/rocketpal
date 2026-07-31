@@ -48,6 +48,20 @@ logger = logging.getLogger(__name__)
 def wind_speed_and_direction_to_east_and_north(
     wind_speed: float, wind_direction: float
 ) -> tuple[float, float]:
+    """Converts RocketPy-style wind speed and direction to east and north components.
+
+    Parameters
+    ----------
+    wind_speed : float
+        The wind speed.
+    wind_direction : float
+        The wind direction in degrees.
+
+    Returns
+    -------
+    tuple[float, float]
+        The east and north components of the wind speed.
+    """
     # Convert from RocketPy direction convention to east-north-positive convention
     wind_direction = (-wind_direction) - 90.0
 
@@ -357,6 +371,9 @@ class FlightSimulation:
                 stochastic_airbrake.visualize_attributes()
 
     def simulate(self) -> None:
+        """
+        Simulates the flight of the rocket.
+        """
         # Run the simulation
         self.flight = Flight(
             rocket=self.rocket,
@@ -400,6 +417,9 @@ class FlightSimulation:
             )
 
     def show_input_info(self) -> None:
+        """
+        Outputs information and plots about the input parameters of the simulation, including environment, motor, and rocket details.
+        """
         assert self.environment is not None
         assert self.motor is not None
         assert self.rocket is not None
@@ -434,6 +454,9 @@ class FlightSimulation:
         )
 
     def show_results(self) -> None:
+        """
+        Outputs information and plots about the results of the simulation, including flight data, trajectory, and other relevant metrics.
+        """
         assert self.flight is not None
 
         results_dir = self.output_folder / "plots" / "results"
@@ -553,6 +576,7 @@ class FlightSimulation:
             print("MONTECARLO RESULTS END")
 
     def export_results(self) -> None:
+        """Exports the results of the simulation to CSV and KML files for further analysis and visualization."""
         assert self.flight is not None
 
         # Before export, ensure output folder exists

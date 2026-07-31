@@ -9,11 +9,25 @@ class Config:
             self.__setattr__(field_name, field_type(data[field_name]))
 
     def serialize(self) -> dict:
+        """Serializes the config to a dictionary.
+
+        Returns
+        -------
+        dict
+            The serialized config.
+        """
         return {
             field_name: getattr(self, field_name) for field_name, _ in self.field_links
         }
 
     def extend_field_links(self, new_field_links: list[tuple[str, type]]) -> None:
+        """Extends the field links with new field links.
+
+        Parameters
+        ----------
+        new_field_links : list[tuple[str, type]]
+            The new field links to add.
+        """
         existing_field_links = getattr(self, "field_links", None)
         if existing_field_links is None:
             self.field_links = []

@@ -20,6 +20,7 @@ class Library(ABC):
         self.reload()
 
     def reload(self) -> None:
+        """Reloads the library entries from the library folder."""
         self.entries = {}
 
         # Load entries from folder
@@ -40,9 +41,22 @@ class Library(ABC):
         raise NotImplementedError
 
     def get(self, id: str) -> LibraryEntry | None:
+        """Returns the library entry with the given id, or None if it does not exist.
+
+        Parameters
+        ----------
+        id : str
+            The id of the library entry to retrieve.
+
+        Returns
+        -------
+        LibraryEntry | None
+            The library entry with the given id, or None if it does not exist.
+        """
         return self.entries.get(id, None)
 
     def save(self) -> None:
+        """Saves the library entries to the library folder."""
         for id, entry in self.entries.items():
             with open(self.library_folder / (id + ".yaml"), "w") as file:
                 file.write(yaml.dump(entry.serialize()))

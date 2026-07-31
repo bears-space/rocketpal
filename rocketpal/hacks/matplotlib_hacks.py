@@ -81,4 +81,5 @@ def hack_override_matplotlib_show(filename: str | None = None) -> None:
 
 
 def hack_override_matplotlib_show_reset() -> None:
+    """Resets matplotlib's show function to its original behavior."""
     plt.show = matplotlib_show_original
