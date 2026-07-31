@@ -108,6 +108,8 @@ def export_flight_data_to_csv_in_simulated_sensor_module_format(
         The RocketPy flight simulation to extract the data from.
     filepath : Path
         The file to write the data into, in .csv format.
+    environment : Environment
+        The RocketPy environment that was used for the flight simulation.
     time_step_seconds : float, optional
         The constant time step to use, by default 1.0
     """

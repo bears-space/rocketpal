@@ -177,7 +177,7 @@ def _load_fins_config(config_folder: Path) -> FinsConfig:
         return FinsConfig(data)
 
 
-def configure_logging_to_disk(logfile_path: Path):
+def configure_logging_to_disk(logfile_path: Path) -> None:
     """Configure all terminal output to be logged to disk in addition to the console.
 
     Parameters
