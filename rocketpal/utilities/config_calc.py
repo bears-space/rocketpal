@@ -1,6 +1,8 @@
 # Copyright (C) 2023-2026  BEARS e.V. and contributors
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+from collections.abc import Sequence
+
 import numpy as np
 
 from rocketpal.core.part import Part
@@ -110,14 +112,12 @@ def rocket_cog(
     return (rocketCOG[0], rocketCOG[1], rocketCOG[2])
 
 
-def calculate_center_of_mass(
-    parts: list[Part],
-) -> tuple[float, float, float]:
+def calculate_center_of_mass(parts: Sequence[Part]) -> tuple[float, float, float]:
     """Calculate the center of mass of a list of parts
 
     Parameters
     ----------
-    parts : list[Part]
+    parts : Sequence[Part]
         List of parts
 
     Returns
@@ -125,33 +125,31 @@ def calculate_center_of_mass(
     tuple[float, float, float]
         The center of mass of the parts in the format (x, y, z)
     """
-
     # Return early if parts is empty
-    if len(parts) == 0:
+    if not parts:
         return (0.0, 0.0, 0.0)
 
-    center_of_mass = np.array([0.0, 0.0, 0.0])
-    mass_total = 0.0
-    for part in parts:
-        mass_total += part.mass
-        center_of_mass[0] += (
-            part.mass
-            * part.radial_distance_to_midline
-            * np.cos(np.deg2rad(part.radial_direction))
-        )
-        center_of_mass[1] += (
-            part.mass
-            * part.radial_distance_to_midline
-            * np.sin(np.deg2rad(part.radial_direction))
-        )
-        center_of_mass[2] += part.mass * part.center_of_mass
+    masses = np.array([p.mass for p in parts])
 
-    # Return early if total mass is zero to avoid division by zero
-    if mass_total == 0:
+    # Prevent ZeroDivisionError inside np.average
+    if masses.sum() == 0:
         return (0.0, 0.0, 0.0)
 
-    center_of_mass /= mass_total
-    return (center_of_mass[0], center_of_mass[1], center_of_mass[2])
+    # Extract geometry into arrays
+    r = np.array([p.radial_distance_to_midline for p in parts])
+    theta_rad = np.deg2rad([p.radial_direction for p in parts])
+    z = np.array([p.center_of_mass for p in parts])
+
+    # Polar -> Cartesian conversion
+    x = r * np.cos(theta_rad)
+    y = r * np.sin(theta_rad)
+
+    # Weighted average exactly matches the center-of-mass formula
+    return (
+        np.average(x, weights=masses),
+        np.average(y, weights=masses),
+        np.average(z, weights=masses),
+    )
 
 
 def inertia_component(
