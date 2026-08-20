@@ -5,27 +5,16 @@
 
 # type: ignore
 
-import sys
+from imgui_bundle import hello_imgui, immapp
 
-from PySide6 import QtGui, QtWidgets
-
-from rocketpal.common.common_paths import ICON_PATH
+from rocketpal.common.common_paths import GUI_ASSETS_PATH
 from rocketpal.gui.flight_simulation_gui import FlightSimulationGUI
 
 
 def start_and_hand_over_to_simulation_gui():
-    # Prepare application
-    app = QtWidgets.QApplication([])
-    app.setApplicationName("RocketPal")
-    app.setWindowIcon(QtGui.QIcon(str(ICON_PATH)))
-
-    # Hello world test
-    widget = FlightSimulationGUI()
-    widget.resize(1280, 720)
-    widget.show()
-
-    # Enter GUI main loop
-    sys.exit(app.exec())
+    app = FlightSimulationGUI()
+    hello_imgui.set_assets_folder(GUI_ASSETS_PATH.as_posix())
+    immapp.run(gui_function=app.gui, window_title="RocketPal", window_size=(1280, 720))
 
 
 if __name__ == "__main__":

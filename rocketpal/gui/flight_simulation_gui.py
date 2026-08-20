@@ -20,7 +20,6 @@ from PySide6.QtWidgets import (
 )
 
 from rocketpal.common.common_paths import (
-    LOGO_PATH,
     OUTPUT_FOLDER,
     TEMPLATE_FOLDER,
     USER_SIMULATION_CONFIG_BASE_FOLDER,

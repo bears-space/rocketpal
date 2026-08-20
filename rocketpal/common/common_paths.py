@@ -16,8 +16,7 @@ USER_PARACHUTE_LIBRARY_FOLDER = USER_LIBRARY_CONFIG_BASE_FOLDER / "parachutes"
 OUTPUT_FOLDER = Path.cwd() / "output"
 TEMPLATE_FOLDER = Path(__file__).parent.parent.parent / "template"
 
-LOGO_PATH = Path(__file__).parent.parent.parent / "img" / "BEARS_writing_with_motto.svg"
-ICON_PATH = Path(__file__).parent.parent.parent / "img" / "BEARS_Logo_white_circle.png"
+GUI_ASSETS_PATH = Path(__file__).parent.parent / "gui" / "assets"
 
 
 def _get_config_folders(base_folder: Path) -> set[Path]:
