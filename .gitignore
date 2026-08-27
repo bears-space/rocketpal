@@ -141,3 +141,6 @@ output*
 
 # If a local rocketpy installation is linked, ignore it
 rocketpy
+
+# Ignore local Imgui config files
+*.ini

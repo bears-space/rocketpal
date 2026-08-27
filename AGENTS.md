@@ -25,7 +25,7 @@
 - `rocketpal/core/` contains simulation engine code and reusable library abstractions.
 - `rocketpal/parsers/` parses YAML or CSV-backed config and parts data.
 - `rocketpal/exporters/` writes plots and data outputs.
-- `rocketpal/gui/` contains PySide6 widgets and GUI-specific behavior.
+- `rocketpal/gui/` contains imgui-bundle widgets and GUI-specific behavior.
 
 ## Code Conventions
 - Use modern Python typing syntax consistent with the codebase (for example `list[str]` and `Type | None`).
