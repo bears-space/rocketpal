@@ -1,0 +1,27 @@
+rocketpal.core package
+======================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   rocketpal.core.airbrake_library
+   rocketpal.core.config
+   rocketpal.core.flight_simulation
+   rocketpal.core.library
+   rocketpal.core.library_entry
+   rocketpal.core.location_library
+   rocketpal.core.motor_library
+   rocketpal.core.parachute_library
+   rocketpal.core.part
+   rocketpal.core.weather_library
+
+Module contents
+---------------
+
+.. automodule:: rocketpal.core
+   :members:
+   :show-inheritance:
+   :undoc-members:

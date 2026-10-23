@@ -1,0 +1,7 @@
+rocketpal.parsers.parachute\_config module
+==========================================
+
+.. automodule:: rocketpal.parsers.parachute_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

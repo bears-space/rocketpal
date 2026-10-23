@@ -1,0 +1,7 @@
+rocketpal.gui.cloeseable\_window\_widget module
+===============================================
+
+.. automodule:: rocketpal.gui.cloeseable_window_widget
+   :members:
+   :show-inheritance:
+   :undoc-members:

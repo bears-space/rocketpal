@@ -1,0 +1,7 @@
+rocketpal.utilities.airbrake\_controllers module
+================================================
+
+.. automodule:: rocketpal.utilities.airbrake_controllers
+   :members:
+   :show-inheritance:
+   :undoc-members:

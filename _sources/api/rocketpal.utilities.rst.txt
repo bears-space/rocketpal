@@ -1,0 +1,19 @@
+rocketpal.utilities package
+===========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   rocketpal.utilities.airbrake_controllers
+   rocketpal.utilities.config_calc
+
+Module contents
+---------------
+
+.. automodule:: rocketpal.utilities
+   :members:
+   :show-inheritance:
+   :undoc-members:
