@@ -7,7 +7,7 @@ import sys
 from functools import partial
 from pathlib import Path
 
-from rocketpy import Environment, Flight, MonteCarlo, Rocket, SolidMotor
+from rocketpy import AirBrakes, Environment, Flight, MonteCarlo, Rocket, SolidMotor
 from rocketpy.simulation.flight_data_exporter import FlightDataExporter
 from rocketpy.stochastic import (
     StochasticAirBrakes,
@@ -80,6 +80,7 @@ class FlightSimulation:
     flight: Flight
     environment: Environment
     motor: SolidMotor
+    airbrake_objects: list[AirBrakes]
     stochastic_environment: StochasticEnvironment
     stochastic_motor: StochasticSolidMotor
     stochastic_rocket: StochasticRocket
@@ -327,6 +328,7 @@ class FlightSimulation:
                 self.stochastic_rocket.add_parachute(stochastic_parachute)
 
         # Add airbrakes
+        self.airbrake_objects = []
         self.stochastic_airbrakes = []
         for airbrake in airbrakes:
             # Create an airbrake controller function where the environment is pre-filled
@@ -345,6 +347,7 @@ class FlightSimulation:
                 name=airbrake.id,  # type: ignore
                 return_controller=True,
             )  # type: ignore
+            self.airbrake_objects.append(airbrake_object)
             if config.enable_monte_carlo_simulation:  # type: ignore
                 stochastic_airbrake = StochasticAirBrakes(
                     air_brakes=airbrake_object,
@@ -544,6 +547,15 @@ class FlightSimulation:
                 filename=str(folder / "clean_pressure_signal_function.png")
             )
         if len(self.config.airbrake_ids) > 0:  # type: ignore
+            for airbrake in self.airbrake_objects:
+                airbrake.drag_coefficient(
+                    filename=str(
+                        self.output_folder
+                        / "plots"
+                        / "results"
+                        / f"airbrake_{airbrake.name}_drag_coefficient_curve.png"
+                    )
+                )
             plot_airbrake_deployment_over_time(
                 self.flight,
                 filepath=self.output_folder
