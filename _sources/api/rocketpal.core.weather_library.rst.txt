@@ -1,0 +1,7 @@
+rocketpal.core.weather\_library module
+======================================
+
+.. automodule:: rocketpal.core.weather_library
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+rocketpal.parsers.motor\_config module
+======================================
+
+.. automodule:: rocketpal.parsers.motor_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

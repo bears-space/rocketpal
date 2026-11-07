@@ -1,0 +1,7 @@
+rocketpal.utilities.config\_calc module
+=======================================
+
+.. automodule:: rocketpal.utilities.config_calc
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+rocketpal.core.part module
+==========================
+
+.. automodule:: rocketpal.core.part
+   :members:
+   :show-inheritance:
+   :undoc-members:

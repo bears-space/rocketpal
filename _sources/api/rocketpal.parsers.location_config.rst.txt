@@ -1,0 +1,7 @@
+rocketpal.parsers.location\_config module
+=========================================
+
+.. automodule:: rocketpal.parsers.location_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

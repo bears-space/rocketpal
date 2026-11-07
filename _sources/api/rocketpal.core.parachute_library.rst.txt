@@ -1,0 +1,7 @@
+rocketpal.core.parachute\_library module
+========================================
+
+.. automodule:: rocketpal.core.parachute_library
+   :members:
+   :show-inheritance:
+   :undoc-members:
