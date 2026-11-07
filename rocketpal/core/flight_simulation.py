@@ -456,6 +456,17 @@ class FlightSimulation:
             filename=str(self.output_folder / "plots" / "rocket" / "rocket.png")
         )
 
+        # Show graphics about the airbrakes
+        for airbrake in self.airbrake_objects:
+            airbrake.drag_coefficient(
+                filename=str(
+                    self.output_folder
+                    / "plots"
+                    / "rocket"
+                    / f"airbrake_{airbrake.name}_drag_coefficient_curve.png"
+                )
+            )
+
     def show_results(self) -> None:
         """
         Outputs information and plots about the results of the simulation, including flight data, trajectory, and other relevant metrics.
@@ -547,15 +558,6 @@ class FlightSimulation:
                 filename=str(folder / "clean_pressure_signal_function.png")
             )
         if len(self.config.airbrake_ids) > 0:  # type: ignore
-            for airbrake in self.airbrake_objects:
-                airbrake.drag_coefficient(
-                    filename=str(
-                        self.output_folder
-                        / "plots"
-                        / "results"
-                        / f"airbrake_{airbrake.name}_drag_coefficient_curve.png"
-                    )
-                )
             plot_airbrake_deployment_over_time(
                 self.flight,
                 filepath=self.output_folder
