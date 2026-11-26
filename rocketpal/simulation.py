@@ -255,7 +255,7 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
     )
 
     if not _ensure_config_files_exist(config_folder):
-        sys.exit(2)  # 2 means "No such file or directory"
+        sys.exit(1)  # General error
 
     config = _load_config(config_folder)
 
@@ -268,7 +268,7 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
             f"The location with the id '{config.location_id}'"  # type: ignore
             f" does not exist in the location library. Aborting ..."
         )
-        sys.exit(2)  # 2 means "No such file or directory"
+        sys.exit(1)  # General error
     else:
         logger.info(f"Using Location with id '{launch_location.id}'")  # type: ignore
 
@@ -281,7 +281,7 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
             f"The weather config with the id '{config.weather_config_id}'"  # type: ignore
             f" does not exist in the weather config library. Aborting ..."
         )
-        sys.exit(2)  # 2 means "No such file or directory"
+        sys.exit(1)  # General error
     else:
         logger.info(f"Using WeatherConfig with id '{weather_config.id}'")  # type: ignore
 
@@ -291,7 +291,7 @@ def load_configs_and_run_simulation(config_folder: Path, output_folder: Path) ->
             f"The motor config with the id '{config.motor_id}'"  # type: ignore
             f" does not exist in the motor config library. Aborting ..."
         )
-        sys.exit(2)  # 2 means "No such file or directory"
+        sys.exit(1)  # General error
     else:
         logger.info(f"Using MotorConfig with id '{motor_config.id}'")  # type: ignore
 
