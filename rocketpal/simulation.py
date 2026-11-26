@@ -58,9 +58,7 @@ def _ensure_config_files_exist(config_folder: Path) -> bool:
         file_path = config_folder / filename
         if not os.path.isfile(file_path):
             logger.error(
-                "Missing file '"
-                + str(filename)
-                + "' in specified config folder! Aborting ..."
+                f"Missing file '{filename}' in specified config folder! Aborting ..."
             )
             return False
 
@@ -75,9 +73,7 @@ def _ensure_config_files_exist(config_folder: Path) -> bool:
         file_path = config_folder / foldername
         if not os.path.isdir(file_path):
             logger.error(
-                "Missing folder '"
-                + str(foldername)
-                + "' in specified config folder! Aborting ..."
+                f"Missing folder '{foldername}' in specified config folder! Aborting ..."
             )
             return False
 
