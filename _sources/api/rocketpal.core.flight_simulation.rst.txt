@@ -1,0 +1,7 @@
+rocketpal.core.flight\_simulation module
+========================================
+
+.. automodule:: rocketpal.core.flight_simulation
+   :members:
+   :show-inheritance:
+   :undoc-members:

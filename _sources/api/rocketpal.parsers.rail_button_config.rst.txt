@@ -1,0 +1,7 @@
+rocketpal.parsers.rail\_button\_config module
+=============================================
+
+.. automodule:: rocketpal.parsers.rail_button_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

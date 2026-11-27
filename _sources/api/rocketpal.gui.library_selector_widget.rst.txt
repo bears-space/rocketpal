@@ -1,0 +1,7 @@
+rocketpal.gui.library\_selector\_widget module
+==============================================
+
+.. automodule:: rocketpal.gui.library_selector_widget
+   :members:
+   :show-inheritance:
+   :undoc-members:

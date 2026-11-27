@@ -1,0 +1,7 @@
+rocketpal.gui.asset\_library\_editor\_main\_widget module
+=========================================================
+
+.. automodule:: rocketpal.gui.asset_library_editor_main_widget
+   :members:
+   :show-inheritance:
+   :undoc-members:

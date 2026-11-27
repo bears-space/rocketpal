@@ -1,0 +1,32 @@
+rocketpal package
+=================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   rocketpal.common
+   rocketpal.core
+   rocketpal.exporters
+   rocketpal.gui
+   rocketpal.parsers
+   rocketpal.utilities
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   rocketpal.simulation
+   rocketpal.simulation_gui
+
+Module contents
+---------------
+
+.. automodule:: rocketpal
+   :members:
+   :show-inheritance:
+   :undoc-members:

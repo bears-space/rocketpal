@@ -1,0 +1,7 @@
+rocketpal
+=========
+
+.. toctree::
+   :maxdepth: 4
+
+   rocketpal

@@ -1,0 +1,7 @@
+rocketpal.gui.flight\_simulation\_gui module
+============================================
+
+.. automodule:: rocketpal.gui.flight_simulation_gui
+   :members:
+   :show-inheritance:
+   :undoc-members:

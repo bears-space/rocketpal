@@ -1,0 +1,7 @@
+rocketpal.core.location\_library module
+=======================================
+
+.. automodule:: rocketpal.core.location_library
+   :members:
+   :show-inheritance:
+   :undoc-members:

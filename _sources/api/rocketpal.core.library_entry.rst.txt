@@ -1,0 +1,7 @@
+rocketpal.core.library\_entry module
+====================================
+
+.. automodule:: rocketpal.core.library_entry
+   :members:
+   :show-inheritance:
+   :undoc-members:

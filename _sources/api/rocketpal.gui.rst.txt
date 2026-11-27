@@ -1,0 +1,24 @@
+rocketpal.gui package
+=====================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   rocketpal.gui.asset_library_editor_main_widget
+   rocketpal.gui.cloeseable_window_widget
+   rocketpal.gui.editor_main_widget
+   rocketpal.gui.flight_simulation_gui
+   rocketpal.gui.library_selector_widget
+   rocketpal.gui.location_library_editor_widget
+   rocketpal.gui.results_widget
+
+Module contents
+---------------
+
+.. automodule:: rocketpal.gui
+   :members:
+   :show-inheritance:
+   :undoc-members:
