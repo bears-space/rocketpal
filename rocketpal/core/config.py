@@ -6,6 +6,10 @@ class Config:
     def __init__(self, data: dict) -> None:
         self.extend_field_links([])
         for field_name, field_type in self.field_links:
+            if field_name not in data:
+                raise ValueError(
+                    f"Missing required field '{field_name}' for config type {type(self).__name__}."
+                )
             self.__setattr__(field_name, field_type(data[field_name]))
 
     def serialize(self) -> dict:
