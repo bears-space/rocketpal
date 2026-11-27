@@ -48,26 +48,27 @@ logger = logging.getLogger(__name__)
 def wind_speed_and_direction_to_east_and_north(
     wind_speed: float, wind_direction: float
 ) -> tuple[float, float]:
-    """Converts RocketPy-style wind speed and direction to east and north components.
+    """Converts meteorological wind speed and direction to east/north components.
+
+    Meteorological convention uses directions from 0°=North clockwise. Wind FROM
+    direction theta blows toward the opposite. Convert to Cartesian coordinates
+    where velocity vector points toward angle = theta + 180°.
 
     Parameters
     ----------
     wind_speed : float
-        The wind speed.
+        The wind speed in m/s.
     wind_direction : float
-        The wind direction in degrees.
+        The wind direction in degrees (meteorological convention: FROM this direction).
 
     Returns
     -------
     tuple[float, float]
-        The east and north components of the wind speed.
+        The east and north components of the wind velocity vector.
     """
-    # Convert from RocketPy direction convention to east-north-positive convention
-    wind_direction = (-wind_direction) - 90.0
-
     wind_direction_rad = math.radians(wind_direction)
-    east_component = math.cos(wind_direction_rad)
-    north_component = math.sin(wind_direction_rad)
+    east_component = -math.sin(wind_direction_rad)
+    north_component = -math.cos(wind_direction_rad)
     return (east_component * wind_speed, north_component * wind_speed)
 
 
