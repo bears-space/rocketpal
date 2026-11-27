@@ -517,13 +517,9 @@ class FlightSimulation:
                 self.output_folder / "plots" / "results" / "rail_button_forces.png"
             )
         )
-        # NOTE: The energy data plot crashes when an airbrake is configured
-        if len(self.config.airbrake_ids) == 0:  # type: ignore
-            self.flight.plots.energy_data(
-                filename=str(
-                    self.output_folder / "plots" / "results" / "energy_data.png"
-                )
-            )
+        self.flight.plots.energy_data(
+            filename=str(self.output_folder / "plots" / "results" / "energy_data.png")
+        )
         self.flight.plots.fluid_mechanics_data(
             filename=str(
                 self.output_folder / "plots" / "results" / "fluid_mechanics_data.png"
