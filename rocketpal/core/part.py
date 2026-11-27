@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Part:
-    mass: float  # in g
+    mass: float  # in kg
     center_of_mass: float  # in mm
     name: str = "unnamed"
     length = 0.0  # in mm
