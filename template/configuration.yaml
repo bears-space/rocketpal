@@ -21,6 +21,8 @@ inertia_33: 0.034
 mass_standard_deviation_factor: 0.05
 center_of_mass_standard_deviation_factor: 0.05
 inertia_standard_deviation_factor: 0.1
+inclination_standard_deviation_degrees: 1.0
+heading_standard_deviation_degrees: 2.0
 power_off_drag_factor_standard_deviation: 0.1
 power_on_drag_factor_standard_deviation: 0.1
 enable_monte_carlo_simulation: True

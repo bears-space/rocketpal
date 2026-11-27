@@ -391,8 +391,8 @@ class FlightSimulation:
         if self.config.enable_monte_carlo_simulation:  # type: ignore
             self.stochastic_flight = StochasticFlight(
                 flight=self.flight,
-                inclination=1.0,
-                heading=2.0,
+                inclination=self.config.inclination_standard_deviation_degrees,  # type: ignore
+                heading=self.config.heading_standard_deviation_degrees,  # type: ignore
             )
             self.stochastic_flight.visualize_attributes()
 

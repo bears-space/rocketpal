@@ -76,6 +76,14 @@ class SimulationConfig(LibraryEntry):
                     "export_flight_data_time_step_seconds",
                     float,
                 ),
+                (
+                    "inclination_standard_deviation_degrees",
+                    float,
+                ),
+                (
+                    "heading_standard_deviation_degrees",
+                    float,
+                ),
             ]
         )
         super().__init__(data)
@@ -118,5 +126,7 @@ class SimulationConfig(LibraryEntry):
                 "parallel": True,
                 "n_workers": 8,
                 "export_flight_data_time_step_seconds": 0.01,
+                "inclination_standard_deviation_degrees": 1.0,
+                "heading_standard_deviation_degrees": 2.0,
             }
         )
